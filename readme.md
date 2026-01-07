@@ -1,7 +1,27 @@
 # Overview
 
 ## Welcome
-Welcome to my games repository. I like to consider the logical aspects to games as well as algorithmic solutions to those games. Note that each game has its own README file & folder and can be considered independent from other games.
+Welcome to my games repository! I explore logical aspects and algorithmic solutions to various puzzles and strategy games.
+
+**Live Demo**: [Play the Games Here](https://joeywilkes12.github.io/Games-01-public/index.html)
+
+---
+
+## Game Gallery
+
+### Game Hub
+![Game Hub](screenshots/hub.png)
+
+### Random Event Dice
+![Random Event Dice](screenshots/random_event_dice.png)
+
+### 2048
+![2048 Game](screenshots/2048.png)
+
+### Sliding Puzzle 3x3
+![Sliding Puzzle](screenshots/sliding_puzzle.png)
+
+---
 
 ## Playable Games
 - [Random Event Dice (v2.0)](apps/games/Random%20Event%20Dice)
