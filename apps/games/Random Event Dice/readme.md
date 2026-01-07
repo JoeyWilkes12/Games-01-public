@@ -10,14 +10,15 @@ A web-based dice rolling game with configurable event triggers, designed for ran
 - **Pre-generated Samples**: Dice rolls are pre-computed for faster gameplay
 - **Seeded RNG**: Optional deterministic seeds for testing and reproducibility
 - **Timer with Extension**: Set game duration with option to add 10 more minutes
+- **Pause/Resume**: Toggle game state without losing progress
 - **JSON Import/Export**: Save and load complete configurations with validation
 - **Event Validation**: Detects impossible event definitions with 3-second warning delay
 
 ### New in 2.1: Analytics Dashboard
 - **Dark Theme**: Default dark mode with high-visibility event alerts
 - **Player Tracking**: Configure up to 15 players with custom names
-- **Leaderboard**: Real-time rankings based on total rolls per player
-- **Timeline**: View the last 10 turns with rolls and time per turn
+- **Leaderboard**: Real-time rankings based on total rolls and time per player
+- **Timeline**: Visual line plot and list of last 10 turns with rolls and time
 - **Heatmap**: Law of Large Numbers visualization for 2d6 dice
 - **Skip to End**: Simulate remaining game to calculate final analytics
 

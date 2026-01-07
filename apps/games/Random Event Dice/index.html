@@ -60,9 +60,12 @@
                     </div>
                 </div>
 
-                <!-- Timeline Section -->
+                <!-- Timeline Section & Graph -->
                 <div class="analytics-section" id="timeline-section">
                     <h3>📅 Recent Turns (Last 10)</h3>
+                    <div class="timeline-visual" id="timeline-graph-container">
+                        <canvas id="timeline-canvas"></canvas>
+                    </div>
                     <div class="timeline" id="timeline">
                         <div class="timeline-placeholder">No turns yet</div>
                     </div>
@@ -71,6 +74,11 @@
                 <!-- Heatmap Section (2 dice only) -->
                 <div class="analytics-section" id="heatmap-section">
                     <h3>🔥 Dice Heatmap (Law of Large Numbers)</h3>
+                    <div class="heatmap-legend">
+                        <div class="legend-item"><span class="color-box cold"></span> Cold (Under)</div>
+                        <div class="legend-item"><span class="color-box expected"></span> Expected</div>
+                        <div class="legend-item"><span class="color-box hot"></span> Hot (Over)</div>
+                    </div>
                     <div class="heatmap-container" id="heatmap-container">
                         <div class="heatmap-placeholder">Available for 2 dice only</div>
                     </div>
@@ -79,6 +87,11 @@
                 <!-- Skip to End Button -->
                 <div class="analytics-actions">
                     <button id="skip-to-end-btn" class="secondary-btn" disabled>⏩ Skip to End</button>
+                    <div class="mobile-warning">
+                        <p><em>This dashboard has best user view when accessing via desktop as opposed to mobile</em>
+                        </p>
+                    </div>
+                    <div class="spacer-bottom"></div>
                 </div>
             </div>
         </div>
@@ -100,7 +113,7 @@
                 </button>
             </div>
 
-            <div class="settings-content" id="settings-content">
+            <div class="settings-content collapsed" id="settings-content">
                 <div class="control-group">
                     <label for="interval-input">Roll Interval (seconds)</label>
                     <input type="number" id="interval-input" value="1.0" min="0.1" step="0.1">

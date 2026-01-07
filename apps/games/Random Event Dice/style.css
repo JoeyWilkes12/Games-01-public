@@ -479,6 +479,15 @@ header h1 {
     box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
 }
 
+.primary-btn.paused {
+    background-color: #f59e0b;
+}
+
+.primary-btn.paused:hover {
+    background-color: #d97706;
+    box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.3);
+}
+
 .secondary-btn {
     background-color: rgba(255, 255, 255, 0.1);
     color: var(--text-color);
@@ -633,9 +642,9 @@ header h1 {
     top: 0;
     left: 0;
     height: 100vh;
-    width: 320px;
-    min-width: 200px;
-    max-width: 60vw;
+    width: 75vw;
+    min-width: 300px;
+    max-width: 90vw;
     background: var(--surface-color);
     border-right: 2px solid var(--primary-color);
     z-index: 90;
@@ -665,6 +674,23 @@ header h1 {
     flex: 1;
     overflow-y: auto;
     padding: 1rem;
+    padding-bottom: 3rem;
+    /* Extra padding for mobile scroll */
+}
+
+.mobile-warning {
+    margin-top: 2rem;
+    text-align: center;
+    color: #fef08a;
+    /* Light yellow */
+    opacity: 0.8;
+    font-size: 0.85rem;
+    padding: 0 1rem;
+}
+
+.spacer-bottom {
+    height: 100px;
+    /* Substantial whitespace */
 }
 
 .analytics-section {
@@ -764,6 +790,55 @@ header h1 {
     font-style: italic;
     padding: 0.5rem;
     text-align: center;
+}
+
+/* Heatmap Legend */
+.heatmap-legend {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--secondary-color);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.color-box {
+    width: 12px;
+    height: 12px;
+    border-radius: 2px;
+}
+
+.color-box.cold {
+    background-color: #3b82f6;
+}
+
+.color-box.expected {
+    background-color: #10b981;
+}
+
+.color-box.hot {
+    background-color: #ef4444;
+}
+
+/* Timeline Graph */
+.timeline-visual {
+    height: 100px;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    position: relative;
+}
+
+#timeline-canvas {
+    width: 100%;
+    height: 100%;
 }
 
 /* Timeline */

@@ -180,12 +180,18 @@ class AnalyticsTracker {
             playerId: this.currentPlayerIndex,
             playerName: this.players[this.currentPlayerIndex],
             rolls: this.currentTurnRolls,
+            rolls: this.currentTurnRolls,
             time: elapsed
         });
 
         // Keep only last 10
         if (this.timeline.length > 10) {
             this.timeline.pop();
+        }
+
+        // Draw graph if callback exists
+        if (this.onTimelineUpdate) {
+            this.onTimelineUpdate();
         }
 
         // Move to next player
@@ -255,18 +261,68 @@ class AnalyticsTracker {
     }
 
     // Simulate remaining game to end (skip to end)
-    simulateToEnd(samplePool, eventDefinitions, checkConditionFn) {
+    // Simulate remaining game to end (skip to end)
+    simulateToEnd(samplePool, eventDefinitions, checkConditionFn, intervalSeconds) {
         const results = { events: 0, totalRolls: 0 };
+        const rollTime = intervalSeconds;
 
         while (samplePool.currentIndex < samplePool.samples.length) {
             const roll = samplePool.getNext();
-            this.recordRoll(roll);
+            this.currentTurnRolls++;
+            this.totalRolls++;
+
+            // Update heatmap (copied logic for speed)
+            if (this.heatmap.length > 0 && roll.length === 2) {
+                const d1 = roll[0] - 1;
+                const d2 = roll[1] - 1;
+                if (d1 >= 0 && d1 < 6 && d2 >= 0 && d2 < 6) this.heatmap[d1][d2]++;
+            }
+
             results.totalRolls++;
 
             if (checkConditionFn(roll, eventDefinitions)) {
-                this.endTurn();
+                // Manually end turn with simulated time
+                const stats = this.playerStats[this.currentPlayerIndex];
+                stats.totalRolls += this.currentTurnRolls;
+                stats.totalTime += (this.currentTurnRolls * rollTime);
+                stats.turnCount++;
+                this.turnNumber++;
+
+                // Add to timeline
+                this.timeline.unshift({
+                    turnNumber: this.turnNumber,
+                    playerId: this.currentPlayerIndex,
+                    playerName: this.players[this.currentPlayerIndex],
+                    rolls: this.currentTurnRolls,
+                    time: (this.currentTurnRolls * rollTime)
+                });
+                if (this.timeline.length > 10) this.timeline.pop();
+
+                this.currentPlayerIndex = (this.currentPlayerIndex % this.playerCount) + 1;
+                this.currentTurnRolls = 0; // Reset for next turn
+                // No startTurn() needed for simulation
+
                 results.events++;
             }
+        }
+
+        // Commit pending rolls for the last partial turn
+        if (this.currentTurnRolls > 0) {
+            const stats = this.playerStats[this.currentPlayerIndex];
+            stats.totalRolls += this.currentTurnRolls;
+            stats.totalTime += (this.currentTurnRolls * rollTime);
+            stats.turnCount++;
+            this.turnNumber++;
+
+            // Add to timeline
+            this.timeline.unshift({
+                turnNumber: this.turnNumber,
+                playerId: this.currentPlayerIndex,
+                playerName: this.players[this.currentPlayerIndex],
+                rolls: this.currentTurnRolls,
+                time: (this.currentTurnRolls * rollTime)
+            });
+            if (this.timeline.length > 10) this.timeline.pop();
         }
 
         return results;
@@ -320,6 +376,7 @@ class DiceGame {
     constructor() {
         // State
         this.isPlaying = false;
+        this.isPaused = false;
         this.isResetting = false;
         this.timer = null;
         this.rollInterval = null;
@@ -431,6 +488,9 @@ class DiceGame {
 
         // Initialize analytics
         this.initAnalytics();
+
+        // Link analytics graph update
+        this.analytics.onTimelineUpdate = () => this.drawTimelineGraph();
 
         this.init();
     }
@@ -627,7 +687,7 @@ class DiceGame {
                 <div class="leaderboard-item ${currentClass}">
                     <span class="rank ${rankClass}">${index + 1}</span>
                     <span class="player-info">${player.playerName}</span>
-                    <span class="player-stats">${player.totalRolls} rolls | ${player.turnCount} turns</span>
+                    <span class="player-stats">${player.totalRolls} rolls | ${player.totalTime.toFixed(1)}s | ${player.turnCount} turns</span>
                 </div>
             `;
         });
@@ -655,6 +715,7 @@ class DiceGame {
             `;
         });
         this.dom.timeline.innerHTML = html;
+        this.drawTimelineGraph();
     }
 
     renderHeatmap() {
@@ -726,7 +787,12 @@ class DiceGame {
             this.samplePool,
             this.settings.eventDefinitions,
             checkFn
-        );
+        const results = this.analytics.simulateToEnd(
+                this.samplePool,
+                this.settings.eventDefinitions,
+                checkFn,
+                this.settings.interval / 1000 // Pass interval in seconds
+            );
 
         console.debug(`[Analytics] Skip to end: ${results.totalRolls} rolls, ${results.events} events`);
 
@@ -1344,7 +1410,14 @@ class DiceGame {
     // --- Game Loop ---
 
     startGame() {
-        if (this.isPlaying) return;
+        if (this.isPlaying) {
+            if (this.isPaused) {
+                this.resumeGame();
+            } else {
+                this.pauseGame();
+            }
+            return;
+        }
 
         if (!this.audioCtx) {
             this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1353,10 +1426,21 @@ class DiceGame {
             this.audioCtx.resume();
         }
 
+        // Validate settings before starting
+        if (this.checkWarning()) {
+            return; // Don't start if warning active
+        }
+
         this.isPlaying = true;
+        this.isPaused = false;
         this.isResetting = false;
         this.isExpired = false;
-        this.dom.startBtn.disabled = true;
+
+        // Update button to Pause state
+        this.dom.startBtn.textContent = 'Pause Game';
+        this.dom.startBtn.classList.remove('paused');
+        this.dom.startBtn.disabled = false;
+
         this.dom.stopBtn.disabled = false;
         this.setInputsDisabled(true);
 
@@ -1366,7 +1450,16 @@ class DiceGame {
         }
 
         // Reset sample pool index for new game
-        this.samplePool.reset();
+        if (this.settings.seed !== null) {
+            // Regenerate pool with seed if needed
+            if (this.samplePool.seed !== this.settings.seed) {
+                this.samplePool.regenerate(this.settings.seed);
+            } else {
+                this.samplePool.reset();
+            }
+        } else {
+            this.samplePool.regenerate(null);
+        }
 
         // Reset rolls counter
         this.rollsSinceLastEvent = 0;
@@ -1390,25 +1483,42 @@ class DiceGame {
             this.updateAnalyticsUI();
         }, 500);
 
-        this.timeLeft = this.settings.duration * 60;
-        this.updateTimerDisplay();
+        this.startTimer(true);
+        this.startRollLoop();
 
-        this.timer = setInterval(() => {
-            if (!this.isResetting) {
-                this.timeLeft--;
-                this.updateTimerDisplay();
-                if (this.timeLeft <= 0) {
-                    this.handleGameExpired();
-                }
-            }
-        }, 1000);
+        console.debug('[Game] Started');
+    }
 
-        this.rollDice();
-        this.rollInterval = setInterval(() => {
-            if (!this.isResetting) {
-                this.rollDice();
-            }
-        }, this.settings.interval);
+    pauseGame() {
+        this.isPaused = true;
+        this.dom.startBtn.textContent = 'Resume Game';
+        this.dom.startBtn.classList.add('paused');
+
+        clearInterval(this.timer);
+        clearInterval(this.rollInterval);
+        clearTimeout(this.resetTimeout);
+        // Keep analytics interval running or pause it? 
+        // Let's pause it to avoid unnecessary updates
+        clearInterval(this.analyticsUpdateInterval);
+
+        console.debug('[Game] Paused');
+    }
+
+    resumeGame() {
+        this.isPaused = false;
+        this.dom.startBtn.textContent = 'Pause Game';
+        this.dom.startBtn.classList.remove('paused');
+
+        this.startTimer(false); // Resume timer without reset
+        if (!this.isResetting) {
+            this.startRollLoop();
+        }
+
+        this.analyticsUpdateInterval = setInterval(() => {
+            this.updateAnalyticsUI();
+        }, 500);
+
+        console.debug('[Game] Resumed');
     }
 
     handleGameExpired() {
@@ -1418,8 +1528,14 @@ class DiceGame {
         clearInterval(this.timer);
         clearInterval(this.rollInterval);
         clearTimeout(this.resetTimeout);
+        clearInterval(this.analyticsUpdateInterval);
 
         this.clearAlert();
+
+        // Reset start button
+        this.dom.startBtn.textContent = 'Start Game';
+        this.dom.startBtn.classList.remove('paused');
+        this.dom.startBtn.disabled = true; // Disabled until extended or stopped
 
         // Show extend button instead of resetting to start state
         if (this.dom.extendBtn) {
@@ -1434,7 +1550,11 @@ class DiceGame {
         // Add 10 minutes
         this.timeLeft = 10 * 60;
         this.isPlaying = true;
+        this.isPaused = false;
         this.isExpired = false;
+
+        this.dom.startBtn.textContent = 'Pause Game';
+        this.dom.startBtn.disabled = false;
 
         // Hide extend button
         if (this.dom.extendBtn) {
@@ -1451,36 +1571,32 @@ class DiceGame {
 
         this.updateTimerDisplay();
 
-        // Restart game loop
-        this.timer = setInterval(() => {
-            if (!this.isResetting) {
-                this.timeLeft--;
-                this.updateTimerDisplay();
-                if (this.timeLeft <= 0) {
-                    this.handleGameExpired();
-                }
-            }
-        }, 1000);
+        // Restart game loop using helpers
+        this.startTimer(false);
+        this.startRollLoop();
 
-        this.rollInterval = setInterval(() => {
-            if (!this.isResetting) {
-                this.rollDice();
-            }
-        }, this.settings.interval);
+        this.analyticsUpdateInterval = setInterval(() => {
+            this.updateAnalyticsUI();
+        }, 500);
 
         console.debug('[Game] Extended by 10 minutes');
     }
 
     stopGame() {
         this.isPlaying = false;
+        this.isPaused = false;
         this.isResetting = false;
         this.isExpired = false;
+
         clearInterval(this.timer);
         clearInterval(this.rollInterval);
         clearTimeout(this.resetTimeout);
         clearInterval(this.analyticsUpdateInterval);
 
+        this.dom.startBtn.textContent = 'Start Game';
+        this.dom.startBtn.classList.remove('paused');
         this.dom.startBtn.disabled = false;
+
         this.dom.stopBtn.disabled = true;
         this.setInputsDisabled(false);
 
@@ -1495,6 +1611,35 @@ class DiceGame {
         }
 
         this.clearAlert();
+        this.dom.timerDisplay.textContent = `${this.settings.duration.toString().padStart(2, '0')}:00`;
+
+        console.debug('[Game] Stopped');
+    }
+
+    startTimer(reset = true) {
+        if (reset) {
+            this.timeLeft = this.settings.duration * 60;
+        }
+        this.updateTimerDisplay();
+
+        this.timer = setInterval(() => {
+            if (!this.isResetting && !this.isPaused) {
+                this.timeLeft--;
+                this.updateTimerDisplay();
+                if (this.timeLeft <= 0) {
+                    this.handleGameExpired();
+                }
+            }
+        }, 1000);
+    }
+
+    startRollLoop() {
+        this.rollDice();
+        this.rollInterval = setInterval(() => {
+            if (!this.isResetting && !this.isPaused) {
+                this.rollDice();
+            }
+        }, this.settings.interval);
     }
 
     setInputsDisabled(disabled) {
@@ -1649,6 +1794,56 @@ class DiceGame {
         const mins = Math.floor(this.timeLeft / 60);
         const secs = this.timeLeft % 60;
         this.dom.timerDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    drawTimelineGraph() {
+        if (!this.dom.timelineSection) return;
+        const canvas = document.getElementById('timeline-canvas');
+        if (!canvas) return;
+
+        const container = document.getElementById('timeline-graph-container');
+        if (!container) return;
+
+        // Set canvas size
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight;
+
+        const ctx = canvas.getContext('2d');
+        const width = canvas.width;
+        const height = canvas.height;
+
+        ctx.clearRect(0, 0, width, height);
+
+        const data = this.analytics.timeline.slice().reverse(); // Show oldest to newest
+        if (data.length < 2) return;
+
+        // Determine max value for scaling (default to rolls, could be time)
+        const getValue = d => d.rolls;
+        const maxVal = Math.max(...data.map(getValue), 5); // Minimum max of 5
+
+        const padding = 10;
+        const graphWidth = width - padding * 2;
+        const graphHeight = height - padding * 2;
+
+        ctx.beginPath();
+        ctx.strokeStyle = '#3b82f6';
+        ctx.lineWidth = 2;
+
+        data.forEach((d, i) => {
+            const x = padding + (i / (data.length - 1)) * graphWidth;
+            const y = height - (padding + (getValue(d) / maxVal) * graphHeight);
+
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+
+            // Draw dot
+            ctx.fillStyle = '#60a5fa';
+            ctx.beginPath();
+            ctx.arc(x, y, 3, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        ctx.stroke();
     }
 }
 
