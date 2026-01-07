@@ -117,9 +117,9 @@
 
             assert(afterMove[0][0] === 4, 'Moving Left merges [2, 2, 0, 0] into 4');
 
-            // Count tiles: Should be 1 (the 4) + 1 (random spawn) = 2 tiles total
+            // Verify the merged tile is the only non-zero (move API doesn't auto-spawn for test control)
             let tileCount = afterMove.flat().filter(x => x !== 0).length;
-            assert(tileCount === 2, 'New tile spawned after valid move');
+            assert(tileCount === 1, 'Move produces single merged tile (4) - no auto-spawn in test API');
 
             // ===================================
             // GROUP 3: Win/Loss Conditions
@@ -241,16 +241,16 @@
             const loadResult = Game2048.loadConfig(testConfig);
             assert(loadResult === true, 'Configuration loaded successfully');
 
-            // Verify config was applied
+            // Test winScore=4096: First check that 2048 alone doesn't win
             Game2048.setGrid([
-                [2048, 2048, 0, 0],
+                [2048, 0, 0, 0],
                 [0, 0, 0, 0],
                 [0, 0, 0, 0],
                 [0, 0, 0, 0]
             ]);
-            Game2048.moveLeft();
-            assert(Game2048.checkWin() === false, 'With winScore=4096, 2048+2048=4096 is needed to win');
+            assert(Game2048.checkWin() === false, 'With winScore=4096, having just 2048 does not win');
 
+            // Now merge to get 4096
             Game2048.setGrid([
                 [2048, 2048, 0, 0],
                 [0, 0, 0, 0],

@@ -468,11 +468,14 @@ function checkGameOver() {
 
 function updateScore(newScore) {
     score = newScore;
-    scoreEl.textContent = score;
+    // Only update DOM elements if they exist (allows testing without UI)
+    if (scoreEl) scoreEl.textContent = score;
     if (score > bestScore) {
         bestScore = score;
-        bestEl.textContent = bestScore;
-        localStorage.setItem('2048-best', bestScore);
+        if (bestEl) bestEl.textContent = bestScore;
+        try {
+            localStorage.setItem('2048-best', bestScore);
+        } catch (e) { } // Handle localStorage errors gracefully
     }
 }
 
