@@ -495,3 +495,88 @@ test.describe('Bank Game - New Game', () => {
         expect(state.rollNumber).toBe(0);
     });
 });
+
+test.describe('Bank Game - Multi-Player Banking', () => {
+
+    test('programmatic: bank dropdown should be disabled before roll 3', async ({ page }) => {
+        await page.goto(BANK_GAME_URL);
+        await page.waitForLoadState('domcontentloaded');
+        await waitForGame(page);
+
+        // Set up state: roll 2, bank score > 0
+        await page.evaluate(() => {
+            window.game.rollNumber = 2;
+            window.game.bankScore = 50;
+            window.game.updateUI();
+        });
+
+        const isDisabled = await page.locator('#bank-player-select').isDisabled();
+        expect(isDisabled).toBe(true);
+    });
+
+    test('programmatic: bank dropdown should be enabled after roll 3', async ({ page }) => {
+        await page.goto(BANK_GAME_URL);
+        await page.waitForLoadState('domcontentloaded');
+        await waitForGame(page);
+
+        // Set up state: roll 3, bank score > 0
+        await page.evaluate(() => {
+            window.game.rollNumber = 3;
+            window.game.bankScore = 100;
+            window.game.updateUI();
+        });
+
+        const isDisabled = await page.locator('#bank-player-select').isDisabled();
+        expect(isDisabled).toBe(false);
+    });
+
+    test('programmatic: dropdown shows only players who have not banked', async ({ page }) => {
+        await page.goto(BANK_GAME_URL);
+        await page.waitForLoadState('domcontentloaded');
+        await waitForGame(page);
+
+        // Set up state: 2 players have banked
+        await page.evaluate(() => {
+            window.game.rollNumber = 4;
+            window.game.bankScore = 100;
+            window.game.players[0].hasBankedThisRound = true;
+            window.game.players[1].hasBankedThisRound = true;
+            window.game.updateUI();
+        });
+
+        // Get dropdown options count (excluding placeholder)
+        const optionCount = await page.evaluate(() => {
+            const select = document.getElementById('bank-player-select');
+            return select.options.length - 1; // Exclude "Select player to BANK" placeholder
+        });
+
+        // Should show only 2 players (Player 3 and Player 4)
+        expect(optionCount).toBe(2);
+    });
+
+    test('programmatic: selecting player from dropdown and banking transfers points', async ({ page }) => {
+        await page.goto(BANK_GAME_URL);
+        await page.waitForLoadState('domcontentloaded');
+        await waitForGame(page);
+
+        // Set up state and bank Player 3 using bankCurrentPlayer (simpler than clicking)
+        const result = await page.evaluate(() => {
+            window.game.rollNumber = 4;
+            window.game.bankScore = 150;
+            window.game.gameStarted = true;
+            window.game.updateUI();
+
+            // Select Player 3 and trigger bank
+            window.game.dom.bankPlayerSelect.value = '3';
+            window.game.bankSelectedPlayer();
+
+            return {
+                player3Score: window.game.players[2].score,
+                player3Banked: window.game.players[2].hasBankedThisRound
+            };
+        });
+
+        expect(result.player3Score).toBe(150);
+        expect(result.player3Banked).toBe(true);
+    });
+});

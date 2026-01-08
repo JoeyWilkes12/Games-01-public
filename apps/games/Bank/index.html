@@ -55,7 +55,19 @@
             <!-- Action Buttons -->
             <div class="action-buttons">
                 <button class="btn btn-roll" id="roll-btn">🎲 Roll Dice</button>
-                <button class="btn btn-bank" id="bank-btn" disabled>🏦 BANK!</button>
+
+                <!-- Multi-player BANK with dropdown -->
+                <div class="bank-action-group" id="bank-action-group">
+                    <select class="bank-player-select" id="bank-player-select" disabled>
+                        <option value="">Select player to BANK</option>
+                    </select>
+                    <button class="btn btn-bank" id="bank-btn" disabled>🏦 BANK!</button>
+                </div>
+            </div>
+
+            <!-- Banking info -->
+            <div class="banking-info" id="banking-info">
+                <span class="info-text">After 3 rolls, any player can BANK!</span>
             </div>
 
             <!-- Current Player Indicator -->

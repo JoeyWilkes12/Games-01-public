@@ -60,6 +60,9 @@ class BankGame {
             alertText: document.getElementById('alert-text'),
             rollBtn: document.getElementById('roll-btn'),
             bankBtn: document.getElementById('bank-btn'),
+            bankPlayerSelect: document.getElementById('bank-player-select'),
+            bankActionGroup: document.getElementById('bank-action-group'),
+            bankingInfo: document.getElementById('banking-info'),
             currentPlayerName: document.getElementById('current-player-name'),
             playersList: document.getElementById('players-list'),
             settingsPanel: document.getElementById('settings-panel'),
@@ -91,7 +94,12 @@ class BankGame {
         this.dom.rollBtn.addEventListener('click', () => this.roll());
 
         // Bank button
-        this.dom.bankBtn.addEventListener('click', () => this.bankCurrentPlayer());
+        this.dom.bankBtn.addEventListener('click', () => this.bankSelectedPlayer());
+
+        // Bank player select dropdown
+        if (this.dom.bankPlayerSelect) {
+            this.dom.bankPlayerSelect.addEventListener('change', () => this.updateBankButtonState());
+        }
 
         // Settings toggle
         this.dom.toggleSettings.addEventListener('click', () => this.toggleSettings());
@@ -129,8 +137,9 @@ class BankGame {
                 e.preventDefault();
                 this.roll();
             }
-            if (e.code === 'KeyB' && this.bankScore > 0 && !this.gameOver) {
-                this.bankCurrentPlayer();
+            if (e.code === 'KeyB' && this.bankScore > 0 && !this.gameOver && this.rollNumber >= 3) {
+                // Bank the currently selected player or first available
+                this.bankSelectedPlayer();
             }
         });
     }
@@ -180,7 +189,7 @@ class BankGame {
 
         // Handle roll outcome
         let message = '';
-        
+
         if (isSeven) {
             if (isProtected) {
                 // First 3 rolls: 7 = 70 points
@@ -256,10 +265,26 @@ class BankGame {
         }
     }
 
-    bankCurrentPlayer() {
+    /**
+     * Bank the selected player from dropdown (after roll 3)
+     * Before roll 3, only current player can bank
+     */
+    bankSelectedPlayer() {
         if (this.bankScore === 0 || this.gameOver) return;
 
-        const player = this.players[this.currentPlayerIndex];
+        let playerToBankIndex;
+
+        // After roll 3, use dropdown selection; before roll 3, use current player
+        if (this.rollNumber >= 3 && this.dom.bankPlayerSelect) {
+            const selectedId = parseInt(this.dom.bankPlayerSelect.value);
+            if (!selectedId) return; // No player selected
+            playerToBankIndex = this.players.findIndex(p => p.id === selectedId);
+            if (playerToBankIndex === -1) return;
+        } else {
+            playerToBankIndex = this.currentPlayerIndex;
+        }
+
+        const player = this.players[playerToBankIndex];
         if (player.hasBankedThisRound) return;
 
         // Transfer bank to player
@@ -271,6 +296,9 @@ class BankGame {
         this.dom.lastRollInfo.className = 'last-roll-info special';
         this.playSound(true);
 
+        // Update dropdown
+        this.updateBankDropdown();
+
         // Check if all players have banked
         if (this.players.every(p => p.hasBankedThisRound)) {
             this.endRound(false);
@@ -280,6 +308,60 @@ class BankGame {
 
         this.renderPlayers();
         this.updateUI();
+    }
+
+    /**
+     * Legacy method for backwards compatibility with tests
+     */
+    bankCurrentPlayer() {
+        // For tests and keyboard shortcuts before multi-select is active
+        if (this.rollNumber >= 3) {
+            // If after roll 3 and dropdown exists, select first available player
+            const available = this.players.find(p => !p.hasBankedThisRound);
+            if (available && this.dom.bankPlayerSelect) {
+                this.dom.bankPlayerSelect.value = available.id;
+            }
+        }
+        this.bankSelectedPlayer();
+    }
+
+    /**
+     * Update the bank player dropdown with available players
+     */
+    updateBankDropdown() {
+        if (!this.dom.bankPlayerSelect) return;
+
+        const canUseDropdown = this.rollNumber >= 3 && this.bankScore > 0 && !this.roundOver && !this.gameOver;
+        const availablePlayers = this.players.filter(p => !p.hasBankedThisRound);
+
+        // Build options
+        let options = '<option value="">Select player to BANK</option>';
+        availablePlayers.forEach(player => {
+            options += `<option value="${player.id}">${player.name}</option>`;
+        });
+        this.dom.bankPlayerSelect.innerHTML = options;
+
+        // Enable/disable dropdown
+        this.dom.bankPlayerSelect.disabled = !canUseDropdown || availablePlayers.length === 0;
+
+        // Update visual state
+        if (canUseDropdown && availablePlayers.length > 0) {
+            this.dom.bankPlayerSelect.classList.add('active');
+            if (this.dom.bankingInfo) this.dom.bankingInfo.classList.add('active');
+        } else {
+            this.dom.bankPlayerSelect.classList.remove('active');
+            if (this.dom.bankingInfo) this.dom.bankingInfo.classList.remove('active');
+        }
+    }
+
+    /**
+     * Update bank button enabled state based on dropdown selection
+     */
+    updateBankButtonState() {
+        if (!this.dom.bankPlayerSelect) return;
+        const hasSelection = this.dom.bankPlayerSelect.value !== '';
+        const canBank = this.bankScore > 0 && !this.gameOver && !this.roundOver;
+        this.dom.bankBtn.disabled = !hasSelection || !canBank;
     }
 
     endRound(lostToSeven) {
@@ -366,7 +448,7 @@ class BankGame {
         this.dom.die2.textContent = '?';
         this.dom.die1.classList.remove('seven', 'doubles', 'rolling');
         this.dom.die2.classList.remove('seven', 'doubles', 'rolling');
-        
+
         this.hideAlert();
         this.dom.lastRollInfo.textContent = '';
         this.renderPlayers();
@@ -388,8 +470,20 @@ class BankGame {
 
         // Button states
         this.dom.rollBtn.disabled = this.roundOver || this.gameOver;
-        this.dom.bankBtn.disabled = this.bankScore === 0 || this.gameOver || 
-            (currentPlayer && currentPlayer.hasBankedThisRound);
+
+        // Update bank dropdown (for post-roll-3 multi-player banking)
+        this.updateBankDropdown();
+
+        // Bank button state depends on mode
+        if (this.rollNumber >= 3 && this.dom.bankPlayerSelect) {
+            // After roll 3: button enabled if dropdown has a selection
+            const hasSelection = this.dom.bankPlayerSelect.value !== '';
+            this.dom.bankBtn.disabled = this.bankScore === 0 || this.gameOver || !hasSelection || this.roundOver;
+        } else {
+            // Before roll 3: original logic (current player can bank)
+            this.dom.bankBtn.disabled = this.bankScore === 0 || this.gameOver ||
+                (currentPlayer && currentPlayer.hasBankedThisRound);
+        }
 
         // Highlight bank button when score is available
         if (this.bankScore > 0 && !this.roundOver && !this.gameOver) {
@@ -407,12 +501,12 @@ class BankGame {
 
         sorted.forEach((player, index) => {
             const isCurrent = this.players[this.currentPlayerIndex]?.id === player.id;
-            const rank = index === 0 && player.score > 0 ? '🥇' : 
-                         index === 1 && player.score > 0 ? '🥈' : 
-                         index === 2 && player.score > 0 ? '🥉' : '';
-            
-            const statusText = player.hasBankedThisRound ? '✓ Banked' : 
-                               isCurrent ? '🎲 Rolling' : 'Waiting';
+            const rank = index === 0 && player.score > 0 ? '🥇' :
+                index === 1 && player.score > 0 ? '🥈' :
+                    index === 2 && player.score > 0 ? '🥉' : '';
+
+            const statusText = player.hasBankedThisRound ? '✓ Banked' :
+                isCurrent ? '🎲 Rolling' : 'Waiting';
 
             const classes = ['player-card'];
             if (isCurrent && !player.hasBankedThisRound) classes.push('current');
@@ -445,9 +539,9 @@ class BankGame {
                 <div class="player-config-item" data-index="${index}">
                     <input type="text" value="${player.name}" 
                            onchange="game.updatePlayerName(${index}, this.value)">
-                    ${this.players.length > 2 ? 
-                        `<button class="btn-remove" onclick="game.removePlayer(${index})">✕</button>` : 
-                        ''}
+                    ${this.players.length > 2 ?
+                    `<button class="btn-remove" onclick="game.removePlayer(${index})">✕</button>` :
+                    ''}
                 </div>
             `;
         });
@@ -510,7 +604,7 @@ class BankGame {
 
             oscillator.type = positive ? 'sine' : 'square';
             oscillator.frequency.value = positive ? 880 : 220;
-            
+
             gainNode.gain.value = this.volume / 100 * 0.3;
 
             oscillator.start();
@@ -521,5 +615,5 @@ class BankGame {
     }
 }
 
-// Initialize game
-const game = new BankGame();
+// Initialize game and expose to window for tests
+window.game = new BankGame();

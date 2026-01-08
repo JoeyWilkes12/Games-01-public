@@ -35,11 +35,15 @@ After all rounds complete, the player with the highest score wins!
 ## Features
 
 - **Manual Rolling**: Click to roll (no automatic timer)
+- **Multi-Player Banking**: After roll 3, ANY player can bank from a dropdown selector
 - **Visual Feedback**: Dice animations, score pulses, status indicators
 - **Real-time Scoreboard**: See all players ranked by score
 - **Sound Effects**: Optional audio feedback for events
 - **Keyboard Shortcuts**: SPACE to roll, B to bank
 - **Mobile Responsive**: Works on phones and tablets
+
+### Multi-Player Banking (After Roll 3)
+Once the protected first 3 rolls are complete, the BANK button becomes a dropdown selector. Any player who hasn't banked yet can be selected to claim the current bank score. This adds strategy—players can discuss who should bank and when!
 
 ## Default Configuration
 
