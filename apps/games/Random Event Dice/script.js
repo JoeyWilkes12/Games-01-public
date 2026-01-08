@@ -188,6 +188,11 @@ class AnalyticsTracker {
             this.timeline.pop();
         }
 
+        // Draw graph if callback exists
+        if (this.onTimelineUpdate) {
+            this.onTimelineUpdate();
+        }
+
         // Move to next player
         this.currentPlayerIndex = (this.currentPlayerIndex % this.playerCount) + 1;
 
@@ -255,18 +260,67 @@ class AnalyticsTracker {
     }
 
     // Simulate remaining game to end (skip to end)
-    simulateToEnd(samplePool, eventDefinitions, checkConditionFn) {
+    simulateToEnd(samplePool, eventDefinitions, checkConditionFn, intervalSeconds) {
         const results = { events: 0, totalRolls: 0 };
+        const rollTime = intervalSeconds;
 
         while (samplePool.currentIndex < samplePool.samples.length) {
             const roll = samplePool.getNext();
-            this.recordRoll(roll);
+            this.currentTurnRolls++;
+            this.totalRolls++;
+
+            // Update heatmap (copied logic for speed)
+            if (this.heatmap.length > 0 && roll.length === 2) {
+                const d1 = roll[0] - 1;
+                const d2 = roll[1] - 1;
+                if (d1 >= 0 && d1 < 6 && d2 >= 0 && d2 < 6) this.heatmap[d1][d2]++;
+            }
+
             results.totalRolls++;
 
             if (checkConditionFn(roll, eventDefinitions)) {
-                this.endTurn();
+                // Manually end turn with simulated time
+                const stats = this.playerStats[this.currentPlayerIndex];
+                stats.totalRolls += this.currentTurnRolls;
+                stats.totalTime += (this.currentTurnRolls * rollTime);
+                stats.turnCount++;
+                this.turnNumber++;
+
+                // Add to timeline
+                this.timeline.unshift({
+                    turnNumber: this.turnNumber,
+                    playerId: this.currentPlayerIndex,
+                    playerName: this.players[this.currentPlayerIndex],
+                    rolls: this.currentTurnRolls,
+                    time: (this.currentTurnRolls * rollTime)
+                });
+                if (this.timeline.length > 10) this.timeline.pop();
+
+                this.currentPlayerIndex = (this.currentPlayerIndex % this.playerCount) + 1;
+                this.currentTurnRolls = 0; // Reset for next turn
+                // No startTurn() needed for simulation
+
                 results.events++;
             }
+        }
+
+        // Commit pending rolls for the last partial turn
+        if (this.currentTurnRolls > 0) {
+            const stats = this.playerStats[this.currentPlayerIndex];
+            stats.totalRolls += this.currentTurnRolls;
+            stats.totalTime += (this.currentTurnRolls * rollTime);
+            stats.turnCount++;
+            this.turnNumber++;
+
+            // Add to timeline
+            this.timeline.unshift({
+                turnNumber: this.turnNumber,
+                playerId: this.currentPlayerIndex,
+                playerName: this.players[this.currentPlayerIndex],
+                rolls: this.currentTurnRolls,
+                time: (this.currentTurnRolls * rollTime)
+            });
+            if (this.timeline.length > 10) this.timeline.pop();
         }
 
         return results;
@@ -320,6 +374,7 @@ class DiceGame {
     constructor() {
         // State
         this.isPlaying = false;
+        this.isPaused = false;
         this.isResetting = false;
         this.timer = null;
         this.rollInterval = null;
@@ -404,7 +459,7 @@ class DiceGame {
             rollsCounter: document.getElementById('rolls-count'),
             extendBtn: document.getElementById('extend-btn'),
             importJsonBtn: document.getElementById('import-json-btn'),
-            exportJsonBtn: document.getElementById('export-json-btn'),
+            saveExportBtn: document.getElementById('save-export-btn'),
             jsonFileInput: document.getElementById('json-file-input'),
             validationWarning: null, // Will be created dynamically
             debugConsole: document.getElementById('debug-console'),
@@ -423,7 +478,12 @@ class DiceGame {
             timelineSection: document.getElementById('timeline-section'),
             heatmapContainer: document.getElementById('heatmap-container'),
             heatmapSection: document.getElementById('heatmap-section'),
-            skipToEndBtn: document.getElementById('skip-to-end-btn')
+            skipToEndBtn: document.getElementById('skip-to-end-btn'),
+            // New elements for player config and panel width
+            panelWidthInput: document.getElementById('panel-width-input'),
+            panelWidthDisplay: document.getElementById('panel-width-display'),
+            playerList: document.getElementById('player-list'),
+            addPlayerBtn: document.getElementById('add-player-btn')
         };
 
         // Initialize debug console
@@ -431,6 +491,9 @@ class DiceGame {
 
         // Initialize analytics
         this.initAnalytics();
+
+        // Link analytics graph update
+        this.analytics.onTimelineUpdate = () => this.drawTimelineGraph();
 
         this.init();
     }
@@ -627,7 +690,7 @@ class DiceGame {
                 <div class="leaderboard-item ${currentClass}">
                     <span class="rank ${rankClass}">${index + 1}</span>
                     <span class="player-info">${player.playerName}</span>
-                    <span class="player-stats">${player.totalRolls} rolls | ${player.turnCount} turns</span>
+                    <span class="player-stats">${player.totalRolls} rolls | ${player.totalTime.toFixed(1)}s | ${player.turnCount} turns</span>
                 </div>
             `;
         });
@@ -655,6 +718,7 @@ class DiceGame {
             `;
         });
         this.dom.timeline.innerHTML = html;
+        this.drawTimelineGraph();
     }
 
     renderHeatmap() {
@@ -725,7 +789,8 @@ class DiceGame {
         const results = this.analytics.simulateToEnd(
             this.samplePool,
             this.settings.eventDefinitions,
-            checkFn
+            checkFn,
+            this.settings.interval / 1000 // Pass interval in seconds
         );
 
         console.debug(`[Analytics] Skip to end: ${results.totalRolls} rolls, ${results.events} events`);
@@ -796,11 +861,38 @@ class DiceGame {
         if (this.dom.importJsonBtn) {
             this.dom.importJsonBtn.addEventListener('click', () => this.dom.jsonFileInput.click());
         }
-        if (this.dom.exportJsonBtn) {
-            this.dom.exportJsonBtn.addEventListener('click', () => this.exportConfig());
+        // Save & Export button: saves settings, exports JSON, and closes modal
+        if (this.dom.saveExportBtn) {
+            this.dom.saveExportBtn.addEventListener('click', () => {
+                this.saveAdvancedSettings();
+                this.exportConfig();
+            });
         }
         if (this.dom.jsonFileInput) {
             this.dom.jsonFileInput.addEventListener('change', (e) => this.importConfig(e));
+        }
+
+        // Panel width listener
+        if (this.dom.panelWidthInput) {
+            this.dom.panelWidthInput.value = this.settings.analytics.panelWidth;
+            this.dom.panelWidthDisplay.textContent = `${this.settings.analytics.panelWidth}px`;
+            this.dom.panelWidthInput.addEventListener('input', (e) => {
+                const width = parseInt(e.target.value);
+                this.settings.analytics.panelWidth = width;
+                this.dom.panelWidthDisplay.textContent = `${width}px`;
+                if (this.dom.analyticsPanel) {
+                    this.dom.analyticsPanel.style.width = `${width}px`;
+                }
+            });
+            // Apply initial width
+            if (this.dom.analyticsPanel) {
+                this.dom.analyticsPanel.style.width = `${this.settings.analytics.panelWidth}px`;
+            }
+        }
+
+        // Add player button listener
+        if (this.dom.addPlayerBtn) {
+            this.dom.addPlayerBtn.addEventListener('click', () => this.addPlayerToList());
         }
 
         // Initial render
@@ -866,6 +958,7 @@ class DiceGame {
 
     openAdvancedModal() {
         this.dom.advancedModal.classList.remove('hidden');
+        this.renderPlayerList();
         this.renderEventDefinitionsUI();
     }
 
@@ -873,7 +966,102 @@ class DiceGame {
         this.dom.advancedModal.classList.add('hidden');
     }
 
+    // --- Player Configuration ---
+
+    renderPlayerList() {
+        if (!this.dom.playerList) return;
+
+        this.dom.playerList.innerHTML = '';
+        const playerCount = Object.keys(this.settings.players).length;
+
+        for (let i = 1; i <= playerCount; i++) {
+            const playerName = this.settings.players[i] || `Player ${i}`;
+            this.addPlayerInputToDOM(i, playerName);
+        }
+    }
+
+    addPlayerInputToDOM(index, name) {
+        const item = document.createElement('div');
+        item.className = 'player-item';
+        item.dataset.playerIndex = index;
+        item.style.cssText = 'display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;';
+
+        const label = document.createElement('span');
+        label.textContent = `${index}.`;
+        label.style.cssText = 'width: 24px; color: var(--secondary-color); font-weight: 600;';
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = name;
+        input.placeholder = `Player ${index}`;
+        input.className = 'player-name-input';
+        input.style.cssText = 'flex: 1; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px; background: var(--input-bg); color: var(--input-text); font-family: inherit;';
+
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.textContent = '×';
+        removeBtn.className = 'remove-player-btn';
+        removeBtn.style.cssText = 'width: 28px; height: 28px; background: transparent; border: 1px solid var(--accent-color); border-radius: 4px; color: var(--accent-color); cursor: pointer; font-size: 1.25rem; line-height: 1;';
+        removeBtn.addEventListener('click', () => this.removePlayerFromList(index));
+
+        item.appendChild(label);
+        item.appendChild(input);
+        item.appendChild(removeBtn);
+        this.dom.playerList.appendChild(item);
+    }
+
+    addPlayerToList() {
+        const playerCount = this.dom.playerList.querySelectorAll('.player-item').length;
+        // No maximum player limit - users can add as many as needed
+        const newIndex = playerCount + 1;
+        const defaultName = `Player ${newIndex}`;
+        this.addPlayerInputToDOM(newIndex, defaultName);
+    }
+
+    removePlayerFromList(index) {
+        const items = this.dom.playerList.querySelectorAll('.player-item');
+        if (items.length <= 1) {
+            console.warn('[Players] Cannot remove last player');
+            return;
+        }
+
+        // Remove the item and reindex
+        this.dom.playerList.innerHTML = '';
+        let newIndex = 1;
+        items.forEach(item => {
+            if (parseInt(item.dataset.playerIndex) !== index) {
+                const input = item.querySelector('.player-name-input');
+                const name = input.value || `Player ${newIndex}`;
+                this.addPlayerInputToDOM(newIndex, name);
+                newIndex++;
+            }
+        });
+    }
+
+    savePlayersFromUI() {
+        const newPlayers = {};
+        const items = this.dom.playerList.querySelectorAll('.player-item');
+        items.forEach((item, idx) => {
+            const input = item.querySelector('.player-name-input');
+            newPlayers[idx + 1] = input.value || `Player ${idx + 1}`;
+        });
+
+        this.settings.players = newPlayers;
+
+        // Update analytics tracker with new players
+        this.analytics.updateConfig(
+            this.settings.players,
+            this.settings.diceCount,
+            this.settings.diceSides
+        );
+
+        console.debug(`[Players] Saved ${Object.keys(newPlayers).length} players`);
+    }
+
     saveAdvancedSettings() {
+        // Save player configuration first
+        this.savePlayersFromUI();
+
         // Parse UI to update settings.eventDefinitions
         const newDefinitions = [];
         const defEls = this.dom.eventList.querySelectorAll('.event-def');
@@ -1022,14 +1210,24 @@ class DiceGame {
         }
     }
 
+    checkWarning() {
+        // Check if there's an active validation warning that should prevent game start
+        const warningEl = document.getElementById('validation-warning');
+        if (warningEl && warningEl.offsetParent !== null) {
+            console.warn('[Game] Cannot start: validation warning active');
+            return true;
+        }
+        return false;
+    }
+
     // --- JSON Import/Export ---
 
     exportConfig() {
         const config = {
-            version: '2.0',
+            version: '2.1',
             settings: {
-                interval: this.settings.interval,
-                resetDuration: this.settings.resetDuration,
+                interval: this.settings.interval / 1000, // Export as seconds
+                resetDuration: this.settings.resetDuration / 1000, // Export as seconds
                 diceCount: this.settings.diceCount,
                 diceSides: this.settings.diceSides,
                 duration: this.settings.duration,
@@ -1161,17 +1359,34 @@ class DiceGame {
     }
 
     applyConfig(config) {
+        // Detect config version for backward compatibility
+        // v2.1+ uses seconds for interval/resetDuration, v2.0 and earlier used milliseconds
+        const isSecondsFormat = config.version && parseFloat(config.version) >= 2.1;
+
         // Apply settings
         if (config.settings) {
             const s = config.settings;
 
             if (s.interval !== undefined) {
-                this.settings.interval = s.interval;
-                this.dom.inputs.interval.value = s.interval / 1000;
+                // v2.1+ stores as seconds, v2.0 stored as milliseconds
+                if (isSecondsFormat) {
+                    this.settings.interval = s.interval * 1000;
+                    this.dom.inputs.interval.value = s.interval;
+                } else {
+                    this.settings.interval = s.interval;
+                    this.dom.inputs.interval.value = s.interval / 1000;
+                }
             }
             if (s.resetDuration !== undefined) {
-                this.settings.resetDuration = s.resetDuration;
-                this.dom.inputs.resetDuration.value = s.resetDuration;
+                // v2.1+ stores as seconds, v2.0 stored as milliseconds
+                if (isSecondsFormat) {
+                    this.settings.resetDuration = s.resetDuration * 1000;
+                    this.dom.inputs.resetDuration.value = s.resetDuration;
+                } else {
+                    // Legacy: stored in ms, but UI now expects seconds
+                    this.settings.resetDuration = s.resetDuration;
+                    this.dom.inputs.resetDuration.value = s.resetDuration / 1000;
+                }
             }
             if (s.diceCount !== undefined) {
                 this.settings.diceCount = s.diceCount;
@@ -1344,7 +1559,14 @@ class DiceGame {
     // --- Game Loop ---
 
     startGame() {
-        if (this.isPlaying) return;
+        if (this.isPlaying) {
+            if (this.isPaused) {
+                this.resumeGame();
+            } else {
+                this.pauseGame();
+            }
+            return;
+        }
 
         if (!this.audioCtx) {
             this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1353,10 +1575,21 @@ class DiceGame {
             this.audioCtx.resume();
         }
 
+        // Validate settings before starting
+        if (this.checkWarning()) {
+            return; // Don't start if warning active
+        }
+
         this.isPlaying = true;
+        this.isPaused = false;
         this.isResetting = false;
         this.isExpired = false;
-        this.dom.startBtn.disabled = true;
+
+        // Update button to Pause state
+        this.dom.startBtn.textContent = 'Pause Game';
+        this.dom.startBtn.classList.remove('paused');
+        this.dom.startBtn.disabled = false;
+
         this.dom.stopBtn.disabled = false;
         this.setInputsDisabled(true);
 
@@ -1366,7 +1599,16 @@ class DiceGame {
         }
 
         // Reset sample pool index for new game
-        this.samplePool.reset();
+        if (this.settings.seed !== null) {
+            // Regenerate pool with seed if needed
+            if (this.samplePool.seed !== this.settings.seed) {
+                this.samplePool.regenerate(this.settings.seed);
+            } else {
+                this.samplePool.reset();
+            }
+        } else {
+            this.samplePool.regenerate(null);
+        }
 
         // Reset rolls counter
         this.rollsSinceLastEvent = 0;
@@ -1390,25 +1632,42 @@ class DiceGame {
             this.updateAnalyticsUI();
         }, 500);
 
-        this.timeLeft = this.settings.duration * 60;
-        this.updateTimerDisplay();
+        this.startTimer(true);
+        this.startRollLoop();
 
-        this.timer = setInterval(() => {
-            if (!this.isResetting) {
-                this.timeLeft--;
-                this.updateTimerDisplay();
-                if (this.timeLeft <= 0) {
-                    this.handleGameExpired();
-                }
-            }
-        }, 1000);
+        console.debug('[Game] Started');
+    }
 
-        this.rollDice();
-        this.rollInterval = setInterval(() => {
-            if (!this.isResetting) {
-                this.rollDice();
-            }
-        }, this.settings.interval);
+    pauseGame() {
+        this.isPaused = true;
+        this.dom.startBtn.textContent = 'Resume Game';
+        this.dom.startBtn.classList.add('paused');
+
+        clearInterval(this.timer);
+        clearInterval(this.rollInterval);
+        clearTimeout(this.resetTimeout);
+        // Keep analytics interval running or pause it? 
+        // Let's pause it to avoid unnecessary updates
+        clearInterval(this.analyticsUpdateInterval);
+
+        console.debug('[Game] Paused');
+    }
+
+    resumeGame() {
+        this.isPaused = false;
+        this.dom.startBtn.textContent = 'Pause Game';
+        this.dom.startBtn.classList.remove('paused');
+
+        this.startTimer(false); // Resume timer without reset
+        if (!this.isResetting) {
+            this.startRollLoop();
+        }
+
+        this.analyticsUpdateInterval = setInterval(() => {
+            this.updateAnalyticsUI();
+        }, 500);
+
+        console.debug('[Game] Resumed');
     }
 
     handleGameExpired() {
@@ -1418,8 +1677,14 @@ class DiceGame {
         clearInterval(this.timer);
         clearInterval(this.rollInterval);
         clearTimeout(this.resetTimeout);
+        clearInterval(this.analyticsUpdateInterval);
 
         this.clearAlert();
+
+        // Reset start button
+        this.dom.startBtn.textContent = 'Start Game';
+        this.dom.startBtn.classList.remove('paused');
+        this.dom.startBtn.disabled = true; // Disabled until extended or stopped
 
         // Show extend button instead of resetting to start state
         if (this.dom.extendBtn) {
@@ -1434,7 +1699,11 @@ class DiceGame {
         // Add 10 minutes
         this.timeLeft = 10 * 60;
         this.isPlaying = true;
+        this.isPaused = false;
         this.isExpired = false;
+
+        this.dom.startBtn.textContent = 'Pause Game';
+        this.dom.startBtn.disabled = false;
 
         // Hide extend button
         if (this.dom.extendBtn) {
@@ -1451,36 +1720,32 @@ class DiceGame {
 
         this.updateTimerDisplay();
 
-        // Restart game loop
-        this.timer = setInterval(() => {
-            if (!this.isResetting) {
-                this.timeLeft--;
-                this.updateTimerDisplay();
-                if (this.timeLeft <= 0) {
-                    this.handleGameExpired();
-                }
-            }
-        }, 1000);
+        // Restart game loop using helpers
+        this.startTimer(false);
+        this.startRollLoop();
 
-        this.rollInterval = setInterval(() => {
-            if (!this.isResetting) {
-                this.rollDice();
-            }
-        }, this.settings.interval);
+        this.analyticsUpdateInterval = setInterval(() => {
+            this.updateAnalyticsUI();
+        }, 500);
 
         console.debug('[Game] Extended by 10 minutes');
     }
 
     stopGame() {
         this.isPlaying = false;
+        this.isPaused = false;
         this.isResetting = false;
         this.isExpired = false;
+
         clearInterval(this.timer);
         clearInterval(this.rollInterval);
         clearTimeout(this.resetTimeout);
         clearInterval(this.analyticsUpdateInterval);
 
+        this.dom.startBtn.textContent = 'Start Game';
+        this.dom.startBtn.classList.remove('paused');
         this.dom.startBtn.disabled = false;
+
         this.dom.stopBtn.disabled = true;
         this.setInputsDisabled(false);
 
@@ -1495,6 +1760,35 @@ class DiceGame {
         }
 
         this.clearAlert();
+        this.dom.timerDisplay.textContent = `${this.settings.duration.toString().padStart(2, '0')}:00`;
+
+        console.debug('[Game] Stopped');
+    }
+
+    startTimer(reset = true) {
+        if (reset) {
+            this.timeLeft = this.settings.duration * 60;
+        }
+        this.updateTimerDisplay();
+
+        this.timer = setInterval(() => {
+            if (!this.isResetting && !this.isPaused) {
+                this.timeLeft--;
+                this.updateTimerDisplay();
+                if (this.timeLeft <= 0) {
+                    this.handleGameExpired();
+                }
+            }
+        }, 1000);
+    }
+
+    startRollLoop() {
+        this.rollDice();
+        this.rollInterval = setInterval(() => {
+            if (!this.isResetting && !this.isPaused) {
+                this.rollDice();
+            }
+        }, this.settings.interval);
     }
 
     setInputsDisabled(disabled) {
@@ -1649,6 +1943,56 @@ class DiceGame {
         const mins = Math.floor(this.timeLeft / 60);
         const secs = this.timeLeft % 60;
         this.dom.timerDisplay.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    drawTimelineGraph() {
+        if (!this.dom.timelineSection) return;
+        const canvas = document.getElementById('timeline-canvas');
+        if (!canvas) return;
+
+        const container = document.getElementById('timeline-graph-container');
+        if (!container) return;
+
+        // Set canvas size
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight;
+
+        const ctx = canvas.getContext('2d');
+        const width = canvas.width;
+        const height = canvas.height;
+
+        ctx.clearRect(0, 0, width, height);
+
+        const data = this.analytics.timeline.slice().reverse(); // Show oldest to newest
+        if (data.length < 2) return;
+
+        // Determine max value for scaling (default to rolls, could be time)
+        const getValue = d => d.rolls;
+        const maxVal = Math.max(...data.map(getValue), 5); // Minimum max of 5
+
+        const padding = 10;
+        const graphWidth = width - padding * 2;
+        const graphHeight = height - padding * 2;
+
+        ctx.beginPath();
+        ctx.strokeStyle = '#3b82f6';
+        ctx.lineWidth = 2;
+
+        data.forEach((d, i) => {
+            const x = padding + (i / (data.length - 1)) * graphWidth;
+            const y = height - (padding + (getValue(d) / maxVal) * graphHeight);
+
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+
+            // Draw dot
+            ctx.fillStyle = '#60a5fa';
+            ctx.beginPath();
+            ctx.arc(x, y, 3, 0, Math.PI * 2);
+            ctx.fill();
+        });
+
+        ctx.stroke();
     }
 }
 

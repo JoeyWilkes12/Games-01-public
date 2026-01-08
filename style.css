@@ -84,6 +84,10 @@ main {
 }
 
 /* Stagger animation delay */
+.game-card.coming-soon {
+    display: none;
+}
+
 .game-card:nth-child(1) {
     animation-delay: 0.1s;
 }

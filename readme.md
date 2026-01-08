@@ -1,53 +1,103 @@
 # Overview
 
 ## Welcome
-Welcome to my games repository. I like to consider the logical aspects to games as well as algorithmic solutions to those games. Note that each game has it's own README file & folder and can be considered independent from other games. 
+Welcome to my games repository! I explore logical aspects and algorithmic solutions to various puzzles and strategy games.
 
-## Table of Contents
+**Live Demo**: [Play the Games Here](https://joeywilkes12.github.io/Games-01-public/index.html)
+
+---
+
+## Game Gallery
+
+### Game Hub
+![Game Hub](screenshots/hub.png)
+
+### Random Event Dice
+![Random Event Dice](screenshots/random_event_dice.png)
+
+### 2048
+![2048 Game](screenshots/2048.png)
+
+### Sliding Puzzle 3x3
+![Sliding Puzzle](screenshots/sliding_puzzle.png)
+
+---
+
+## Playable Games
+- [Random Event Dice (v2.0)](apps/games/Random%20Event%20Dice)
 - [2048](apps/games/2048)
+- [Sliding Puzzle 3x3](apps/games/Sliding%20Puzzle%203x3)
+
+## Coming Soon / In Development
 - [Acquire](apps/games/Acquire)
 - [Mastermind](apps/games/Mastermind)
 - [Queens](apps/games/Queens)
-- [Random Event Poisson](apps/games/Random%20Event%20Poisson)
-- [Sliding Block Puzzle - Rubiks](apps/games/Sliding%20Block%20Puzzle%20-%20Rubiks)
 - [Wordle](apps/games/Wordle)
 - [Risk](apps/games/Risk)
 
+## Development & Deployment
+
+### Virtual Environment & Reproducibility
+This codebase consists largely of static web applications (HTML/CSS/JS) that do not require complex backend runtimes or build steps for the final user. Tests and local development servers differ slightly by game (some use Node.js for testing), but the core games are designed to be "unzipped and played" in any modern browser.
+
+Reproducibility is ensured through semantic versioning of game logic and deterministic seeds in games like Random Event Dice and 2048, allowing users to replay specific scenarios.
+
+### Deployment (GitHub Pages)
+This repository is deployed using [GitHub Pages](https://pages.github.com/).
+- **Method**: Static file serving from the `main` branch.
+- **CI/CD**: Currently, there are no GitHub Actions or complex build pipelines. Updates are live immediately upon push to the main branch.
+
+### Testing
+
+This project uses [Playwright](https://playwright.dev/) for E2E testing and demo recordings.
+
+**Quick Start:**
+```bash
+./run-all-tests.sh
+```
+
+**Available Commands:**
+- `npx playwright test --project=tests` - Run all unit/seeded tests
+- `npx playwright test --project=demo` - Run demo recording (creates video)
+- `npx playwright show-report` - View interactive test report
+
+See [tests.md](tests.md) for complete test documentation.
+
+
+## Acknowledgements & AI Investment
+This project was developed with significant assistance from advanced AI tools, representing a financial investment in state-of-the-art technology to explore the future of coding.
+
+- **Financial Investment**: Google's AI Pro subscription (utilized even during trial periods to max capability).
+- **Tools**:
+    - **Antigravity**: An advanced agentic coding assistant by Google Deepmind.
+    - **Models Used**:
+        - **Gemini 3 Pro**: For primary reasoning, code generation, and complex task planning.
+        - **Claude Opus 4.5**: Utilized for specific reasoning tasks and alternative perspectives within the agentic workflow.
+
+---
+
+## Game Descriptions
+
+### Random Event Dice
+A customizable dice rolling simulation designed for tabletop gaming or probability experiments. Features include event triggers, law of large numbers visualizations, and comprehensive analytics.
 
 ### 2048
+A single-player sliding block puzzle using numbered tiles. Features an Expectimax AI solver, multiple themes, and seeded randomness for reproducible runs.
 
-A single-player sliding block puzzle played on a grid. The game uses numbered tiles that slide in four directions. When two tiles with the same number collide, they merge into one tile with the total value (e.g., 2+2=4). The objective is to combine tiles to create a tile with the number 2048. This game poses interesting challenges in state management and heuristic search algorithms for automated solvers.
+### Sliding Puzzle 3x3
+A classic sliding tile puzzle where the player must rearrange scrambled tiles into a specific order.
 
-### Acquire
+### Acquire (Coming Soon)
+A strategic board game involving the placement of tiles to form and expand corporations. Players buy stock in active chains and earn bonuses when chains merge.
 
-A strategic board game involving the placement of tiles to form and expand corporations. Players buy stock in active chains and earn bonuses when chains merge. The game effectively models economic growth and mergers, offering a rich environment for implementing greedy algorithms or more complex strategies involving probability and asset valuation.
-    
-### Mastermind
+### Mastermind (Coming Soon)
+A logic-based code-breaking game where the player guesses a secret color pattern.
 
-A logic-based code-breaking game. The codemaker creates a secret pattern of colors, and the codebreaker tries to guess the pattern. Feedback is given for each guess indicating how many pegs are the correct color and position. This is a classic problem for investigating combinatorics, information theory, and constraint satisfaction algorithms.
-    
-### Queens
+### Queens (Coming Soon)
+A classic constraint satisfaction puzzle requiring the placement of N queens on an NxN chessboard so that no two queens threaten each other.
 
-A classic component of the N-Queens puzzle, requiring the placement of $N$ queens on an $N \times N$ chessboard so that no two queens threaten each other. This means no two queens can share the same row, column, or diagonal. It serves as a quintessential example for exploring backtracking algorithms, constraint satisfaction problems, and recursive programming.
-    
-### Random Event Poisson
+### Wordle (Coming Soon)
+A word-guessing game relying on information theory and entropy to maximize information gain with each guess.
 
-The goal of this app is to simulate the rolling of dice. We'd love a visual display to show the rolling of the dice, and for a first iteration its simple enough to just show the numbers. This app will not store data across sessions nor have any long persisting data memory.
-
-Since we are replicating the pace that a human can roll the dice, we want to have a parameter that controls how quickly the dice can be rolled (default to 1 second and can go up to any number). Actually it's a time between rolls in seconds as a parameter because we likely only want to slow it down so more time transpires.  
-
-We may want to generalize the app so the user can select number of dice and type of events they want to be able to receive alerts about (alert as defined in the web app, by a screen change event, more to be described).
-    
-### Sliding Block Puzzle - Rubiks
-
-A category of permutation puzzles where the goal is to rearrange elements into a target configuration. This includes 2D sliding tiles and 3D rotational puzzles like the Rubik's Cube. These puzzles are formidable challenges for search algorithms due to their massive state spaces, making them ideal grounds for testing heuristics like Manhattan distance or pattern databases.
-    
-### Wordle
-
-A word-guessing game relying on information theory. Players must identify a 5-letter secret word using feedback from guesses. The core challenge is to select words that maximize information gain (entropy) to narrow down the search space efficiently. It is a prime example of constraint satisfaction and optimal decision-making under uncertainty.
-    
-### Risk
-
-A complex board game of global domination involving territory control, combat, and alliances. It combines graph theory (map connectivity), probability (dice roll outcomes), and game theory (multi-agent strategy). Programmatic solutions must handle stochastic elements and long-term planning against intelligent opponents.
-
-
+### Risk (Coming Soon)
+A complex board game of global domination involving territory control, combat, and alliances.

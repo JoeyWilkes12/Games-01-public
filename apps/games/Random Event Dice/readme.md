@@ -10,16 +10,25 @@ A web-based dice rolling game with configurable event triggers, designed for ran
 - **Pre-generated Samples**: Dice rolls are pre-computed for faster gameplay
 - **Seeded RNG**: Optional deterministic seeds for testing and reproducibility
 - **Timer with Extension**: Set game duration with option to add 10 more minutes
+- **Pause/Resume**: Toggle game state without losing progress
 - **JSON Import/Export**: Save and load complete configurations with validation
 - **Event Validation**: Detects impossible event definitions with 3-second warning delay
 
 ### New in 2.1: Analytics Dashboard
 - **Dark Theme**: Default dark mode with high-visibility event alerts
-- **Player Tracking**: Configure up to 15 players with custom names
-- **Leaderboard**: Real-time rankings based on total rolls per player
-- **Timeline**: View the last 10 turns with rolls and time per turn
+- **Player Tracking**: Configure players with custom names
+- **Leaderboard**: Real-time rankings based on total rolls and time per player
+- **Timeline**: Visual line plot and list of last 10 turns with rolls and time
 - **Heatmap**: Law of Large Numbers visualization for 2d6 dice
 - **Skip to End**: Simulate remaining game to calculate final analytics
+
+### New in 2.2: UI Improvements
+- **Unlimited Players**: No maximum player limit (previously capped at 15)
+- **Side-by-Side Modal**: Player config and event logic panels displayed adjacently
+- **Split Save Button**: "Save & Export" (saves + downloads JSON + closes) and "Save" (closes only)
+- **Import Icon**: Upload icon (📥) for cleaner import button
+- **Improved Heatmap Sizing**: Fixed sizing to fit within minimum 280px panel width
+- **Mobile Responsive Modal**: Panels stack vertically on tablets and phones
 
 ## Quick Start
 
@@ -114,7 +123,7 @@ A web-based dice rolling game with configurable event triggers, designed for ran
 | Duration | Game length in minutes | 60 |
 | Enable Sound | Play audio on event trigger | On |
 | Volume | Alert sound volume | 0% |
-| Reset Duration | Pause after event (ms) | 1000 |
+| Reset Duration | Pause after event (seconds) | 1.0 |
 | Random Seed | Seed for deterministic testing | None |
 
 ## Analytics Dashboard
@@ -154,19 +163,75 @@ When an event triggers, the current player's turn ends and the next player begin
 
 ## Running Tests
 
+### Unit Tests (Node.js)
 ```bash
 node tests.js
 ```
 
 Or open `tests.html` in a browser.
 
-Tests cover:
+Unit tests cover:
 - SeededRNG determinism
 - SamplePool pre-generation
 - Event validation (impossible events)
 - JSON config roundtrip
 - Event matching logic
 - **AnalyticsTracker**: Player rotation, timeline, heatmap, leaderboard, reset
+
+### Playwright Seeded Tests
+
+Prerequisites:
+```bash
+# From the Games 01 root directory
+npm install
+npx playwright install chromium
+```
+
+Run seeded tests (16 tests, ~4 seconds):
+```bash
+npx playwright test apps/games/Random\ Event\ Dice/seeded-tests.spec.js --project=tests
+```
+
+Run with headed browser (visible):
+```bash
+npx playwright test apps/games/Random\ Event\ Dice/seeded-tests.spec.js --project=tests --headed
+```
+
+**Test Categories:**
+
+- **Configuration File Validation** (5 tests): Validates JSON structure of sample configs
+- **Seeded RNG Determinism** (3 tests): Programmatic tests verifying identical sequences
+- **Analytics Tracker** (4 tests): Unit tests for rolls, heatmap, player rotation, leaderboard
+- **Skip to End** (2 tests): Verifies `simulateToEnd` produces deterministic results
+- **Event Definition Logic** (2 tests): Validates doubles trigger and non-doubles don't
+- **Player Configuration** (3 tests): Player names reflected in dashboard and exports
+- **Dashboard Panel Width** (3 tests): Panel width settings and default values
+- **Reset Duration** (4 tests): Seconds format and legacy ms import compatibility
+- **Unlimited Player Count** (3 tests): Supports 25+ players without limits
+- **Panel Width Enforcement** (2 tests): Min 280px, max 600px enforcement
+- **Heatmap Sizing** (2 tests): Container max-width and grid column sizing
+- **Modal Layout** (2 tests): Side-by-side panels and split Save/Export buttons
+
+All tests use programmatic configuration injection (`page.evaluate`) for minimal UI navigation and maximum speed.
+
+### Demo Recording
+
+Generate a comprehensive video walkthrough of all games:
+```bash
+npx playwright test demo-recording.spec.js --project=demo
+```
+
+**Demo Coverage:**
+- Game Hub Landing Page (hover effects on all games)
+- Random Event Dice (analytics, settings, advanced modal, 10s gameplay, pause/resume, skip to end)
+- 2048 (settings, gameplay, hint, AI play, dashboard pages)
+- Sliding Puzzle (settings, advanced mode, hint, AI solve)
+
+The recording features:
+- Deliberate pauses for audience viewing
+- Skip logic for error resilience
+- Fast roll settings (0.1s interval) for efficient demo
+- Complete ~2 minute video output to `test-results/` directory
 
 ## Files
 
@@ -175,8 +240,10 @@ Tests cover:
 | `index.html` | Main game UI |
 | `style.css` | Dark theme styling |
 | `script.js` | Game logic with AnalyticsTracker |
-| `tests.js` | Comprehensive test suite (44 tests) |
+| `tests.js` | Comprehensive unit test suite (44 tests) |
 | `tests.html` | Browser test runner |
+| `seeded-tests.spec.js` | Playwright E2E tests with seeded configs |
+| `playwright.test.js` | Legacy Playwright tests |
 | `sample configuration files/` | Example JSON configs for testing |
 
 ## Sample Configuration Files

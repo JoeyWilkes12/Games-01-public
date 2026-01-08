@@ -692,6 +692,51 @@ async function runTests() {
     }
 
     // =========================================================================
+    // Test 16: Skip To End Simulation (Time Tracking)
+    // =========================================================================
+    console.log("\n--- Test 16: Skip To End Simulation (Time Tracking) ---");
+
+    const skipSamplePool = new SamplePool(2, 6, 12345);
+    skipSamplePool.generate(100);
+    const skipTracker = new AnalyticsTracker({ 1: "P1", 2: "P2" }, 2, 6);
+
+    // Default definitions (doubles)
+    const skipDefs = [];
+    for (let i = 1; i <= 6; i++) {
+        skipDefs.push({
+            id: i,
+            rules: [{ dieIndex: 0, operator: '==', value: i }, { dieIndex: 1, operator: '==', value: i }]
+        });
+    }
+
+    const intervalSec = 2.5; // Custom interval
+    const skipResults = skipTracker.simulateToEnd(
+        skipSamplePool,
+        skipDefs,
+        (roll, defs) => checkCondition(roll, defs),
+        intervalSec
+    );
+
+    const totalCalculatedTime = skipResults.totalRolls * intervalSec;
+
+    // Sum player times
+    const p1Stats = skipTracker.playerStats[1];
+    const p2Stats = skipTracker.playerStats[2];
+    const summedPlayerTime = p1Stats.totalTime + p2Stats.totalTime;
+
+    if (Math.abs(summedPlayerTime - totalCalculatedTime) < 0.001) {
+        pass("Time Integrity", `Total player time (${summedPlayerTime}) matches total rolls time (${totalCalculatedTime})`);
+    } else {
+        fail("Time Integrity", `Time mismatch: Players=${summedPlayerTime}, Rolls=${totalCalculatedTime}`);
+    }
+
+    if (p1Stats.totalTime > 0 && p2Stats.totalTime > 0) {
+        pass("Player Accumulation", `Players have accumulated time: P1=${p1Stats.totalTime}, P2=${p2Stats.totalTime}`);
+    } else {
+        fail("Player Accumulation", "Players have 0 time");
+    }
+
+    // =========================================================================
     // Summary
     // =========================================================================
     console.log("\n" + "=".repeat(60));
@@ -830,6 +875,71 @@ class AnalyticsTracker {
             data.push(row);
         }
         return data;
+    }
+
+    simulateToEnd(samplePool, eventDefinitions, checkConditionFn, intervalSeconds) {
+        const results = { events: 0, totalRolls: 0 };
+        const rollTime = intervalSeconds;
+
+        while (samplePool.currentIndex < samplePool.samples.length) {
+            const roll = samplePool.getNext();
+            this.currentTurnRolls++;
+            this.totalRolls++;
+
+            // Update heatmap
+            if (this.heatmap.length > 0 && roll.length === 2) {
+                const d1 = roll[0] - 1;
+                const d2 = roll[1] - 1;
+                if (d1 >= 0 && d1 < 6 && d2 >= 0 && d2 < 6) this.heatmap[d1][d2]++;
+            }
+
+            results.totalRolls++;
+
+            if (checkConditionFn(roll, eventDefinitions)) {
+                // Manually end turn with simulated time
+                const stats = this.playerStats[this.currentPlayerIndex];
+                stats.totalRolls += this.currentTurnRolls;
+                stats.totalTime += (this.currentTurnRolls * rollTime);
+                stats.turnCount++;
+                this.turnNumber++;
+
+                // Add to timeline
+                this.timeline.unshift({
+                    turnNumber: this.turnNumber,
+                    playerId: this.currentPlayerIndex,
+                    playerName: this.players[this.currentPlayerIndex],
+                    rolls: this.currentTurnRolls,
+                    time: (this.currentTurnRolls * rollTime)
+                });
+                if (this.timeline.length > 10) this.timeline.pop();
+
+                this.currentPlayerIndex = (this.currentPlayerIndex % this.playerCount) + 1;
+                this.currentTurnRolls = 0; // Reset for next turn
+
+                results.events++;
+            }
+        }
+
+        // Commit pending rolls for the last partial turn
+        if (this.currentTurnRolls > 0) {
+            const stats = this.playerStats[this.currentPlayerIndex];
+            stats.totalRolls += this.currentTurnRolls;
+            stats.totalTime += (this.currentTurnRolls * rollTime);
+            stats.turnCount++;
+            this.turnNumber++;
+
+            // Add to timeline
+            this.timeline.unshift({
+                turnNumber: this.turnNumber,
+                playerId: this.currentPlayerIndex,
+                playerName: this.players[this.currentPlayerIndex],
+                rolls: this.currentTurnRolls,
+                time: (this.currentTurnRolls * rollTime)
+            });
+            if (this.timeline.length > 10) this.timeline.pop();
+        }
+
+        return results;
     }
 
     reset() {

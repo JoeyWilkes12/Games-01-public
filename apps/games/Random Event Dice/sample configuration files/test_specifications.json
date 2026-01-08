@@ -1,0 +1,418 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Random Event Dice Test Specifications",
+    "version": "2.0",
+    "description": "Comprehensive test specifications for Random Event Dice game with seeded configurations",
+    "testSuites": [
+        {
+            "name": "SeededRNGTests",
+            "description": "Tests for deterministic random number generation",
+            "tests": [
+                {
+                    "id": "RNG-001",
+                    "name": "DeterministicSequence",
+                    "seed": 12345,
+                    "expectedFirstFiveRolls": [
+                        3,
+                        1,
+                        3,
+                        2,
+                        2
+                    ],
+                    "diceSides": 6
+                },
+                {
+                    "id": "RNG-002",
+                    "name": "AlternativeSeedSequence",
+                    "seed": 42,
+                    "expectedFirstFiveRolls": [
+                        5,
+                        2,
+                        6,
+                        3,
+                        1
+                    ],
+                    "diceSides": 6
+                },
+                {
+                    "id": "RNG-003",
+                    "name": "SeedConsistency",
+                    "description": "Same seed must produce identical sequences across multiple runs",
+                    "seed": 777,
+                    "runCount": 100,
+                    "expectAllIdentical": true
+                }
+            ]
+        },
+        {
+            "name": "SamplePoolTests",
+            "description": "Tests for pre-generated sample pool behavior",
+            "tests": [
+                {
+                    "id": "POOL-001",
+                    "name": "PoolExpansion",
+                    "config": {
+                        "diceCount": 2,
+                        "diceSides": 6,
+                        "seed": 12345
+                    },
+                    "initialSize": 100,
+                    "expandedSize": 200,
+                    "expectNonShrink": true
+                },
+                {
+                    "id": "POOL-002",
+                    "name": "DeterministicPoolSamples",
+                    "seed": 777,
+                    "sampleCount": 10,
+                    "expectedSamples": [
+                        [
+                            1,
+                            3
+                        ],
+                        [
+                            4,
+                            2
+                        ],
+                        [
+                            5,
+                            6
+                        ],
+                        [
+                            3,
+                            3
+                        ],
+                        [
+                            2,
+                            1
+                        ],
+                        [
+                            6,
+                            4
+                        ],
+                        [
+                            1,
+                            5
+                        ],
+                        [
+                            3,
+                            2
+                        ],
+                        [
+                            4,
+                            1
+                        ],
+                        [
+                            6,
+                            6
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "EventValidationTests",
+            "description": "Tests for impossible event detection",
+            "tests": [
+                {
+                    "id": "VAL-001",
+                    "name": "ImpossibleDoubleEquals",
+                    "eventDefinition": {
+                        "rules": [
+                            {
+                                "dieIndex": 0,
+                                "operator": "==",
+                                "value": 1
+                            },
+                            {
+                                "dieIndex": 0,
+                                "operator": "==",
+                                "value": 2
+                            }
+                        ]
+                    },
+                    "expectWarning": true
+                },
+                {
+                    "id": "VAL-002",
+                    "name": "ImpossibleEqualsNotEquals",
+                    "eventDefinition": {
+                        "rules": [
+                            {
+                                "dieIndex": 0,
+                                "operator": "==",
+                                "value": 3
+                            },
+                            {
+                                "dieIndex": 0,
+                                "operator": "!=",
+                                "value": 3
+                            }
+                        ]
+                    },
+                    "expectWarning": true
+                },
+                {
+                    "id": "VAL-003",
+                    "name": "ImpossibleRanges",
+                    "eventDefinition": {
+                        "rules": [
+                            {
+                                "dieIndex": 0,
+                                "operator": ">",
+                                "value": 5
+                            },
+                            {
+                                "dieIndex": 0,
+                                "operator": "<",
+                                "value": 4
+                            }
+                        ]
+                    },
+                    "expectWarning": true
+                },
+                {
+                    "id": "VAL-004",
+                    "name": "ValidDoublesEvent",
+                    "eventDefinition": {
+                        "rules": [
+                            {
+                                "dieIndex": 0,
+                                "operator": "==",
+                                "value": 1
+                            },
+                            {
+                                "dieIndex": 1,
+                                "operator": "==",
+                                "value": 1
+                            }
+                        ]
+                    },
+                    "expectWarning": false
+                }
+            ]
+        },
+        {
+            "name": "GameSimulationTests",
+            "description": "End-to-end game simulation with deterministic seeds",
+            "tests": [
+                {
+                    "id": "SIM-001",
+                    "name": "StandardDoublesGame",
+                    "config": {
+                        "diceCount": 2,
+                        "diceSides": 6,
+                        "seed": 12345,
+                        "interval": 1000,
+                        "duration": 60,
+                        "players": {
+                            "1": "P1",
+                            "2": "P2"
+                        }
+                    },
+                    "eventDefinitions": "default_doubles",
+                    "rollCount": 50,
+                    "expectedEventCount": 7
+                },
+                {
+                    "id": "SIM-002",
+                    "name": "SkipToEndTimeTracking",
+                    "config": {
+                        "diceCount": 2,
+                        "diceSides": 6,
+                        "seed": 12345,
+                        "interval": 2500
+                    },
+                    "poolSize": 100,
+                    "expectedTimeIntegrity": true,
+                    "description": "Total player time must equal totalRolls × intervalSeconds"
+                }
+            ]
+        },
+        {
+            "name": "AnalyticsTests",
+            "description": "Tests for analytics tracking accuracy",
+            "tests": [
+                {
+                    "id": "ANALYTICS-001",
+                    "name": "PlayerRotation",
+                    "players": {
+                        "1": "Alice",
+                        "2": "Bob",
+                        "3": "Charlie"
+                    },
+                    "startPlayer": 1,
+                    "turnsToSimulate": 3,
+                    "expectedFinalPlayer": 1
+                },
+                {
+                    "id": "ANALYTICS-002",
+                    "name": "LeaderboardSorting",
+                    "scenario": [
+                        {
+                            "player": 1,
+                            "rolls": 2
+                        },
+                        {
+                            "player": 2,
+                            "rolls": 1
+                        },
+                        {
+                            "player": 3,
+                            "rolls": 3
+                        }
+                    ],
+                    "expectedOrder": [
+                        3,
+                        1,
+                        2
+                    ]
+                },
+                {
+                    "id": "ANALYTICS-003",
+                    "name": "HeatmapAccumulation",
+                    "rollSequence": [
+                        [
+                            1,
+                            1
+                        ],
+                        [
+                            1,
+                            1
+                        ],
+                        [
+                            6,
+                            6
+                        ],
+                        [
+                            3,
+                            4
+                        ]
+                    ],
+                    "expectedHeatmap": {
+                        "0,0": 2,
+                        "5,5": 1,
+                        "2,3": 1
+                    }
+                }
+            ]
+        }
+    ],
+    "configTemplates": {
+        "default_doubles": {
+            "description": "Standard doubles event (all matching pairs)",
+            "definitions": [
+                {
+                    "id": 1,
+                    "rules": [
+                        {
+                            "dieIndex": 0,
+                            "operator": "==",
+                            "value": 1
+                        },
+                        {
+                            "dieIndex": 1,
+                            "operator": "==",
+                            "value": 1
+                        }
+                    ]
+                },
+                {
+                    "id": 2,
+                    "rules": [
+                        {
+                            "dieIndex": 0,
+                            "operator": "==",
+                            "value": 2
+                        },
+                        {
+                            "dieIndex": 1,
+                            "operator": "==",
+                            "value": 2
+                        }
+                    ]
+                },
+                {
+                    "id": 3,
+                    "rules": [
+                        {
+                            "dieIndex": 0,
+                            "operator": "==",
+                            "value": 3
+                        },
+                        {
+                            "dieIndex": 1,
+                            "operator": "==",
+                            "value": 3
+                        }
+                    ]
+                },
+                {
+                    "id": 4,
+                    "rules": [
+                        {
+                            "dieIndex": 0,
+                            "operator": "==",
+                            "value": 4
+                        },
+                        {
+                            "dieIndex": 1,
+                            "operator": "==",
+                            "value": 4
+                        }
+                    ]
+                },
+                {
+                    "id": 5,
+                    "rules": [
+                        {
+                            "dieIndex": 0,
+                            "operator": "==",
+                            "value": 5
+                        },
+                        {
+                            "dieIndex": 1,
+                            "operator": "==",
+                            "value": 5
+                        }
+                    ]
+                },
+                {
+                    "id": 6,
+                    "rules": [
+                        {
+                            "dieIndex": 0,
+                            "operator": "==",
+                            "value": 6
+                        },
+                        {
+                            "dieIndex": 1,
+                            "operator": "==",
+                            "value": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        "high_low_split": {
+            "description": "Trigger when die1 > 3 AND die2 < 4",
+            "definitions": [
+                {
+                    "id": 100,
+                    "rules": [
+                        {
+                            "dieIndex": 0,
+                            "operator": ">",
+                            "value": 3
+                        },
+                        {
+                            "dieIndex": 1,
+                            "operator": "<",
+                            "value": 4
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
