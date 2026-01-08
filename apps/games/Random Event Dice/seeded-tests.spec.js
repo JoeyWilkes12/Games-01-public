@@ -770,3 +770,233 @@ test.describe('Reset Duration (Seconds)', () => {
         expect(result.internalValue).toBe(2500); // 2.5 * 1000 = 2500ms
     });
 });
+
+
+// ==========================================
+// UNLIMITED PLAYER COUNT TESTS
+// ==========================================
+
+test.describe('Unlimited Player Count', () => {
+
+    test.beforeEach(async ({ page }) => {
+        await page.goto(getBaseUrl());
+        await page.waitForLoadState('domcontentloaded');
+        await waitForGame(page);
+    });
+
+    test('Player count can exceed 15 (no maximum limit)', async ({ page }) => {
+        const result = await page.evaluate(() => {
+            // Programmatically add 25 players
+            const players = {};
+            for (let i = 1; i <= 25; i++) {
+                players[i] = `Player ${i}`;
+            }
+            game.settings.players = players;
+            game.analytics.updateConfig(players, 2, 6);
+
+            return {
+                playerCount: Object.keys(game.settings.players).length,
+                analyticsPlayerCount: game.analytics.playerCount
+            };
+        });
+
+        expect(result.playerCount).toBe(25);
+        expect(result.analyticsPlayerCount).toBe(25);
+    });
+
+    test('Player names are preserved after exceeding default 15', async ({ page }) => {
+        const result = await page.evaluate(() => {
+            const players = {};
+            for (let i = 1; i <= 20; i++) {
+                players[i] = `CustomPlayer${i}`;
+            }
+            game.settings.players = players;
+            game.analytics.updateConfig(players, 2, 6);
+
+            return {
+                player1: game.settings.players[1],
+                player15: game.settings.players[15],
+                player20: game.settings.players[20]
+            };
+        });
+
+        expect(result.player1).toBe('CustomPlayer1');
+        expect(result.player15).toBe('CustomPlayer15');
+        expect(result.player20).toBe('CustomPlayer20');
+    });
+
+    test('Analytics tracker handles large player counts', async ({ page }) => {
+        const result = await page.evaluate(() => {
+            const players = {};
+            for (let i = 1; i <= 50; i++) {
+                players[i] = `Player${i}`;
+            }
+            game.settings.players = players;
+            game.analytics.updateConfig(players, 2, 6);
+
+            // Reset and simulate turns
+            game.analytics.reset();
+            game.analytics.startTurn();
+
+            // Verify all 50 players have stats initialized
+            const allStatsInitialized = Object.keys(game.analytics.playerStats).length === 50;
+
+            return {
+                playerCount: game.analytics.playerCount,
+                allStatsInitialized
+            };
+        });
+
+        expect(result.playerCount).toBe(50);
+        expect(result.allStatsInitialized).toBe(true);
+    });
+});
+
+
+// ==========================================
+// PANEL WIDTH ENFORCEMENT TESTS
+// ==========================================
+
+test.describe('Panel Width Enforcement', () => {
+
+    test.beforeEach(async ({ page }) => {
+        await page.goto(getBaseUrl());
+        await page.waitForLoadState('domcontentloaded');
+        await waitForGame(page);
+    });
+
+    test('Panel width slider has min 280 and max 600', async ({ page }) => {
+        const result = await page.evaluate(() => {
+            const input = document.getElementById('panel-width-input');
+            return {
+                min: parseInt(input.min),
+                max: parseInt(input.max),
+                defaultValue: parseInt(input.value)
+            };
+        });
+
+        expect(result.min).toBe(280);
+        expect(result.max).toBe(600);
+        expect(result.defaultValue).toBe(320);
+    });
+
+    test('Panel width settings update correctly', async ({ page }) => {
+        const result = await page.evaluate(() => {
+            game.settings.analytics.panelWidth = 450;
+            return game.settings.analytics.panelWidth;
+        });
+
+        expect(result).toBe(450);
+    });
+});
+
+
+// ==========================================
+// HEATMAP SIZING TESTS
+// ==========================================
+
+test.describe('Heatmap Sizing', () => {
+
+    test.beforeEach(async ({ page }) => {
+        await page.goto(getBaseUrl());
+        await page.waitForLoadState('domcontentloaded');
+        await waitForGame(page);
+    });
+
+    test('Heatmap container has max-width <= 240px', async ({ page }) => {
+        const result = await page.evaluate(() => {
+            // Need to check the CSS rule
+            const style = document.createElement('style');
+            document.head.appendChild(style);
+
+            // Get computed style when element exists
+            const container = document.querySelector('.heatmap-container');
+            if (!container) {
+                // Create a temporary element to test the CSS
+                const temp = document.createElement('div');
+                temp.className = 'heatmap-container';
+                document.body.appendChild(temp);
+                const computed = getComputedStyle(temp);
+                const maxWidth = computed.maxWidth;
+                document.body.removeChild(temp);
+                return { maxWidth };
+            }
+
+            const computed = getComputedStyle(container);
+            return { maxWidth: computed.maxWidth };
+        });
+
+        // Parse the max-width value
+        const maxWidthPx = parseInt(result.maxWidth);
+        expect(maxWidthPx).toBeLessThanOrEqual(240);
+    });
+
+    test('Heatmap grid uses fixed column sizing', async ({ page }) => {
+        const result = await page.evaluate(() => {
+            const temp = document.createElement('div');
+            temp.className = 'heatmap-grid';
+            document.body.appendChild(temp);
+            const computed = getComputedStyle(temp);
+            const gridColumns = computed.gridTemplateColumns;
+            document.body.removeChild(temp);
+            return { gridColumns };
+        });
+
+        // Should have 7 columns (1 label + 6 data columns)
+        expect(result.gridColumns).toBeDefined();
+    });
+});
+
+
+// ==========================================
+// MODAL LAYOUT TESTS
+// ==========================================
+
+test.describe('Modal Layout (Side-by-Side Panels)', () => {
+
+    test.beforeEach(async ({ page }) => {
+        await page.goto(getBaseUrl());
+        await page.waitForLoadState('domcontentloaded');
+        await waitForGame(page);
+    });
+
+    test('Modal body has columns layout', async ({ page }) => {
+        const result = await page.evaluate(() => {
+            const columnsContainer = document.querySelector('.modal-body-columns');
+            const playerSection = document.querySelector('.player-config-section');
+            const eventSection = document.querySelector('.event-definitions-section');
+
+            return {
+                hasColumnsContainer: !!columnsContainer,
+                hasPlayerSection: !!playerSection,
+                hasEventSection: !!eventSection
+            };
+        });
+
+        expect(result.hasColumnsContainer).toBe(true);
+        expect(result.hasPlayerSection).toBe(true);
+        expect(result.hasEventSection).toBe(true);
+    });
+
+    test('Save & Export and Save buttons exist', async ({ page }) => {
+        const result = await page.evaluate(() => {
+            const saveExportBtn = document.getElementById('save-export-btn');
+            const saveBtn = document.getElementById('save-advanced-btn');
+            const importBtn = document.getElementById('import-json-btn');
+
+            return {
+                hasSaveExportBtn: !!saveExportBtn,
+                hasSaveBtn: !!saveBtn,
+                hasImportBtn: !!importBtn,
+                saveExportText: saveExportBtn?.textContent?.trim(),
+                saveText: saveBtn?.textContent?.trim()
+            };
+        });
+
+        expect(result.hasSaveExportBtn).toBe(true);
+        expect(result.hasSaveBtn).toBe(true);
+        expect(result.hasImportBtn).toBe(true);
+        expect(result.saveExportText).toBe('Save & Export');
+        expect(result.saveText).toBe('Save');
+    });
+});

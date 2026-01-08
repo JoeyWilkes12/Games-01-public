@@ -16,11 +16,19 @@ A web-based dice rolling game with configurable event triggers, designed for ran
 
 ### New in 2.1: Analytics Dashboard
 - **Dark Theme**: Default dark mode with high-visibility event alerts
-- **Player Tracking**: Configure up to 15 players with custom names
+- **Player Tracking**: Configure players with custom names
 - **Leaderboard**: Real-time rankings based on total rolls and time per player
 - **Timeline**: Visual line plot and list of last 10 turns with rolls and time
 - **Heatmap**: Law of Large Numbers visualization for 2d6 dice
 - **Skip to End**: Simulate remaining game to calculate final analytics
+
+### New in 2.2: UI Improvements
+- **Unlimited Players**: No maximum player limit (previously capped at 15)
+- **Side-by-Side Modal**: Player config and event logic panels displayed adjacently
+- **Split Save Button**: "Save & Export" (saves + downloads JSON + closes) and "Save" (closes only)
+- **Import Icon**: Upload icon (📥) for cleaner import button
+- **Improved Heatmap Sizing**: Fixed sizing to fit within minimum 280px panel width
+- **Mobile Responsive Modal**: Panels stack vertically on tablets and phones
 
 ## Quick Start
 
@@ -115,7 +123,7 @@ A web-based dice rolling game with configurable event triggers, designed for ran
 | Duration | Game length in minutes | 60 |
 | Enable Sound | Play audio on event trigger | On |
 | Volume | Alert sound volume | 0% |
-| Reset Duration | Pause after event (ms) | 1000 |
+| Reset Duration | Pause after event (seconds) | 1.0 |
 | Random Seed | Seed for deterministic testing | None |
 
 ## Analytics Dashboard
@@ -196,6 +204,13 @@ npx playwright test apps/games/Random\ Event\ Dice/seeded-tests.spec.js --projec
 - **Analytics Tracker** (4 tests): Unit tests for rolls, heatmap, player rotation, leaderboard
 - **Skip to End** (2 tests): Verifies `simulateToEnd` produces deterministic results
 - **Event Definition Logic** (2 tests): Validates doubles trigger and non-doubles don't
+- **Player Configuration** (3 tests): Player names reflected in dashboard and exports
+- **Dashboard Panel Width** (3 tests): Panel width settings and default values
+- **Reset Duration** (4 tests): Seconds format and legacy ms import compatibility
+- **Unlimited Player Count** (3 tests): Supports 25+ players without limits
+- **Panel Width Enforcement** (2 tests): Min 280px, max 600px enforcement
+- **Heatmap Sizing** (2 tests): Container max-width and grid column sizing
+- **Modal Layout** (2 tests): Side-by-side panels and split Save/Export buttons
 
 All tests use programmatic configuration injection (`page.evaluate`) for minimal UI navigation and maximum speed.
 

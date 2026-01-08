@@ -198,34 +198,42 @@
                 <button id="close-modal" class="icon-button">&times;</button>
             </div>
             <div class="modal-body">
-                <!-- Player Configuration Section -->
-                <div class="player-config-section">
-                    <h3 style="font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--secondary-color);">👥 Player
-                        Configuration</h3>
-                    <div id="player-list" class="player-list">
-                        <!-- Player inputs injected via JS -->
+                <div class="modal-body-columns">
+                    <!-- Player Configuration Section (Left Panel) -->
+                    <div class="player-config-section">
+                        <h3 style="font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--secondary-color);">👥 Player
+                            Configuration</h3>
+                        <div id="player-list" class="player-list">
+                            <!-- Player inputs injected via JS -->
+                        </div>
+                        <button id="add-player-btn" class="secondary-btn dashed"
+                            style="width: 100%; margin-top: 0.5rem;">+
+                            Add Player</button>
                     </div>
-                    <button id="add-player-btn" class="secondary-btn dashed" style="width: 100%; margin-top: 0.5rem;">+
-                        Add Player</button>
-                </div>
 
-                <hr style="border: none; border-top: 1px solid var(--border-color); margin: 1rem 0;">
-
-                <p class="modal-intro">Define complex rules for triggering alerts. Alerts trigger if
-                    <strong>ANY</strong> enabled Event Definition is met.
-                </p>
-                <div id="event-definitions-list">
-                    <!-- Event Definitions injected via JS -->
+                    <!-- Event Definitions Section (Right Panel) -->
+                    <div class="event-definitions-section">
+                        <h3 style="font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--secondary-color);">⚡ Event
+                            Logic</h3>
+                        <p class="modal-intro">Alerts trigger if <strong>ANY</strong> enabled Event Definition is met.
+                        </p>
+                        <div id="event-definitions-list">
+                            <!-- Event Definitions injected via JS -->
+                        </div>
+                        <button id="add-event-btn" class="secondary-btn dashed"
+                            style="width: 100%; margin-top: 0.5rem;">+ Add Event Definition</button>
+                    </div>
                 </div>
-                <button id="add-event-btn" class="secondary-btn dashed">+ Add Event Definition</button>
             </div>
             <div class="modal-footer">
-                <div class="json-controls">
-                    <button id="import-json-btn" class="secondary-btn">Import JSON</button>
-                    <button id="export-json-btn" class="secondary-btn">Export JSON</button>
+                <div class="import-section">
+                    <button id="import-json-btn" class="icon-btn" title="Import Configuration">📥</button>
                     <input type="file" id="json-file-input" accept=".json" hidden>
                 </div>
-                <button id="save-advanced-btn" class="primary-btn">Save & Close</button>
+                <div class="save-button-group">
+                    <button id="save-export-btn" class="primary-btn split-left">Save & Export</button>
+                    <button id="save-advanced-btn" class="primary-btn split-right">Save</button>
+                </div>
             </div>
         </div>
     </div>

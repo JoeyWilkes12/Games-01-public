@@ -459,7 +459,7 @@ class DiceGame {
             rollsCounter: document.getElementById('rolls-count'),
             extendBtn: document.getElementById('extend-btn'),
             importJsonBtn: document.getElementById('import-json-btn'),
-            exportJsonBtn: document.getElementById('export-json-btn'),
+            saveExportBtn: document.getElementById('save-export-btn'),
             jsonFileInput: document.getElementById('json-file-input'),
             validationWarning: null, // Will be created dynamically
             debugConsole: document.getElementById('debug-console'),
@@ -861,8 +861,12 @@ class DiceGame {
         if (this.dom.importJsonBtn) {
             this.dom.importJsonBtn.addEventListener('click', () => this.dom.jsonFileInput.click());
         }
-        if (this.dom.exportJsonBtn) {
-            this.dom.exportJsonBtn.addEventListener('click', () => this.exportConfig());
+        // Save & Export button: saves settings, exports JSON, and closes modal
+        if (this.dom.saveExportBtn) {
+            this.dom.saveExportBtn.addEventListener('click', () => {
+                this.saveAdvancedSettings();
+                this.exportConfig();
+            });
         }
         if (this.dom.jsonFileInput) {
             this.dom.jsonFileInput.addEventListener('change', (e) => this.importConfig(e));
@@ -1008,10 +1012,7 @@ class DiceGame {
 
     addPlayerToList() {
         const playerCount = this.dom.playerList.querySelectorAll('.player-item').length;
-        if (playerCount >= 15) {
-            console.warn('[Players] Maximum of 15 players reached');
-            return;
-        }
+        // No maximum player limit - users can add as many as needed
         const newIndex = playerCount + 1;
         const defaultName = `Player ${newIndex}`;
         this.addPlayerInputToDOM(newIndex, defaultName);
