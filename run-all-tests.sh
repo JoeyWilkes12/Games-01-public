@@ -101,6 +101,10 @@ if [ "$RUN_TESTS" = true ]; then
     # Random Event Dice seeded tests
     run_test "Random Event Dice - Seeded Tests" \
         "npx playwright test apps/games/Random\\ Event\\ Dice/seeded-tests.spec.js --project=tests --reporter=list"
+    
+    # Bank seeded tests
+    run_test "Bank - Seeded Tests" \
+        "npx playwright test apps/games/Bank/seeded-tests.spec.js --project=tests --reporter=list"
 fi
 
 # Run demo recording

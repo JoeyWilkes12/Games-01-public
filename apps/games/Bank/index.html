@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank - Dice Game</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../home_button_style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <a href="../../../index.html" class="home-button" title="Back to Game Hub">🏠</a>
+
+    <div class="game-container">
+        <!-- Header -->
+        <header>
+            <h1>🏦 BANK</h1>
+            <p class="subtitle">Roll the dice. Bank your points. Don't get busted!</p>
+        </header>
+
+        <!-- Main Game Area -->
+        <main class="main-content">
+            <!-- Round Info -->
+            <div class="round-info">
+                <span class="round-label">Round</span>
+                <span class="round-number" id="round-number">1</span>
+                <span class="round-total">/ <span id="total-rounds">20</span></span>
+                <span class="roll-count">Roll #<span id="roll-number">0</span></span>
+            </div>
+
+            <!-- BANK Score Display -->
+            <div class="bank-display">
+                <div class="bank-label">BANK</div>
+                <div class="bank-score" id="bank-score">0</div>
+                <div class="bank-sublabel">Points available to claim</div>
+            </div>
+
+            <!-- Dice Container -->
+            <div class="dice-area">
+                <div class="dice-container" id="dice-container">
+                    <div class="die" id="die-1">?</div>
+                    <div class="die" id="die-2">?</div>
+                </div>
+                <div class="last-roll-info" id="last-roll-info"></div>
+            </div>
+
+            <!-- Alert Message -->
+            <div class="alert-message hidden" id="alert-message">
+                <span class="alert-icon">⚠️</span>
+                <span class="alert-text" id="alert-text">Seven! Round Over!</span>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-roll" id="roll-btn">🎲 Roll Dice</button>
+                <button class="btn btn-bank" id="bank-btn" disabled>🏦 BANK!</button>
+            </div>
+
+            <!-- Current Player Indicator -->
+            <div class="current-player-section">
+                <span class="current-label">Current Roller:</span>
+                <span class="current-player-name" id="current-player-name">Player 1</span>
+            </div>
+        </main>
+
+        <!-- Players Panel -->
+        <aside class="players-panel" id="players-panel">
+            <div class="panel-header">
+                <h2>🎯 Scoreboard</h2>
+                <button class="btn-icon" id="toggle-settings" title="Settings">⚙️</button>
+            </div>
+            <div class="players-list" id="players-list">
+                <!-- Populated by JavaScript -->
+            </div>
+        </aside>
+
+        <!-- Settings Panel -->
+        <div class="settings-panel hidden" id="settings-panel">
+            <div class="settings-header">
+                <h3>⚙️ Game Settings</h3>
+                <button class="btn-icon" id="close-settings">✖</button>
+            </div>
+            <div class="settings-content">
+                <div class="setting-group">
+                    <label for="rounds-select">Number of Rounds</label>
+                    <select id="rounds-select">
+                        <option value="10">10 Rounds</option>
+                        <option value="15">15 Rounds</option>
+                        <option value="20" selected>20 Rounds</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label for="volume-input">Sound Volume</label>
+                    <input type="range" id="volume-input" min="0" max="100" value="50">
+                </div>
+                <div class="setting-group">
+                    <label>Players</label>
+                    <div class="player-config" id="player-config">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                    <button class="btn btn-add-player" id="add-player-btn">+ Add Player</button>
+                </div>
+                <div class="setting-group">
+                    <button class="btn btn-new-game" id="new-game-btn">🎮 New Game</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game Over Modal -->
+        <div class="modal hidden" id="game-over-modal">
+            <div class="modal-content">
+                <h2>🏆 Game Over!</h2>
+                <div class="winner-display" id="winner-display">
+                    <!-- Populated by JavaScript -->
+                </div>
+                <div class="final-scores" id="final-scores">
+                    <!-- Populated by JavaScript -->
+                </div>
+                <button class="btn btn-new-game" id="play-again-btn">🎮 Play Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

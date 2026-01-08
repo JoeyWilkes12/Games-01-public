@@ -55,6 +55,22 @@ Tests include:
 - Settings panel toggle
 - Timer countdown
 
+### Bank - Seeded Tests
+Comprehensive tests for the Bank dice game mechanics.
+
+```bash
+npx playwright test apps/games/Bank/seeded-tests.spec.js --project=tests
+```
+
+Tests include:
+- Core game mechanics (rolling, UI state)
+- First-3-roll protection (7 = 70 pts)
+- Doubles behavior (face value vs doubled)
+- Banking functionality
+- Round progression
+- Game over logic
+- Settings and new game
+
 ---
 
 ## HTML-Based Tests
@@ -153,6 +169,7 @@ npx playwright test --project=tests --debug
 | Game | Test File(s) |
 |------|-------------|
 | Random Event Dice | `apps/games/Random Event Dice/seeded-tests.spec.js`, `playwright.test.js` |
+| Bank | `apps/games/Bank/seeded-tests.spec.js` |
 | 2048 | `apps/games/2048/tests.html` |
 | Sliding Puzzle | `apps/games/Sliding Puzzle 3x3/tests.html`, `test_logic.js` |
 | Demo Recording | `demo-recording.spec.js` |

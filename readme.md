@@ -27,6 +27,7 @@ Welcome to my games repository! I explore logical aspects and algorithmic soluti
 - [Random Event Dice (v2.0)](apps/games/Random%20Event%20Dice)
 - [2048](apps/games/2048)
 - [Sliding Puzzle 3x3](apps/games/Sliding%20Puzzle%203x3)
+- [Bank](apps/games/Bank)
 
 ## Coming Soon / In Development
 - [Acquire](apps/games/Acquire)
@@ -86,6 +87,9 @@ A single-player sliding block puzzle using numbered tiles. Features an Expectima
 
 ### Sliding Puzzle 3x3
 A classic sliding tile puzzle where the player must rearrange scrambled tiles into a specific order.
+
+### Bank
+A multiplayer dice game based on rules from [ThunderHive Games](https://www.thunderhivegames.com/). Players take turns rolling dice to accumulate points in a shared "bank", then strategically decide when to claim those points. Rolling a 7 ends the round and loses unbanked points (except the first 3 rolls which are protected). Doubles double the bank!
 
 ### Acquire (Coming Soon)
 A strategic board game involving the placement of tiles to form and expand corporations. Players buy stock in active chains and earn bonuses when chains merge.

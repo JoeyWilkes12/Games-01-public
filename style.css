@@ -172,6 +172,10 @@ main {
     background: linear-gradient(135deg, #dc2626, #991b1b);
 }
 
+.card-image.bank-bg {
+    background: linear-gradient(135deg, #059669, #047857);
+}
+
 .card-image.coming-soon-bg {
     background: linear-gradient(135deg, #334155, #475569);
 }
