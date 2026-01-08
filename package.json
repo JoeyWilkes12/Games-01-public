@@ -1,0 +1,14 @@
+{
+  "name": "games-01-playwright",
+  "version": "1.0.0",
+  "description": "Playwright tests and demo recordings for Game Hub",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed",
+    "demo": "npx playwright test demo-recording.spec.js --headed",
+    "demo:record": "npx playwright test demo-recording.spec.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  }
+}

@@ -155,19 +155,68 @@ When an event triggers, the current player's turn ends and the next player begin
 
 ## Running Tests
 
+### Unit Tests (Node.js)
 ```bash
 node tests.js
 ```
 
 Or open `tests.html` in a browser.
 
-Tests cover:
+Unit tests cover:
 - SeededRNG determinism
 - SamplePool pre-generation
 - Event validation (impossible events)
 - JSON config roundtrip
 - Event matching logic
 - **AnalyticsTracker**: Player rotation, timeline, heatmap, leaderboard, reset
+
+### Playwright Seeded Tests
+
+Prerequisites:
+```bash
+# From the Games 01 root directory
+npm install
+npx playwright install chromium
+```
+
+Run seeded tests (16 tests, ~4 seconds):
+```bash
+npx playwright test apps/games/Random\ Event\ Dice/seeded-tests.spec.js --project=tests
+```
+
+Run with headed browser (visible):
+```bash
+npx playwright test apps/games/Random\ Event\ Dice/seeded-tests.spec.js --project=tests --headed
+```
+
+**Test Categories:**
+
+- **Configuration File Validation** (5 tests): Validates JSON structure of sample configs
+- **Seeded RNG Determinism** (3 tests): Programmatic tests verifying identical sequences
+- **Analytics Tracker** (4 tests): Unit tests for rolls, heatmap, player rotation, leaderboard
+- **Skip to End** (2 tests): Verifies `simulateToEnd` produces deterministic results
+- **Event Definition Logic** (2 tests): Validates doubles trigger and non-doubles don't
+
+All tests use programmatic configuration injection (`page.evaluate`) for minimal UI navigation and maximum speed.
+
+### Demo Recording
+
+Generate a comprehensive video walkthrough of all games:
+```bash
+npx playwright test demo-recording.spec.js --project=demo
+```
+
+**Demo Coverage:**
+- Game Hub Landing Page (hover effects on all games)
+- Random Event Dice (analytics, settings, advanced modal, 10s gameplay, pause/resume, skip to end)
+- 2048 (settings, gameplay, hint, AI play, dashboard pages)
+- Sliding Puzzle (settings, advanced mode, hint, AI solve)
+
+The recording features:
+- Deliberate pauses for audience viewing
+- Skip logic for error resilience
+- Fast roll settings (0.1s interval) for efficient demo
+- Complete ~2 minute video output to `test-results/` directory
 
 ## Files
 
@@ -176,8 +225,10 @@ Tests cover:
 | `index.html` | Main game UI |
 | `style.css` | Dark theme styling |
 | `script.js` | Game logic with AnalyticsTracker |
-| `tests.js` | Comprehensive test suite (44 tests) |
+| `tests.js` | Comprehensive unit test suite (44 tests) |
 | `tests.html` | Browser test runner |
+| `seeded-tests.spec.js` | Playwright E2E tests with seeded configs |
+| `playwright.test.js` | Legacy Playwright tests |
 | `sample configuration files/` | Example JSON configs for testing |
 
 ## Sample Configuration Files
