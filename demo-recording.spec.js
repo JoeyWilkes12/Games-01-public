@@ -210,7 +210,7 @@ test.describe('Game Hub - Full Demo Recording', () => {
             // Show JSON controls
             await page.locator('#import-json-btn').scrollIntoViewIfNeeded();
             await pause(page, DEMO_CONFIG.shortPause);
-            await page.locator('#export-json-btn').scrollIntoViewIfNeeded();
+            await page.locator('#save-export-btn').scrollIntoViewIfNeeded();
             await pause(page, DEMO_CONFIG.shortPause);
 
             // Close modal
