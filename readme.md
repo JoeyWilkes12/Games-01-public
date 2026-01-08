@@ -47,6 +47,23 @@ This repository is deployed using [GitHub Pages](https://pages.github.com/).
 - **Method**: Static file serving from the `main` branch.
 - **CI/CD**: Currently, there are no GitHub Actions or complex build pipelines. Updates are live immediately upon push to the main branch.
 
+### Testing
+
+This project uses [Playwright](https://playwright.dev/) for E2E testing and demo recordings.
+
+**Quick Start:**
+```bash
+./run-all-tests.sh
+```
+
+**Available Commands:**
+- `npx playwright test --project=tests` - Run all unit/seeded tests
+- `npx playwright test --project=demo` - Run demo recording (creates video)
+- `npx playwright show-report` - View interactive test report
+
+See [tests.md](tests.md) for complete test documentation.
+
+
 ## Acknowledgements & AI Investment
 This project was developed with significant assistance from advanced AI tools, representing a financial investment in state-of-the-art technology to explore the future of coding.
 

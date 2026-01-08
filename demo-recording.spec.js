@@ -18,7 +18,10 @@ const DEMO_CONFIG = {
     mediumPause: 800,     // Standard viewing pause
     longPause: 1500,      // Extended pause for complex features
     veryLongPause: 2500,  // Long pause for important demonstrations
-    gameRunPause: 10000,  // Let game run for 10 seconds
+    gameRunPause: 5000,   // Let game run for 5 seconds (uninterrupted)
+    slowScrollPause: 10000, // Slow scroll duration (10 seconds)
+    finalScrollPause: 5000, // Final scroll viewing (5 seconds)
+    fullPageScrollStep: 200, // Pixels per scroll step for slow scrolling
 };
 
 // Base URL for navigation fallback
@@ -92,6 +95,51 @@ const expandSettingsPanel = async (page) => {
     }
 };
 
+// Helper for slow vertical scrolling (full page)
+const slowFullVerticalScroll = async (page, durationMs = 10000, container = null) => {
+    const stepDelay = 100; // ms between scroll steps
+    const totalSteps = Math.floor(durationMs / stepDelay / 2); // Half time down, half time up
+
+    // Get scroll height
+    const scrollData = await page.evaluate((containerSelector) => {
+        const el = containerSelector ? document.querySelector(containerSelector) : document.documentElement;
+        return {
+            scrollHeight: el.scrollHeight,
+            clientHeight: el.clientHeight || window.innerHeight
+        };
+    }, container);
+
+    const maxScroll = scrollData.scrollHeight - scrollData.clientHeight;
+    const stepSize = Math.ceil(maxScroll / totalSteps);
+
+    // Scroll down slowly
+    for (let pos = 0; pos < maxScroll; pos += stepSize) {
+        await page.evaluate((y, containerSelector) => {
+            const el = containerSelector ? document.querySelector(containerSelector) : window;
+            if (el === window) {
+                window.scrollTo({ top: y, behavior: 'auto' });
+            } else {
+                el.scrollTop = y;
+            }
+        }, pos, container);
+        await page.waitForTimeout(stepDelay);
+    }
+
+    // Scroll up slowly
+    for (let pos = maxScroll; pos >= 0; pos -= stepSize) {
+        await page.evaluate((y, containerSelector) => {
+            const el = containerSelector ? document.querySelector(containerSelector) : window;
+            if (el === window) {
+                window.scrollTo({ top: y, behavior: 'auto' });
+            } else {
+                el.scrollTop = y;
+            }
+        }, pos, container);
+        await page.waitForTimeout(stepDelay);
+    }
+};
+
+
 test.describe('Game Hub - Full Demo Recording', () => {
 
     test('Complete Application Walkthrough', async ({ page }) => {
@@ -117,7 +165,7 @@ test.describe('Game Hub - Full Demo Recording', () => {
         await pause(page, DEMO_CONFIG.mediumPause);
 
         // ============================================
-        // SECTION 2: RANDOM EVENT DICE (Complete)
+        // SECTION 2: RANDOM EVENT DICE (Enhanced Demo)
         // ============================================
         const redSuccess = await safeAction(page, async () => {
             console.log('🎲 Navigating to Random Event Dice...');
@@ -125,20 +173,7 @@ test.describe('Game Hub - Full Demo Recording', () => {
             await page.waitForLoadState('domcontentloaded');
             await pause(page, DEMO_CONFIG.longPause);
 
-            // First, show the Analytics Dashboard briefly
-            console.log('📊 Exploring Analytics Dashboard...');
-            await showAnalyticsPanel(page);
-            await pause(page, DEMO_CONFIG.mediumPause);
-
-            // Scroll through analytics sections
-            await page.locator('#leaderboard-section').scrollIntoViewIfNeeded();
-            await pause(page, DEMO_CONFIG.shortPause);
-            await page.locator('#timeline-section').scrollIntoViewIfNeeded();
-            await pause(page, DEMO_CONFIG.shortPause);
-            await page.locator('#heatmap-section').scrollIntoViewIfNeeded();
-            await pause(page, DEMO_CONFIG.mediumPause);
-
-            // IMPORTANT: Hide analytics panel so it doesn't obscure Settings
+            // Hide analytics panel initially to show Settings
             console.log('📊 Hiding Analytics to show Settings...');
             await hideAnalyticsPanel(page);
             await pause(page, DEMO_CONFIG.shortPause);
@@ -186,30 +221,28 @@ test.describe('Game Hub - Full Demo Recording', () => {
             console.log('▶️ Starting game...');
             await slowClick(page, '#start-btn');
 
-            // Let game run for 10 seconds to show rolls
-            console.log('🎲 Watching dice rolls for 10 seconds...');
+            // Let game run for 5 seconds UNINTERRUPTED
+            console.log('🎲 Watching dice rolls for 5 seconds (uninterrupted)...');
             await pause(page, DEMO_CONFIG.gameRunPause);
 
-            // Demonstrate Pause
-            console.log('⏸️ Demonstrating Pause...');
-            await slowClick(page, '#start-btn'); // Now says "Pause Game"
-            await pause(page, DEMO_CONFIG.longPause);
-
-            // Resume
-            console.log('▶️ Resuming...');
-            await slowClick(page, '#start-btn'); // Now says "Resume Game"
-            await pause(page, DEMO_CONFIG.longPause);
-
-            // Show analytics while running (dashboard will have data now)
-            console.log('📊 Showing Analytics with live data...');
+            // WHILE GAME IS STILL RUNNING - Open Analytics Dashboard and scroll slowly
+            console.log('📊 Opening Analytics Dashboard while game is running...');
             await showAnalyticsPanel(page);
-            await pause(page, DEMO_CONFIG.longPause);
+            await pause(page, DEMO_CONFIG.mediumPause);
+
+            // Slow scroll up and down in the analytics panel for 10 seconds
+            console.log('📊 Slowly scrolling through analytics (10 seconds)...');
+            await slowFullVerticalScroll(page, DEMO_CONFIG.slowScrollPause, '#analytics-panel');
 
             // Skip to End
             console.log('⏩ Skip to End demonstration...');
             await page.locator('#skip-to-end-btn').scrollIntoViewIfNeeded();
             await slowClick(page, '#skip-to-end-btn');
             await pause(page, DEMO_CONFIG.longPause);
+
+            // After Skip to End - scroll slowly through final results for 5 seconds
+            console.log('📊 Slowly scrolling through final results (5 seconds)...');
+            await slowFullVerticalScroll(page, DEMO_CONFIG.finalScrollPause, '#analytics-panel');
 
             // Show final leaderboard
             await page.locator('#leaderboard').scrollIntoViewIfNeeded();
@@ -293,41 +326,38 @@ test.describe('Game Hub - Full Demo Recording', () => {
             await page.waitForLoadState('domcontentloaded');
             await pause(page, DEMO_CONFIG.longPause);
 
-            // Explore dashboard pages
-            console.log('📖 Exploring Definitions page...');
+            // Explore dashboard pages - FULL VERTICAL NAVIGATION
+            console.log('📖 Exploring Definitions page (full scroll)...');
             await page.locator('.dropbtn').first().click();
             await pause(page, DEMO_CONFIG.shortPause);
             await page.locator('a[href="definitions.html"]').first().click();
             await page.waitForLoadState('domcontentloaded');
             await pause(page, DEMO_CONFIG.longPause);
 
-            // Scroll through definitions
-            await page.evaluate(() => window.scrollTo({ top: 300, behavior: 'smooth' }));
-            await pause(page, DEMO_CONFIG.mediumPause);
-            await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
-            await pause(page, DEMO_CONFIG.shortPause);
+            // Full vertical scroll through definitions page (slowly)
+            await slowFullVerticalScroll(page, 8000); // 8 seconds for definitions
 
             // Navigate to Dashboard
-            console.log('📈 Exploring Dashboard page...');
+            console.log('📈 Exploring Dashboard page (full scroll)...');
             await page.locator('.dropbtn').first().click();
             await pause(page, DEMO_CONFIG.shortPause);
             await page.locator('a[href="dashboard.html"]').first().click();
             await page.waitForLoadState('domcontentloaded');
             await pause(page, DEMO_CONFIG.longPause);
 
-            // Scroll through dashboard
-            await page.evaluate(() => window.scrollTo({ top: 400, behavior: 'smooth' }));
-            await pause(page, DEMO_CONFIG.mediumPause);
-            await page.evaluate(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
-            await pause(page, DEMO_CONFIG.shortPause);
+            // Full vertical scroll through dashboard page (slowly)
+            await slowFullVerticalScroll(page, 10000); // 10 seconds for dashboard (more content)
 
             // Navigate to Research
-            console.log('🔬 Exploring Research page...');
+            console.log('🔬 Exploring Research page (full scroll)...');
             await page.locator('.dropbtn').first().click();
             await pause(page, DEMO_CONFIG.shortPause);
             await page.locator('a[href="research.html"]').first().click();
             await page.waitForLoadState('domcontentloaded');
             await pause(page, DEMO_CONFIG.longPause);
+
+            // Full vertical scroll through research page (slowly)
+            await slowFullVerticalScroll(page, 8000); // 8 seconds for research
 
             // Return to Game Hub
             console.log('🏠 Returning to Game Hub...');
@@ -341,7 +371,7 @@ test.describe('Game Hub - Full Demo Recording', () => {
         }
 
         // ============================================
-        // SECTION 4: SLIDING PUZZLE (Complete)
+        // SECTION 4: SLIDING PUZZLE (Enhanced Demo)
         // ============================================
         const puzzleSuccess = await safeAction(page, async () => {
             console.log('🧩 Navigating to Sliding Puzzle...');
@@ -349,16 +379,40 @@ test.describe('Game Hub - Full Demo Recording', () => {
             await page.waitForLoadState('domcontentloaded');
             await pause(page, DEMO_CONFIG.longPause);
 
-            // Show the puzzle
-            console.log('🎮 Exploring Sliding Puzzle...');
+            // Show the puzzle (starts in Kids/default mode)
+            console.log('🎮 Exploring Sliding Puzzle (Kids Mode)...');
             await pause(page, DEMO_CONFIG.mediumPause);
 
-            // Open Settings
-            console.log('⚙️ Opening Settings...');
+            // Show using Hint feature first (default difficulty)
+            console.log('💡 Using Hint feature (default difficulty)...');
+            await slowClick(page, '#hint-btn');
+            await pause(page, DEMO_CONFIG.longPause);
+
+            // Click the suggested (highlighted) tile
+            const hintedTile = page.locator('#game-grid .tile.hint-suggested');
+            if (await hintedTile.count() > 0) {
+                await hintedTile.click();
+                await pause(page, DEMO_CONFIG.mediumPause);
+            }
+
+            // Open Settings and enable Statistics
+            console.log('⚙️ Opening Settings to enable Statistics...');
             await slowClick(page, '#settings-btn');
             await pause(page, DEMO_CONFIG.mediumPause);
 
-            // Show theme options
+            // Enable statistics toggle
+            console.log('📊 Enabling Statistics display...');
+            const statsCheckbox = page.locator('#stats-toggle');
+            if (await statsCheckbox.isVisible()) {
+                // Check if not already enabled
+                const isChecked = await statsCheckbox.isChecked();
+                if (!isChecked) {
+                    await statsCheckbox.click();
+                    await pause(page, DEMO_CONFIG.mediumPause);
+                }
+            }
+
+            // Select a theme
             await slowClick(page, '#theme-picker');
             await pause(page, DEMO_CONFIG.shortPause);
             await page.selectOption('#theme-picker', 'dark');
@@ -366,39 +420,46 @@ test.describe('Game Hub - Full Demo Recording', () => {
 
             // Close settings
             await slowClick(page, '#close-settings');
-            await pause(page, DEMO_CONFIG.shortPause);
-
-            // Toggle Advanced Mode
-            console.log('🎓 Toggling Advanced Mode...');
-            await slowClick(page, '#advanced-btn');
             await pause(page, DEMO_CONFIG.mediumPause);
 
-            // Play a few moves on the puzzle
-            console.log('🧩 Making some puzzle moves...');
-            const tiles = await page.locator('#game-grid .tile:not(.empty)').all();
-            if (tiles.length > 0) {
-                await tiles[0].click();
-                await pause(page, DEMO_CONFIG.shortPause);
-            }
-            if (tiles.length > 1) {
-                await tiles[1].click();
-                await pause(page, DEMO_CONFIG.shortPause);
-            }
-
-            // Show Hint
-            console.log('💡 Showing Hint...');
-            await slowClick(page, '#hint-btn');
+            // Toggle to Advanced Mode
+            console.log('🎓 Switching to Advanced Mode...');
+            await slowClick(page, '#advanced-btn');
             await pause(page, DEMO_CONFIG.longPause);
 
-            // Demonstrate AI Solve (briefly)
-            console.log('🤖 Demonstrating AI Solve...');
+            // Make several "naive" moves (without following hints) to show stats changing
+            console.log('🎲 Making naive gameplay moves (showing stats changing)...');
+
+            // Click random tiles (naive play - may not follow optimal path)
+            for (let i = 0; i < 8; i++) {
+                const tiles = await page.locator('#game-grid .tile:not(.empty)').all();
+                if (tiles.length > 0) {
+                    // Pick a random tile
+                    const randomIndex = Math.floor(Math.random() * tiles.length);
+                    await tiles[randomIndex].click();
+                    await pause(page, DEMO_CONFIG.shortPause);
+                }
+            }
+
+            // Pause to show stats (move count should be higher now)
+            console.log('📊 Showing stats after naive moves...');
+            await pause(page, DEMO_CONFIG.longPause);
+
+            // Now use "Play for Me" (AI auto-solve)
+            console.log('🤖 Using Play for Me (AI auto-solve)...');
             await slowClick(page, '#solve-btn');
-            await pause(page, DEMO_CONFIG.veryLongPause);
 
-            // New Game
-            console.log('🔄 Starting New Game...');
-            await slowClick(page, '#new-game-btn');
-            await pause(page, DEMO_CONFIG.longPause);
+            // Let AI solve for several seconds (will complete puzzle)
+            await pause(page, 8000); // 8 seconds for AI to solve
+
+            // Check if win overlay appeared, if so interact with it
+            const winOverlay = page.locator('#win-overlay');
+            if (await winOverlay.isVisible()) {
+                await pause(page, DEMO_CONFIG.longPause);
+                // Click Play Again to start fresh
+                await slowClick(page, '#play-again-btn');
+                await pause(page, DEMO_CONFIG.mediumPause);
+            }
 
             // Return to Game Hub
             console.log('🏠 Final return to Game Hub...');
