@@ -1,0 +1,29 @@
+{
+    "name": "bank-test-config-deterministic",
+    "version": "1.0",
+    "seed": 12345,
+    "settings": {
+        "totalRounds": 3,
+        "volume": 50,
+        "undoMode": "preserve"
+    },
+    "players": [
+        {
+            "id": 1,
+            "name": "Alice"
+        },
+        {
+            "id": 2,
+            "name": "Bob"
+        },
+        {
+            "id": 3,
+            "name": "Charlie"
+        }
+    ],
+    "deterministic": {
+        "seed": 12345,
+        "maxRolls": null,
+        "expectedFinalScores": null
+    }
+}

@@ -133,7 +133,19 @@ class BankGame {
             finalScores: document.getElementById('final-scores'),
             playAgainBtn: document.getElementById('play-again-btn'),
             survivalProb: document.getElementById('survival-prob'),
-            probabilityCheatsheet: document.getElementById('probability-cheatsheet')
+            probabilityCheatsheet: document.getElementById('probability-cheatsheet'),
+            // New elements for summary scoreboard
+            summaryScoreboard: document.getElementById('summary-scoreboard'),
+            summaryCurrentName: document.getElementById('summary-current-name'),
+            summaryCurrentScore: document.getElementById('summary-current-score'),
+            summaryGapNext: document.getElementById('summary-gap-next'),
+            summaryGapLeader: document.getElementById('summary-gap-leader'),
+            summaryRankings: document.getElementById('summary-rankings'),
+            toggleScoreboardView: document.getElementById('toggle-scoreboard-view'),
+            // JSON import/export
+            importJsonBtn: document.getElementById('import-json-btn'),
+            exportJsonBtn: document.getElementById('export-json-btn'),
+            jsonFileInput: document.getElementById('json-file-input')
         };
 
         this.init();
@@ -223,6 +235,22 @@ class BankGame {
                 this.undo();
             }
         });
+
+        // Summary scoreboard toggle
+        if (this.dom.toggleScoreboardView) {
+            this.dom.toggleScoreboardView.addEventListener('click', () => this.toggleScoreboardView());
+        }
+
+        // JSON import/export
+        if (this.dom.importJsonBtn) {
+            this.dom.importJsonBtn.addEventListener('click', () => this.dom.jsonFileInput?.click());
+        }
+        if (this.dom.jsonFileInput) {
+            this.dom.jsonFileInput.addEventListener('change', (e) => this.importConfig(e));
+        }
+        if (this.dom.exportJsonBtn) {
+            this.dom.exportJsonBtn.addEventListener('click', () => this.exportConfig());
+        }
     }
 
     roll() {
@@ -700,6 +728,18 @@ class BankGame {
         } else {
             this.dom.bankBtn.classList.remove('highlight');
         }
+
+        // Hide banking info after roll 3 (no longer relevant)
+        if (this.dom.bankingInfo) {
+            if (this.rollNumber >= 3) {
+                this.dom.bankingInfo.classList.add('hidden');
+            } else {
+                this.dom.bankingInfo.classList.remove('hidden');
+            }
+        }
+
+        // Update summary scoreboard if visible
+        this.updateSummaryScoreboard();
     }
 
     renderPlayers() {
@@ -964,6 +1004,267 @@ class BankGame {
      */
     getSurvivalProbability() {
         return Math.pow(5 / 6, this.rollNumber);
+    }
+
+    // ==================== SUMMARY SCOREBOARD ====================
+
+    /**
+     * Toggle between full scoreboard and summary view
+     */
+    toggleScoreboardView() {
+        this.dom.summaryScoreboard?.classList.toggle('hidden');
+        this.dom.playersList?.classList.toggle('hidden');
+        this.updateSummaryScoreboard();
+    }
+
+    /**
+     * Update the summary scoreboard view
+     */
+    updateSummaryScoreboard() {
+        if (!this.dom.summaryScoreboard || this.dom.summaryScoreboard.classList.contains('hidden')) return;
+
+        const currentPlayer = this.players[this.currentPlayerIndex];
+        if (!currentPlayer) return;
+
+        const sorted = [...this.players].sort((a, b) => b.score - a.score);
+
+        // Current player info
+        if (this.dom.summaryCurrentName) {
+            this.dom.summaryCurrentName.textContent = currentPlayer.name;
+        }
+        if (this.dom.summaryCurrentScore) {
+            this.dom.summaryCurrentScore.textContent = currentPlayer.score;
+        }
+
+        // Find current player's rank position
+        const currentRank = sorted.findIndex(p => p.id === currentPlayer.id);
+        const leaderScore = sorted[0]?.score || 0;
+
+        // Gap to next player (player above in rankings)
+        if (this.dom.summaryGapNext) {
+            if (currentRank > 0) {
+                const nextPlayer = sorted[currentRank - 1];
+                const gapToNext = nextPlayer.score - currentPlayer.score + 1;
+                this.dom.summaryGapNext.textContent = `+${gapToNext}`;
+            } else {
+                this.dom.summaryGapNext.textContent = 'You are #1!';
+            }
+        }
+
+        // Gap to leader
+        if (this.dom.summaryGapLeader) {
+            if (currentRank > 0) {
+                const gapToLeader = leaderScore - currentPlayer.score + 1;
+                this.dom.summaryGapLeader.textContent = `+${gapToLeader}`;
+            } else {
+                this.dom.summaryGapLeader.textContent = '--';
+            }
+        }
+
+        // Rankings with ties
+        this.renderSummaryRankings(sorted);
+    }
+
+    /**
+     * Render the summary rankings with tie handling
+     */
+    renderSummaryRankings(sorted) {
+        if (!this.dom.summaryRankings) return;
+
+        let html = '';
+        let currentRank = 1;
+        let previousScore = null;
+
+        sorted.forEach((player, index) => {
+            // Same rank for tied scores
+            if (previousScore !== null && player.score < previousScore) {
+                currentRank = index + 1;
+            }
+            previousScore = player.score;
+
+            const isCurrent = this.players[this.currentPlayerIndex]?.id === player.id;
+            const rankDisplay = `#${currentRank}`;
+
+            html += `
+                <div class="summary-rank-item ${isCurrent ? 'current' : ''}">
+                    <span class="rank">${rankDisplay}</span>
+                    <span class="name">${player.name}</span>
+                    <span class="score">${player.score}</span>
+                </div>
+            `;
+        });
+
+        this.dom.summaryRankings.innerHTML = html;
+    }
+
+    // ==================== JSON IMPORT/EXPORT ====================
+
+    /**
+     * Export configuration to JSON file
+     */
+    exportConfig() {
+        const config = {
+            name: "bank-game-config",  // Unused key for identification
+            version: "1.0",
+            seed: this.rng.getSeed(),
+            settings: {
+                totalRounds: this.totalRounds,
+                volume: this.volume,
+                undoMode: this.undoMode
+            },
+            players: this.players.map(p => ({
+                id: p.id,
+                name: p.name
+            })),
+            // Deterministic gameplay support
+            deterministic: {
+                seed: this.rng.initialSeed,
+                maxRolls: null,  // Optional: limit total rolls for testing
+                expectedFinalScores: null  // Optional: for test validation
+            }
+        };
+
+        const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'bank-game-config.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        console.debug('[Export] Configuration exported successfully');
+    }
+
+    /**
+     * Import configuration from JSON file
+     */
+    importConfig(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            try {
+                const content = e.target.result;
+
+                // Check for empty content
+                if (!content || content.trim() === '' || content.trim() === '{}') {
+                    console.error('[Import] JSON file is empty or contains no data');
+                    alert('Import failed: JSON file is empty or contains no data.');
+                    return;
+                }
+
+                const config = JSON.parse(content);
+
+                // Validate config structure
+                const validationResult = this.validateConfigStructure(config);
+                if (!validationResult.valid) {
+                    console.error('[Import] Invalid configuration:', validationResult.error);
+                    alert(`Import failed: ${validationResult.error}`);
+                    return;
+                }
+
+                this.applyConfig(config);
+                console.debug('[Import] Configuration imported successfully');
+
+            } catch (error) {
+                console.error('[Import] Failed to parse JSON:', error.message);
+                alert(`Failed to import configuration: ${error.message}`);
+            }
+        };
+
+        reader.onerror = () => {
+            console.error('[Import] Failed to read file');
+            alert('Failed to read the configuration file.');
+        };
+
+        reader.readAsText(file);
+
+        // Reset file input so same file can be imported again
+        event.target.value = '';
+    }
+
+    /**
+     * Apply imported configuration
+     */
+    applyConfig(config) {
+        if (config.settings) {
+            if (config.settings.totalRounds !== undefined) {
+                this.totalRounds = config.settings.totalRounds;
+                if (this.dom.roundsSelect) {
+                    this.dom.roundsSelect.value = this.totalRounds;
+                }
+                if (this.dom.totalRounds) {
+                    this.dom.totalRounds.textContent = this.totalRounds;
+                }
+            }
+            if (config.settings.volume !== undefined) {
+                this.volume = config.settings.volume;
+                if (this.dom.volumeInput) {
+                    this.dom.volumeInput.value = this.volume;
+                }
+            }
+            if (config.settings.undoMode) {
+                this.undoMode = config.settings.undoMode;
+                if (this.dom.undoModeSelect) {
+                    this.dom.undoModeSelect.value = this.undoMode;
+                }
+            }
+        }
+
+        if (config.players && Array.isArray(config.players)) {
+            this.players = config.players.map(p => ({
+                id: p.id,
+                name: p.name,
+                score: 0,
+                hasBankedThisRound: false
+            }));
+            this.renderPlayerConfig();
+            this.renderPlayers();
+        }
+
+        // Apply seed for deterministic testing
+        if (config.deterministic?.seed !== undefined) {
+            this.rng.setSeed(config.deterministic.seed);
+        } else if (config.seed !== undefined) {
+            this.rng.setSeed(config.seed);
+        }
+
+        this.updateUI();
+    }
+
+    /**
+     * Validate configuration structure
+     */
+    validateConfigStructure(config) {
+        if (typeof config !== 'object' || config === null) {
+            return { valid: false, error: 'Configuration must be an object' };
+        }
+
+        if (config.players) {
+            if (!Array.isArray(config.players)) {
+                return { valid: false, error: 'Players must be an array' };
+            }
+            if (config.players.length < 2) {
+                return { valid: false, error: 'At least 2 players are required' };
+            }
+            for (const player of config.players) {
+                if (!player.id || !player.name) {
+                    return { valid: false, error: 'Each player must have id and name' };
+                }
+            }
+        }
+
+        if (config.settings?.totalRounds !== undefined) {
+            const rounds = config.settings.totalRounds;
+            if (rounds < 1 || rounds > 100) {
+                return { valid: false, error: 'Rounds must be between 1 and 100' };
+            }
+        }
+
+        return { valid: true };
     }
 }
 

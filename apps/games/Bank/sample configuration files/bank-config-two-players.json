@@ -1,0 +1,19 @@
+{
+    "name": "bank-config-two-players",
+    "version": "1.0",
+    "settings": {
+        "totalRounds": 5,
+        "volume": 30,
+        "undoMode": "resample"
+    },
+    "players": [
+        {
+            "id": 1,
+            "name": "Player One"
+        },
+        {
+            "id": 2,
+            "name": "Player Two"
+        }
+    ]
+}
