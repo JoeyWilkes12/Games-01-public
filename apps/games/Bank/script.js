@@ -134,14 +134,15 @@ class BankGame {
             playAgainBtn: document.getElementById('play-again-btn'),
             survivalProb: document.getElementById('survival-prob'),
             probabilityCheatsheet: document.getElementById('probability-cheatsheet'),
-            // New elements for summary scoreboard
-            summaryScoreboard: document.getElementById('summary-scoreboard'),
-            summaryCurrentName: document.getElementById('summary-current-name'),
-            summaryCurrentScore: document.getElementById('summary-current-score'),
-            summaryGapNext: document.getElementById('summary-gap-next'),
-            summaryGapLeader: document.getElementById('summary-gap-leader'),
-            summaryRankings: document.getElementById('summary-rankings'),
-            toggleScoreboardView: document.getElementById('toggle-scoreboard-view'),
+            // New elements for compact scoreboard
+            compactScoreboard: document.getElementById('compact-scoreboard'),
+            compactCurrentName: document.getElementById('compact-current-name'),
+            compactCurrentScore: document.getElementById('compact-current-score'),
+            compactCurrentRank: document.getElementById('compact-current-rank'),
+            compactTieNext: document.getElementById('compact-tie-next'),
+            compactTieLeader: document.getElementById('compact-tie-leader'),
+            compactAheadBy: document.getElementById('compact-ahead-by'),
+            fullScoreboardDetails: document.getElementById('full-scoreboard-details'),
             // JSON import/export
             importJsonBtn: document.getElementById('import-json-btn'),
             exportJsonBtn: document.getElementById('export-json-btn'),
@@ -235,11 +236,6 @@ class BankGame {
                 this.undo();
             }
         });
-
-        // Summary scoreboard toggle
-        if (this.dom.toggleScoreboardView) {
-            this.dom.toggleScoreboardView.addEventListener('click', () => this.toggleScoreboardView());
-        }
 
         // JSON import/export
         if (this.dom.importJsonBtn) {
@@ -738,8 +734,8 @@ class BankGame {
             }
         }
 
-        // Update summary scoreboard if visible
-        this.updateSummaryScoreboard();
+        // Update compact scoreboard
+        this.updateCompactScoreboard();
     }
 
     renderPlayers() {
@@ -1009,60 +1005,75 @@ class BankGame {
     // ==================== SUMMARY SCOREBOARD ====================
 
     /**
-     * Toggle between full scoreboard and summary view
+     * Update the compact scoreboard with current player metrics
      */
-    toggleScoreboardView() {
-        this.dom.summaryScoreboard?.classList.toggle('hidden');
-        this.dom.playersList?.classList.toggle('hidden');
-        this.updateSummaryScoreboard();
-    }
-
-    /**
-     * Update the summary scoreboard view
-     */
-    updateSummaryScoreboard() {
-        if (!this.dom.summaryScoreboard || this.dom.summaryScoreboard.classList.contains('hidden')) return;
+    updateCompactScoreboard() {
+        if (!this.dom.compactScoreboard) return;
 
         const currentPlayer = this.players[this.currentPlayerIndex];
         if (!currentPlayer) return;
 
         const sorted = [...this.players].sort((a, b) => b.score - a.score);
 
-        // Current player info
-        if (this.dom.summaryCurrentName) {
-            this.dom.summaryCurrentName.textContent = currentPlayer.name;
+        // Current player name and score
+        if (this.dom.compactCurrentName) {
+            this.dom.compactCurrentName.textContent = currentPlayer.name;
         }
-        if (this.dom.summaryCurrentScore) {
-            this.dom.summaryCurrentScore.textContent = currentPlayer.score;
+        if (this.dom.compactCurrentScore) {
+            this.dom.compactCurrentScore.textContent = currentPlayer.score;
         }
 
         // Find current player's rank position
         const currentRank = sorted.findIndex(p => p.id === currentPlayer.id);
+        const totalPlayers = this.players.length;
         const leaderScore = sorted[0]?.score || 0;
 
+        // Rank display (e.g., "1st of 4", "2nd of 4")
+        if (this.dom.compactCurrentRank) {
+            const rankOrdinal = this.getOrdinal(currentRank + 1);
+            this.dom.compactCurrentRank.textContent = `${rankOrdinal} of ${totalPlayers}`;
+        }
+
         // Gap to next player (player above in rankings)
-        if (this.dom.summaryGapNext) {
+        if (this.dom.compactTieNext) {
             if (currentRank > 0) {
                 const nextPlayer = sorted[currentRank - 1];
                 const gapToNext = nextPlayer.score - currentPlayer.score + 1;
-                this.dom.summaryGapNext.textContent = `+${gapToNext}`;
+                this.dom.compactTieNext.textContent = `+${gapToNext}`;
             } else {
-                this.dom.summaryGapNext.textContent = 'You are #1!';
+                this.dom.compactTieNext.textContent = '#1!';
             }
         }
 
         // Gap to leader
-        if (this.dom.summaryGapLeader) {
+        if (this.dom.compactTieLeader) {
             if (currentRank > 0) {
                 const gapToLeader = leaderScore - currentPlayer.score + 1;
-                this.dom.summaryGapLeader.textContent = `+${gapToLeader}`;
+                this.dom.compactTieLeader.textContent = `+${gapToLeader}`;
             } else {
-                this.dom.summaryGapLeader.textContent = '--';
+                this.dom.compactTieLeader.textContent = '--';
             }
         }
 
-        // Rankings with ties
-        this.renderSummaryRankings(sorted);
+        // Ahead by (gap to player below, 0 if last)
+        if (this.dom.compactAheadBy) {
+            if (currentRank < sorted.length - 1) {
+                const playerBelow = sorted[currentRank + 1];
+                const aheadBy = currentPlayer.score - playerBelow.score;
+                this.dom.compactAheadBy.textContent = aheadBy > 0 ? `+${aheadBy}` : '0';
+            } else {
+                this.dom.compactAheadBy.textContent = '0';
+            }
+        }
+    }
+
+    /**
+     * Get ordinal suffix for a number (1st, 2nd, 3rd, etc.)
+     */
+    getOrdinal(n) {
+        const s = ['th', 'st', 'nd', 'rd'];
+        const v = n % 100;
+        return n + (s[(v - 20) % 10] || s[v] || s[0]);
     }
 
     /**

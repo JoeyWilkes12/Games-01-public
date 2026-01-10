@@ -64,21 +64,6 @@
                 <button class="btn btn-undo" id="undo-btn" disabled title="Undo (Ctrl+Z)">↶ Undo</button>
             </div>
 
-            <!-- Collapsible Stats Dashboard -->
-            <details class="stats-dashboard" id="stats-dashboard">
-                <summary>📈</summary>
-                <div class="round-stats" id="round-stats">
-                    <div class="stat">
-                        <span class="stat-label">Survival (no 7)</span>
-                        <span class="stat-value" id="survival-prob">100%</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-label">Risk per roll</span>
-                        <span class="stat-value">16.67%</span>
-                    </div>
-                </div>
-            </details>
-
             <!-- Banking info (hides after roll 3) -->
             <div class="banking-info" id="banking-info">
                 <span class="info-text">Banking enabled after 3 rolls</span>
@@ -112,36 +97,40 @@
             <div class="panel-header">
                 <h2>🎯 Scoreboard</h2>
                 <div class="panel-controls">
-                    <button class="btn-icon" id="toggle-scoreboard-view" title="Toggle Summary View">📋</button>
                     <button class="btn-icon" id="toggle-settings" title="Settings">⚙️</button>
                 </div>
             </div>
 
-            <!-- Summary View (hidden by default) -->
-            <div class="summary-scoreboard hidden" id="summary-scoreboard">
-                <div class="summary-current-player">
-                    <h3 id="summary-current-name">--</h3>
-                    <div class="summary-score" id="summary-current-score">0</div>
+            <!-- Compact Scoreboard (Default View - Current Player) -->
+            <div class="compact-scoreboard" id="compact-scoreboard">
+                <div class="compact-player-name">
+                    <span id="compact-current-name">Player 1</span>
+                    <span class="compact-rank" id="compact-current-rank">1st of 4</span>
                 </div>
-                <div class="summary-targets">
-                    <div class="summary-target">
-                        <span class="target-label">To tie next:</span>
-                        <span class="target-value" id="summary-gap-next">--</span>
+                <div class="compact-score" id="compact-current-score">0</div>
+                <div class="compact-metrics">
+                    <div class="compact-metric">
+                        <span class="metric-label">To tie next:</span>
+                        <span class="metric-value" id="compact-tie-next">--</span>
                     </div>
-                    <div class="summary-target">
-                        <span class="target-label">To tie leader:</span>
-                        <span class="target-value" id="summary-gap-leader">--</span>
+                    <div class="compact-metric">
+                        <span class="metric-label">To tie leader:</span>
+                        <span class="metric-value" id="compact-tie-leader">--</span>
                     </div>
-                </div>
-                <div class="summary-rankings" id="summary-rankings">
-                    <!-- Populated by JS -->
+                    <div class="compact-metric">
+                        <span class="metric-label">Ahead by:</span>
+                        <span class="metric-value" id="compact-ahead-by">0</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Full Scoreboard (default) -->
-            <div class="players-list" id="players-list">
-                <!-- Populated by JavaScript -->
-            </div>
+            <!-- Full Scoreboard (Collapsible) -->
+            <details class="full-scoreboard-details" id="full-scoreboard-details">
+                <summary>📋 Full Scoreboard</summary>
+                <div class="players-list" id="players-list">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </details>
         </aside>
 
         <!-- Settings Panel -->
@@ -193,10 +182,14 @@
             </div>
         </div>
 
-        <!-- Probability Cheatsheet -->
+        <!-- Probability Cheatsheet with Survival -->
         <details class="probability-cheatsheet" id="probability-cheatsheet">
             <summary>📊</summary>
             <h4 class="cheatsheet-title">Dice Probabilities (2d6)</h4>
+            <div class="survival-display">
+                <span class="survival-label">Survival (no 7)</span>
+                <span class="survival-value" id="survival-prob">100%</span>
+            </div>
             <table class="prob-table">
                 <thead>
                     <tr>
