@@ -96,8 +96,147 @@
                 <p class="modal-note">Use Arrow Keys or Swipe to play!</p>
             </div>
         </div>
-    </div>
-    <script src="script.js"></script>
+
+        <!-- Algorithm Runtime Dashboard (Side Panel) -->
+        <div id="algo-dashboard" class="algo-dashboard hidden">
+            <div class="dashboard-header">
+                <h3>📈 AI Dashboard</h3>
+                <button id="close-dashboard" class="close-btn">&times;</button>
+            </div>
+
+            <!-- Algorithm Indicator -->
+            <div class="dashboard-section">
+                <div class="algo-indicator" id="algo-indicator">
+                    <span class="algo-icon">🧠</span>
+                    <span class="algo-name">Expectimax</span>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="dashboard-section stats-row">
+                <div class="stat-mini">
+                    <span class="stat-label">Moves</span>
+                    <span class="stat-value" id="dash-moves">0</span>
+                </div>
+                <div class="stat-mini">
+                    <span class="stat-label">Avg Time</span>
+                    <span class="stat-value" id="dash-avg-time">0ms</span>
+                </div>
+                <div class="stat-mini">
+                    <span class="stat-label">Last</span>
+                    <span class="stat-value" id="dash-last-time">0ms</span>
+                </div>
+            </div>
+
+            <!-- Move Scores Section -->
+            <div class="dashboard-section">
+                <h4>Move Scores</h4>
+                <div class="move-scores">
+                    <div class="move-row" id="move-up">
+                        <span class="move-dir">⬆️ UP</span>
+                        <div class="move-bar-container">
+                            <div class="move-bar" style="width: 0%"></div>
+                        </div>
+                        <span class="move-score">-</span>
+                    </div>
+                    <div class="move-row" id="move-left">
+                        <span class="move-dir">⬅️ LEFT</span>
+                        <div class="move-bar-container">
+                            <div class="move-bar" style="width: 0%"></div>
+                        </div>
+                        <span class="move-score">-</span>
+                    </div>
+                    <div class="move-row" id="move-down">
+                        <span class="move-dir">⬇️ DOWN</span>
+                        <div class="move-bar-container">
+                            <div class="move-bar" style="width: 0%"></div>
+                        </div>
+                        <span class="move-score">-</span>
+                    </div>
+                    <div class="move-row" id="move-right">
+                        <span class="move-dir">➡️ RIGHT</span>
+                        <div class="move-bar-container">
+                            <div class="move-bar" style="width: 0%"></div>
+                        </div>
+                        <span class="move-score">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expectimax Specific: Heuristics -->
+            <div class="dashboard-section algo-specific expectimax-section">
+                <h4>Heuristics Breakdown</h4>
+                <div class="heuristic-list">
+                    <div class="heuristic-row">
+                        <span class="heuristic-name">📍 Position</span>
+                        <span class="heuristic-value" id="heur-position">-</span>
+                    </div>
+                    <div class="heuristic-row">
+                        <span class="heuristic-name">📈 Monotonicity</span>
+                        <span class="heuristic-value" id="heur-mono">-</span>
+                    </div>
+                    <div class="heuristic-row">
+                        <span class="heuristic-name">🔄 Smoothness</span>
+                        <span class="heuristic-value" id="heur-smooth">-</span>
+                    </div>
+                    <div class="heuristic-row">
+                        <span class="heuristic-name">⬜ Empty Cells</span>
+                        <span class="heuristic-value" id="heur-empty">-</span>
+                    </div>
+                </div>
+                <div class="depth-indicator">
+                    <span>Search Depth:</span>
+                    <span id="search-depth" class="depth-value">3</span>
+                    <span id="depth-adaptive" class="depth-badge hidden">ADAPTIVE</span>
+                </div>
+            </div>
+
+            <!-- MCTS Specific -->
+            <div class="dashboard-section algo-specific mcts-section hidden">
+                <h4>Simulations</h4>
+                <div class="sim-progress">
+                    <div class="sim-bar" id="sim-progress-bar" style="width: 0%"></div>
+                </div>
+                <div class="sim-stats">
+                    <span id="sim-count">0 / 100</span>
+                    <span id="sim-avg-score">Avg: -</span>
+                </div>
+            </div>
+
+            <!-- Greedy Specific -->
+            <div class="dashboard-section algo-specific greedy-section hidden">
+                <h4>Instant Evaluation</h4>
+                <div class="greedy-info">
+                    <p>⚡ No lookahead - picks best immediate move</p>
+                    <div class="greedy-breakdown">
+                        <div class="greedy-row">
+                            <span>Immediate Score:</span>
+                            <span id="greedy-immediate">-</span>
+                        </div>
+                        <div class="greedy-row">
+                            <span>Heuristic Value:</span>
+                            <span id="greedy-heuristic">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Decision -->
+            <div class="dashboard-section decision-section">
+                <div class="decision-box">
+                    <span class="decision-label">Decision:</span>
+                    <span id="decision-move" class="decision-value">-</span>
+                    <span id="decision-confidence" class="confidence-badge">-</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Toggle Button (Floating) -->
+        <button id="dashboard-toggle" class="dashboard-toggle-btn" aria-label="Toggle AI Dashboard">
+            📊
+        </button>
+
+        <script src="script.js"></script>
 </body>
 
 </html>

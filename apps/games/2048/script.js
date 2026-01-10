@@ -962,5 +962,342 @@ function getBestMoveUnified(grid) {
     }
 }
 
+// ===================================
+// Algorithm Runtime Dashboard
+// ===================================
+
+const DashboardStats = {
+    totalMoves: 0,
+    totalTimeMs: 0,
+    lastTimeMs: 0,
+    lastScores: { up: 0, right: 0, down: 0, left: 0 },
+    lastHeuristics: { position: 0, monotonicity: 0, smoothness: 0, emptyCells: 0 },
+    lastDepth: 3,
+    lastDecision: -1,
+    confidence: 0
+};
+
+// DOM Elements for Dashboard
+const dashboardPanel = document.getElementById('algo-dashboard');
+const dashboardToggle = document.getElementById('dashboard-toggle');
+const closeDashboard = document.getElementById('close-dashboard');
+
+// Initialize Dashboard
+function initDashboard() {
+    if (!dashboardToggle || !dashboardPanel) return;
+
+    dashboardToggle.addEventListener('click', toggleDashboard);
+    closeDashboard.addEventListener('click', () => {
+        dashboardPanel.classList.add('hidden');
+        dashboardToggle.classList.remove('active');
+    });
+}
+
+function toggleDashboard() {
+    if (!dashboardPanel) return;
+
+    dashboardPanel.classList.toggle('hidden');
+    dashboardToggle.classList.toggle('active');
+
+    // Update display when opened
+    if (!dashboardPanel.classList.contains('hidden')) {
+        updateDashboardAlgorithm();
+        updateDashboardStats();
+    }
+}
+
+function updateDashboardAlgorithm() {
+    const algoIndicator = document.getElementById('algo-indicator');
+    if (!algoIndicator) return;
+
+    const icons = { expectimax: '🧠', mcts: '🎲', greedy: '⚡' };
+    const names = { expectimax: 'Expectimax', mcts: 'Monte Carlo', greedy: 'Greedy' };
+
+    const icon = algoIndicator.querySelector('.algo-icon');
+    const name = algoIndicator.querySelector('.algo-name');
+
+    if (icon) icon.textContent = icons[ALGORITHM_CONFIG.current] || '🧠';
+    if (name) name.textContent = names[ALGORITHM_CONFIG.current] || 'Expectimax';
+
+    // Show/hide algorithm-specific sections
+    document.querySelectorAll('.algo-specific').forEach(el => el.classList.add('hidden'));
+
+    if (ALGORITHM_CONFIG.current === 'expectimax') {
+        const expSection = document.querySelector('.expectimax-section');
+        if (expSection) expSection.classList.remove('hidden');
+    } else if (ALGORITHM_CONFIG.current === 'mcts') {
+        const mctsSection = document.querySelector('.mcts-section');
+        if (mctsSection) mctsSection.classList.remove('hidden');
+    } else if (ALGORITHM_CONFIG.current === 'greedy') {
+        const greedySection = document.querySelector('.greedy-section');
+        if (greedySection) greedySection.classList.remove('hidden');
+    }
+}
+
+function updateDashboardStats() {
+    // Quick stats
+    const movesEl = document.getElementById('dash-moves');
+    const avgTimeEl = document.getElementById('dash-avg-time');
+    const lastTimeEl = document.getElementById('dash-last-time');
+
+    if (movesEl) movesEl.textContent = DashboardStats.totalMoves;
+    if (avgTimeEl) {
+        const avg = DashboardStats.totalMoves > 0
+            ? Math.round(DashboardStats.totalTimeMs / DashboardStats.totalMoves)
+            : 0;
+        avgTimeEl.textContent = avg + 'ms';
+    }
+    if (lastTimeEl) lastTimeEl.textContent = DashboardStats.lastTimeMs + 'ms';
+}
+
+function updateMoveScores(scores, bestDir) {
+    const dirs = ['up', 'right', 'down', 'left'];
+    const dirNames = { 0: 'up', 1: 'right', 2: 'down', 3: 'left' };
+
+    // Find max score for normalization
+    const maxScore = Math.max(...Object.values(scores).filter(s => s !== null && s !== undefined), 1);
+
+    dirs.forEach((dir, idx) => {
+        const row = document.getElementById('move-' + dir);
+        if (!row) return;
+
+        const bar = row.querySelector('.move-bar');
+        const scoreEl = row.querySelector('.move-score');
+        const score = scores[dir] || 0;
+
+        // Update bar width
+        if (bar) {
+            const pct = score > 0 ? Math.round((score / maxScore) * 100) : 0;
+            bar.style.width = pct + '%';
+        }
+
+        // Update score text
+        if (scoreEl) {
+            if (score <= 0) {
+                scoreEl.textContent = '-';
+            } else if (score > 1000000) {
+                scoreEl.textContent = (score / 1000000).toFixed(1) + 'M';
+            } else if (score > 1000) {
+                scoreEl.textContent = (score / 1000).toFixed(1) + 'K';
+            } else {
+                scoreEl.textContent = Math.round(score);
+            }
+        }
+
+        // Highlight best move
+        if (idx === bestDir) {
+            row.classList.add('best-move');
+        } else {
+            row.classList.remove('best-move');
+        }
+    });
+}
+
+function updateHeuristics(grid) {
+    const pos = positionScore(grid);
+    const mono = monotonicity(grid);
+    const smooth = smoothness(grid);
+    const empty = emptyCellsScore(grid);
+
+    const posEl = document.getElementById('heur-position');
+    const monoEl = document.getElementById('heur-mono');
+    const smoothEl = document.getElementById('heur-smooth');
+    const emptyEl = document.getElementById('heur-empty');
+
+    if (posEl) posEl.textContent = formatNumber(pos);
+    if (monoEl) {
+        monoEl.textContent = formatNumber(mono);
+        monoEl.classList.toggle('negative', mono < 0);
+    }
+    if (smoothEl) {
+        smoothEl.textContent = formatNumber(smooth);
+        smoothEl.classList.toggle('negative', smooth < 0);
+    }
+    if (emptyEl) emptyEl.textContent = empty;
+}
+
+function updateDepthDisplay(depth, isAdaptive) {
+    const depthEl = document.getElementById('search-depth');
+    const adaptiveEl = document.getElementById('depth-adaptive');
+
+    if (depthEl) depthEl.textContent = depth;
+    if (adaptiveEl) {
+        if (isAdaptive && depth > ALGORITHM_CONFIG.expectimax.baseDepth) {
+            adaptiveEl.classList.remove('hidden');
+        } else {
+            adaptiveEl.classList.add('hidden');
+        }
+    }
+}
+
+function updateDecision(dir, confidence) {
+    const dirNames = ['⬆️ UP', '➡️ RIGHT', '⬇️ DOWN', '⬅️ LEFT'];
+    const moveEl = document.getElementById('decision-move');
+    const confEl = document.getElementById('decision-confidence');
+
+    if (moveEl) moveEl.textContent = dir >= 0 ? dirNames[dir] : '-';
+    if (confEl) {
+        if (confidence > 0) {
+            confEl.textContent = Math.round(confidence * 100) + '%';
+        } else {
+            confEl.textContent = '-';
+        }
+    }
+}
+
+function formatNumber(num) {
+    if (num === undefined || num === null) return '-';
+    if (Math.abs(num) > 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (Math.abs(num) > 1000) return (num / 1000).toFixed(1) + 'K';
+    return Math.round(num).toString();
+}
+
+// Enhanced getBestMoveWithStats for dashboard
+function getBestMoveWithStats(grid) {
+    const startTime = performance.now();
+    let bestDir = -1;
+    let scores = { up: 0, right: 0, down: 0, left: 0 };
+    let confidence = 0;
+    let depth = ALGORITHM_CONFIG.expectimax.baseDepth;
+
+    if (ALGORITHM_CONFIG.current === 'expectimax') {
+        depth = getAdaptiveDepth(grid);
+
+        // Calculate scores for all directions
+        const dirScores = [];
+        for (let dir = 0; dir < 4; dir++) {
+            let sim = simulateMove(grid, dir);
+            if (sim.moved) {
+                let score = expectimax(sim.board, depth - 1, false);
+                dirScores.push({ dir, score });
+                scores[['up', 'right', 'down', 'left'][dir]] = score;
+            } else {
+                dirScores.push({ dir, score: -Infinity });
+            }
+        }
+
+        // Find best
+        dirScores.sort((a, b) => b.score - a.score);
+        bestDir = dirScores[0].score > -Infinity ? dirScores[0].dir : -1;
+
+        // Calculate confidence (how much better than second best)
+        if (dirScores[0].score > -Infinity && dirScores[1].score > -Infinity) {
+            const ratio = dirScores[0].score / Math.max(1, dirScores[1].score);
+            confidence = Math.min(1, (ratio - 1) * 0.5 + 0.5);
+        } else {
+            confidence = 1;
+        }
+
+    } else if (ALGORITHM_CONFIG.current === 'mcts') {
+        // MCTS with score tracking
+        const moves = [0, 1, 2, 3];
+        const simScores = [0, 0, 0, 0];
+        const counts = [0, 0, 0, 0];
+        const simulations = ALGORITHM_CONFIG.mcts.simulations;
+
+        for (let i = 0; i < simulations; i++) {
+            const move = i % 4;
+            const score = simulateRandomGame(grid, move);
+
+            if (score >= 0) {
+                simScores[move] += score;
+                counts[move]++;
+            }
+        }
+
+        let bestAvg = -Infinity;
+        for (let m = 0; m < 4; m++) {
+            if (counts[m] > 0) {
+                const avg = simScores[m] / counts[m];
+                scores[['up', 'right', 'down', 'left'][m]] = avg;
+                if (avg > bestAvg) {
+                    bestAvg = avg;
+                    bestDir = m;
+                }
+            }
+        }
+
+        // Calculate confidence from win rates
+        const totalCounts = counts.reduce((a, b) => a + b, 0);
+        if (totalCounts > 0 && bestDir >= 0) {
+            confidence = counts[bestDir] / (simulations / 4);
+        }
+
+    } else if (ALGORITHM_CONFIG.current === 'greedy') {
+        for (let dir = 0; dir < 4; dir++) {
+            let sim = simulateMove(grid, dir);
+            if (sim.moved) {
+                let score = sim.score + evaluateGrid(sim.board);
+                scores[['up', 'right', 'down', 'left'][dir]] = score;
+                if (bestDir === -1 || score > scores[['up', 'right', 'down', 'left'][bestDir]]) {
+                    bestDir = dir;
+                }
+            }
+        }
+        confidence = 1; // Greedy is always certain
+    }
+
+    const endTime = performance.now();
+    const elapsedMs = Math.round(endTime - startTime);
+
+    // Update stats
+    DashboardStats.totalMoves++;
+    DashboardStats.totalTimeMs += elapsedMs;
+    DashboardStats.lastTimeMs = elapsedMs;
+    DashboardStats.lastScores = scores;
+    DashboardStats.lastDepth = depth;
+    DashboardStats.lastDecision = bestDir;
+    DashboardStats.confidence = confidence;
+
+    // Update dashboard if visible
+    if (dashboardPanel && !dashboardPanel.classList.contains('hidden')) {
+        updateDashboardStats();
+        updateMoveScores(scores, bestDir);
+        updateHeuristics(grid);
+        updateDepthDisplay(depth, depth > ALGORITHM_CONFIG.expectimax.baseDepth);
+        updateDecision(bestDir, confidence);
+    }
+
+    return {
+        direction: bestDir,
+        stats: {
+            scores,
+            depth,
+            confidence,
+            timeMs: elapsedMs
+        }
+    };
+}
+
+// Override playNextMove to use stats version
+function playNextMoveWithDashboard() {
+    if (!isAutoPlaying || gameOver) return;
+
+    const result = getBestMoveWithStats(board);
+    if (result.direction !== -1) {
+        move(result.direction);
+        afterMove();
+        autoPlayInterval = setTimeout(playNextMoveWithDashboard, autoSpeed);
+    } else {
+        stopAutoPlay();
+    }
+}
+
+// Update startAutoPlay to use dashboard version
+const originalStartAutoPlay = startAutoPlay;
+startAutoPlay = function () {
+    if (isAutoPlaying || gameOver) return;
+    isAutoPlaying = true;
+    solveBtn.textContent = "⏹ Stop";
+    solveBtn.classList.remove('btn-highlight');
+    solveBtn.classList.add('btn-secondary');
+
+    // Update dashboard algorithm display when starting
+    updateDashboardAlgorithm();
+
+    playNextMoveWithDashboard();
+};
+
 // Start
+initDashboard();
 init();
