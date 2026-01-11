@@ -1,0 +1,105 @@
+{
+  "version": "2.0",
+  "settings": {
+    "interval": 1000,
+    "resetDuration": 1000,
+    "diceCount": 2,
+    "diceSides": 6,
+    "duration": 60,
+    "volume": 0,
+    "soundEnabled": true,
+    "seed": 12345
+  },
+  "eventDefinitions": [
+    {
+      "id": 1767751391503,
+      "rules": [
+        {
+          "dieIndex": 0,
+          "operator": "==",
+          "value": 1
+        },
+        {
+          "dieIndex": 1,
+          "operator": "==",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": 1767751391504,
+      "rules": [
+        {
+          "dieIndex": 0,
+          "operator": "==",
+          "value": 2
+        },
+        {
+          "dieIndex": 1,
+          "operator": "==",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "id": 1767751391505,
+      "rules": [
+        {
+          "dieIndex": 0,
+          "operator": "==",
+          "value": 3
+        },
+        {
+          "dieIndex": 1,
+          "operator": "==",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "id": 1767751391506,
+      "rules": [
+        {
+          "dieIndex": 0,
+          "operator": "==",
+          "value": 4
+        },
+        {
+          "dieIndex": 1,
+          "operator": "==",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "id": 1767751391507,
+      "rules": [
+        {
+          "dieIndex": 0,
+          "operator": "==",
+          "value": 5
+        },
+        {
+          "dieIndex": 1,
+          "operator": "==",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "id": 1767751391508,
+      "rules": [
+        {
+          "dieIndex": 0,
+          "operator": "==",
+          "value": 6
+        },
+        {
+          "dieIndex": 1,
+          "operator": "==",
+          "value": 6
+        }
+      ]
+    }
+  ]
+}

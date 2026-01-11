@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2048 Algorithm Analysis - Game Hub</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="nav-container">
+            <div class="nav-left">
+                <a href="index.html" class="back-link">← Back to Hub</a>
+            </div>
+            <div class="nav-center">
+                <h1>2048 Analysis Dashboard</h1>
+                <p class="subtitle">Deep dive into algorithm performance and research</p>
+            </div>
+            <div class="nav-right">
+                <div class="dropdown">
+                    <button class="dropbtn">Menu ▼</button>
+                    <div class="dropdown-content">
+                        <a href="definitions.html">Definitions</a>
+                        <a href="dashboard.html" class="active">Dashboard</a>
+                        <a href="research.html">Research</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        <!-- Summary Cards -->
+        <section class="summary-grid" id="summary-stats">
+            <!-- Populated by JS -->
+            <div class="stat-card">
+                <h3>Total Runs</h3>
+                <p id="stat-total-runs">-</p>
+            </div>
+            <div class="stat-card">
+                <h3>Highest Score</h3>
+                <p id="stat-high-score">-</p>
+            </div>
+            <div class="stat-card">
+                <h3>Avg Max Tile</h3>
+                <p id="stat-avg-tile">-</p>
+            </div>
+        </section>
+
+        <!-- Best Algorithm Analysis -->
+        <section class="analysis-section" style="margin-bottom: 2rem;">
+            <div class="chart-card full-width">
+                <h3>🏆 Best Performing Algorithm (Average Score)</h3>
+                <canvas id="bestAlgoChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Grid Size Analysis -->
+        <section class="grid-analysis-section">
+            <div class="section-header">
+                <h2>📐 Best Algorithm by Grid Size</h2>
+            </div>
+            <div id="grid-winners" class="grid-analysis-cards">
+                <!-- Populated by JS -->
+            </div>
+            <div class="chart-card full-width" style="margin-top: 1rem;">
+                <h3>Algorithm Performance Comparison by Grid Size</h3>
+                <canvas id="gridSizeChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Pivot / Explorer (New) -->
+        <section class="explorer-section">
+            <div class="section-header">
+                <h2>Data Explorer</h2>
+                <div class="controls explorer-controls">
+                    <label>Group By:
+                        <select id="group-by">
+                            <option value="Algorithm">Algorithm</option>
+                            <option value="Grid Area">Grid Area</option>
+                            <option value="Max Tile">Max Tile</option>
+                        </select>
+                    </label>
+                    <label>Metric:
+                        <select id="metric">
+                            <option value="Score">Average Score</option>
+                            <option value="Moves">Average Moves</option>
+                            <option value="Count">Count of Runs</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+            <div class="chart-card full-width">
+                <canvas id="explorerChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Charts Row 1 -->
+        <section class="charts-grid">
+            <div class="chart-card">
+                <h3>Score Distribution</h3>
+                <canvas id="scoreChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3>Max Tile Frequency</h3>
+                <canvas id="tileChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Charts Row 2 -->
+        <section class="charts-grid">
+            <div class="chart-card full-width">
+                <h3>Algorithm Performance Timeline</h3>
+                <canvas id="timelineChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Data Table -->
+        <section class="data-section">
+            <div class="section-header">
+                <h2>Detailed Run Log</h2>
+                <div class="controls">
+                    <select id="rows-limit">
+                        <option value="5">5 rows</option>
+                        <option value="10">10 rows</option>
+                        <option value="25">25 rows</option>
+                        <option value="50">50 rows</option>
+                        <option value="100">100 rows</option>
+                        <option value="all">Show All</option>
+                    </select>
+                    <input type="text" id="search-input" placeholder="Search runs...">
+                </div>
+            </div>
+            <div class="table-container">
+                <div class="table-scroll-container">
+                    <table id="runs-table">
+                        <thead>
+                            <tr>
+                                <th>Run ID</th>
+                                <th>Algorithm</th>
+                                <th>Grid Size</th>
+                                <th>Score</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination-controls">
+                    <button id="prev-page" class="pagination-btn">← Previous</button>
+                    <span id="page-info" class="pagination-info">Page 1 of 1</span>
+                    <button id="next-page" class="pagination-btn">Next →</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="dashboard_data.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,105 @@
+{
+  "version": "2.0",
+  "settings": {
+    "interval": 1000,
+    "resetDuration": 1000,
+    "diceCount": 2,
+    "diceSides": 6,
+    "duration": 60,
+    "volume": 0,
+    "soundEnabled": true,
+    "seed": null
+  },
+  "eventDefinitions": [
+    {
+      "id": 1767754426120,
+      "rules": [
+        {
+          "dieIndex": 0,
+          "operator": "==",
+          "value": 1
+        },
+        {
+          "dieIndex": 1,
+          "operator": "==",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": 1767754426121,
+      "rules": [
+        {
+          "dieIndex": 0,
+          "operator": "==",
+          "value": 2
+        },
+        {
+          "dieIndex": 1,
+          "operator": "==",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "id": 1767754426122,
+      "rules": [
+        {
+          "dieIndex": 0,
+          "operator": "==",
+          "value": 3
+        },
+        {
+          "dieIndex": 1,
+          "operator": "==",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "id": 1767754426123,
+      "rules": [
+        {
+          "dieIndex": 0,
+          "operator": "==",
+          "value": 4
+        },
+        {
+          "dieIndex": 1,
+          "operator": "==",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "id": 1767754426124,
+      "rules": [
+        {
+          "dieIndex": 0,
+          "operator": "==",
+          "value": 5
+        },
+        {
+          "dieIndex": 1,
+          "operator": "==",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "id": 1767754426125,
+      "rules": [
+        {
+          "dieIndex": 0,
+          "operator": "==",
+          "value": 6
+        },
+        {
+          "dieIndex": 1,
+          "operator": "==",
+          "value": 6
+        }
+      ]
+    }
+  ]
+}

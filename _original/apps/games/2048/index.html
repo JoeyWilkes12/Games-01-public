@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2048 - Brain Gym</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../confirm-exit.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+</head>
+
+<body data-theme="classic">
+    <div class="game-container">
+        <header>
+            <div class="header-left">
+                <a href="../../../index.html" class="home-btn" id="home-btn" aria-label="Back to Hub"
+                    onclick="return window.confirmGameExit ? window.confirmGameExit() : true">🏠</a>
+                <h1>2048!</h1>
+            </div>
+            <div class="header-right">
+                <a href="../../../definitions.html" class="research-btn">AI, Analytics & Research ➔</a>
+                <button id="settings-btn" class="settings-icon" aria-label="Settings">⚙️</button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Stats Panel -->
+            <div class="panel stats-panel">
+                <div class="stat-box">
+                    <span class="stat-label">SCORE</span>
+                    <strong id="score-value">0</strong>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">BEST</span>
+                    <strong id="best-value">0</strong>
+                </div>
+            </div>
+
+            <!-- Game Grid -->
+            <div class="game-area">
+                <div id="game-message" class="game-message hidden">
+                    <p>You Win!</p>
+                    <button id="keep-playing-btn" class="btn-primary">Keep Playing</button>
+                </div>
+                <div id="grid-container" class="grid-container">
+                    <!-- Tiles injected by JS -->
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <!-- New Game Icon -->
+            <button id="new-game-btn" class="btn-icon big-icon" aria-label="New Game">↻</button>
+
+            <div class="hint-group">
+                <button id="hint-btn" class="btn-secondary">💡 Hint</button>
+                <button id="solve-btn" class="btn-highlight">🤖 Play for Me</button>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div id="settings-modal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Settings</h2>
+                    <button id="close-settings" class="close-btn">&times;</button>
+                </div>
+
+                <div class="setting-item">
+                    <label for="theme-picker">Theme:</label>
+                    <select id="theme-picker">
+                        <option value="classic">Classic Toy</option>
+                        <option value="dark">Dark Mode</option>
+                        <option value="pastel">Pastel Dream</option>
+                        <option value="neon">Neon Arcade</option>
+                    </select>
+                </div>
+
+                <div class="setting-item">
+                    <label for="speed-range">Auto-Play Speed:</label>
+                    <div class="range-container">
+                        <span>Slow</span>
+                        <input type="range" id="speed-range" min="50" max="500" step="50" value="200">
+                        <span>Fast</span>
+                    </div>
+                </div>
+
+                <p class="modal-note">Use Arrow Keys or Swipe to play!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exit Confirmation Modal -->
+    <div class="confirm-exit-overlay hidden" id="confirm-exit-modal">
+        <div class="confirm-exit-modal">
+            <div class="confirm-exit-icon">⚠️</div>
+            <div class="confirm-exit-title">Leave Game?</div>
+            <div class="confirm-exit-message">Your current game progress will be lost. Are you sure you want to return
+                to the Game Hub?</div>
+            <div class="confirm-exit-buttons">
+                <button class="confirm-exit-btn btn-stay" id="confirm-stay-btn">Stay</button>
+                <button class="confirm-exit-btn btn-leave" id="confirm-leave-btn">Leave</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

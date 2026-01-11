@@ -1,0 +1,75 @@
+{
+    "version": "1.0",
+    "name": "Advanced Test Configuration",
+    "settings": {
+        "gridSize": 4,
+        "seed": 12345,
+        "prob4": 0.1,
+        "winScore": 2048,
+        "autoPlaySpeed": 100
+    },
+    "testScenarios": {
+        "initialBoard": [
+            [
+                2,
+                0,
+                0,
+                0
+            ],
+            [
+                2,
+                0,
+                0,
+                0
+            ],
+            [
+                0,
+                0,
+                0,
+                0
+            ],
+            [
+                0,
+                0,
+                0,
+                0
+            ]
+        ],
+        "expectedMergeResult": {
+            "direction": "up",
+            "resultBoard": [
+                [
+                    4,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    0,
+                    0,
+                    0,
+                    0
+                ]
+            ],
+            "scoreGain": 4
+        }
+    },
+    "validationRules": {
+        "onlyPowersOfTwo": true,
+        "minTileValue": 2,
+        "maxTileValue": 131072
+    },
+    "description": "Advanced test configuration with predefined board states for testing merge logic"
+}

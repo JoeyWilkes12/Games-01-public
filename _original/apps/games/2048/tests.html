@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>2048 Tests</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1e293b;
+            color: #f8fafc;
+        }
+
+        .pass {
+            color: #10b981;
+        }
+
+        .fail {
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        .group {
+            margin-top: 20px;
+            font-weight: bold;
+            border-bottom: 1px solid #475569;
+            color: #38bdf8;
+            padding-bottom: 5px;
+        }
+
+        .summary {
+            margin-top: 30px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        .summary.all-pass {
+            border: 2px solid #10b981;
+        }
+
+        .summary.has-fail {
+            border: 2px solid #ef4444;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>2048 Unit & Logic Tests</h1>
+    <div id="results"></div>
+
+    <!-- Load the game logic -->
+    <script src="script.js"></script>
+
+    <script>
+        const resultsDiv = document.getElementById('results');
+        let passCount = 0;
+        let failCount = 0;
+
+        function log(message, type = 'info') {
+            const div = document.createElement('div');
+            div.innerText = message;
+            div.className = type;
+            resultsDiv.appendChild(div);
+        }
+
+        function assert(condition, message) {
+            if (condition) {
+                log(`[PASS] ${message}`, 'pass');
+                passCount++;
+            } else {
+                log(`[FAIL] ${message}`, 'fail');
+                failCount++;
+            }
+        }
+
+        function runTests() {
+            log('Starting Tests...', 'group');
+
+            // Initialize minimal environment (without UI logic)
+            Game2048.init(null);
+
+            // ===================================
+            // GROUP 1: Core Logic
+            // ===================================
+            log('Group 1: Core Logic (Slide & Merge)', 'group');
+
+            // Test 1: Slide Row (removing zeros)
+            let row = [0, 2, 0, 2];
+            let slid = Game2048.slideRow(row);
+            assert(JSON.stringify(slid) === JSON.stringify([2, 2, 0, 0]), 'Sliding [0, 2, 0, 2] -> [2, 2, 0, 0]');
+
+            // Test 2: Combine Row
+            let combined = Game2048.combineRow([2, 2, 0, 0]);
+            assert(combined[0] === 4 && combined[1] === 0, 'Combining [2, 2, 0, 0] -> [4, 0, 0, 0]');
+
+            // Test 3: Multiple merges
+            let multiCombine = Game2048.combineRow([2, 2, 4, 4]);
+            assert(multiCombine[0] === 4 && multiCombine[2] === 8, 'Combining [2, 2, 4, 4] -> [4, 0, 8, 0]');
+
+            // ===================================
+            // GROUP 2: Grid Manipulation
+            // ===================================
+            log('Group 2: Grid Manipulation', 'group');
+
+            let initialGrid = [
+                [2, 2, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0]
+            ];
+            Game2048.setGrid(initialGrid);
+
+            Game2048.moveLeft();
+            let afterMove = Game2048.getGrid();
+
+            assert(afterMove[0][0] === 4, 'Moving Left merges [2, 2, 0, 0] into 4');
+
+            // Verify the merged tile is the only non-zero (move API doesn't auto-spawn for test control)
+            let tileCount = afterMove.flat().filter(x => x !== 0).length;
+            assert(tileCount === 1, 'Move produces single merged tile (4) - no auto-spawn in test API');
+
+            // ===================================
+            // GROUP 3: Win/Loss Conditions
+            // ===================================
+            log('Group 3: Win/Loss Conditions', 'group');
+
+            // Setup Winning State
+            Game2048.setGrid([
+                [1024, 1024, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0]
+            ]);
+            Game2048.moveLeft();
+            assert(Game2048.checkWin() === true, '1024 + 1024 = 2048 triggers Win condition');
+
+            // Setup Full Board / Game Over
+            let fullGrid = [
+                [2, 4, 2, 4],
+                [4, 2, 4, 2],
+                [2, 4, 2, 4],
+                [4, 2, 4, 2]
+            ];
+            Game2048.setGrid(fullGrid);
+            assert(Game2048.checkLose() === true, 'Full board with no merges is Game Over');
+
+            // Setup Full Board / NOT Game Over (merge possible)
+            let mergePossibleGrid = [
+                [2, 2, 2, 4],
+                [4, 2, 4, 2],
+                [2, 4, 2, 4],
+                [4, 2, 4, 2]
+            ];
+            Game2048.setGrid(mergePossibleGrid);
+            assert(Game2048.checkLose() === false, 'Full board with possible merge is NOT Game Over');
+
+            // ===================================
+            // GROUP 4: Negative / Integrity Tests
+            // ===================================
+            log('Group 4: Negative/Integrity Tests (Anti-Cheat)', 'group');
+
+            // Inject Impossible Logic - Tile 3
+            Game2048.setGrid([
+                [3, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0]
+            ]);
+            let errors = Game2048.validateBoardState();
+            assert(errors.length > 0, 'Detected invalid tile "3" (Not power of 2)');
+            log('  Error: ' + errors[0]);
+
+            // Inject Impossible Logic 2: Tile 7
+            Game2048.setGrid([
+                [0, 0, 0, 0],
+                [0, 7, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0]
+            ]);
+            errors = Game2048.validateBoardState();
+            assert(errors.length > 0, 'Detected invalid tile "7"');
+
+            // Valid board should have no errors
+            Game2048.setGrid([
+                [2, 4, 8, 16],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0]
+            ]);
+            errors = Game2048.validateBoardState();
+            assert(errors.length === 0, 'Valid board [2, 4, 8, 16] passes validation');
+
+            // ===================================
+            // GROUP 5: Seeded Reproducibility Tests
+            // ===================================
+            log('Group 5: Seeded Reproducibility Tests', 'group');
+
+            // Test: Same seed produces same results
+            Game2048.setSeed(42);
+            Game2048.init(null);
+            const seed42Board1 = Game2048.getGrid();
+
+            Game2048.setSeed(42);
+            Game2048.init(null);
+            const seed42Board2 = Game2048.getGrid();
+
+            // Note: Boards start empty, randomness happens on addRandomTile
+            // Let's test with runSeededSimulation
+            const sim1 = Game2048.runSeededSimulation(12345, [3, 0, 1, 2]); // Left, Up, Right, Down
+            const sim2 = Game2048.runSeededSimulation(12345, [3, 0, 1, 2]);
+
+            assert(
+                JSON.stringify(sim1) === JSON.stringify(sim2),
+                'Same seed (12345) produces identical game simulation'
+            );
+
+            // Different seed should produce different results
+            const sim3 = Game2048.runSeededSimulation(99999, [3, 0, 1, 2]);
+            assert(
+                JSON.stringify(sim1) !== JSON.stringify(sim3),
+                'Different seeds produce different game simulations'
+            );
+
+            // ===================================
+            // GROUP 6: Configuration Loading Tests
+            // ===================================
+            log('Group 6: Configuration Loading Tests', 'group');
+
+            const testConfig = {
+                version: "1.0",
+                name: "Test Config",
+                settings: {
+                    seed: 77777,
+                    prob4: 0.2,
+                    winScore: 4096
+                }
+            };
+
+            const loadResult = Game2048.loadConfig(testConfig);
+            assert(loadResult === true, 'Configuration loaded successfully');
+
+            // Test winScore=4096: First check that 2048 alone doesn't win
+            Game2048.setGrid([
+                [2048, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0]
+            ]);
+            assert(Game2048.checkWin() === false, 'With winScore=4096, having just 2048 does not win');
+
+            // Now merge to get 4096
+            Game2048.setGrid([
+                [2048, 2048, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0]
+            ]);
+            Game2048.moveLeft();
+            assert(Game2048.checkWin() === true, '2048+2048=4096 triggers Win with winScore=4096');
+
+            // Reset config
+            Game2048.loadConfig({ settings: { winScore: 2048 } });
+
+            // ===================================
+            // GROUP 7: Advanced Event Logic Tests
+            // ===================================
+            log('Group 7: Advanced Event Logic Tests', 'group');
+
+            // Test: Score accumulates correctly
+            Game2048.init(null);
+            Game2048.setGrid([
+                [2, 2, 2, 2],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0]
+            ]);
+            const scoreBefore = Game2048.getScore();
+            Game2048.moveLeft(); // Should merge: [4, 4, 0, 0] + spawn
+            const scoreAfter = Game2048.getScore();
+            assert(scoreAfter === scoreBefore + 8, 'Score increases by 8 (4+4) when merging [2,2,2,2]');
+
+            // Test: Chain merge scoring
+            Game2048.init(null);
+            Game2048.setGrid([
+                [4, 4, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0]
+            ]);
+            Game2048.moveLeft();
+            const chainScore = Game2048.getScore();
+            assert(chainScore === 8, 'Merging [4, 4] adds 8 to score');
+
+            // Test: No move should not change score
+            Game2048.init(null);
+            Game2048.setGrid([
+                [2, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0]
+            ]);
+            const preScore = Game2048.getScore();
+            Game2048.moveLeft(); // Already at left, no movement
+            assert(Game2048.getScore() === preScore, 'No-op move does not change score');
+
+            // Test: Boundary conditions - move to edge
+            Game2048.setGrid([
+                [0, 0, 0, 2],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0],
+                [0, 0, 0, 0]
+            ]);
+            Game2048.moveLeft();
+            const movedGrid = Game2048.getGrid();
+            assert(movedGrid[0][0] === 2, 'Tile moves to left edge correctly');
+
+            // ===================================
+            // Summary
+            // ===================================
+            log('Tests Completed.', 'group');
+
+            const summaryDiv = document.createElement('div');
+            summaryDiv.className = 'summary ' + (failCount === 0 ? 'all-pass' : 'has-fail');
+            summaryDiv.innerHTML = `
+                <strong>Results:</strong> ${passCount} passed, ${failCount} failed<br>
+                <strong>Total:</strong> ${passCount + failCount} tests
+            `;
+            resultsDiv.appendChild(summaryDiv);
+        }
+
+        window.onload = runTests;
+    </script>
+</body>
+
+</html>

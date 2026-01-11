@@ -1,13 +1,12 @@
-# Overview
+# Game Hub
 
-## Welcome
-Welcome to my games repository! I explore logical aspects and algorithmic solutions to various puzzles and strategy games.
+A collection of logic puzzles, strategy games, and algorithmic challenges built with **React**, **Vite**, and **Tailwind CSS**.
 
 **Live Demo**: [Play the Games Here](https://joeywilkes12.github.io/Games-01-public/index.html)
 
 ---
 
-## Game Gallery
+## 🎮 Game Gallery
 
 ### Game Hub
 ![Game Hub](screenshots/hub.png)
@@ -26,76 +25,147 @@ Welcome to my games repository! I explore logical aspects and algorithmic soluti
 
 ---
 
-## Playable Games
-- [Random Event Dice (v2.0)](apps/games/Random%20Event%20Dice)
-- [2048](apps/games/2048)
-- [Sliding Puzzle 3x3](apps/games/Sliding%20Puzzle%203x3)
-- [Bank](apps/games/Bank)
+## 🎯 Playable Games
 
-## Coming Soon / In Development
-- [Acquire](apps/games/Acquire)
-- [Mastermind](apps/games/Mastermind)
-- [Queens](apps/games/Queens)
-- [Wordle](apps/games/Wordle)
-- [Risk](apps/games/Risk)
+| Game | Description |
+|------|-------------|
+| [Random Event Dice](/games/random-event-dice) | Multi-player dice rolling game with analytics dashboard, heatmaps, and leaderboard |
+| [2048](/games/2048) | Single-player sliding block puzzle with Expectimax AI solver |
+| [Sliding Puzzle](/games/sliding-puzzle) | Classic 3x3 sliding tile puzzle with A* solver |
+| [Bank](/games/bank) | Multiplayer dice game with undo/redo and probability cheatsheet |
 
-## Development & Deployment
+## 🚧 Coming Soon
+- Acquire
+- Mastermind
+- Queens
+- Wordle
+- Risk
 
-### Virtual Environment & Reproducibility
-This codebase consists largely of static web applications (HTML/CSS/JS) that do not require complex backend runtimes or build steps for the final user. Tests and local development servers differ slightly by game (some use Node.js for testing), but the core games are designed to be "unzipped and played" in any modern browser.
+---
 
-Reproducibility is ensured through semantic versioning of game logic and deterministic seeds in games like Random Event Dice and 2048, allowing users to replay specific scenarios.
+## 🛠️ Technology Stack
 
-### Deployment (GitHub Pages)
-This repository is deployed using [GitHub Pages](https://pages.github.com/).
-- **Method**: Static file serving from the `main` branch.
-- **CI/CD**: Currently, there are no GitHub Actions or complex build pipelines. Updates are live immediately upon push to the main branch.
+- **React 18** - UI components
+- **Vite 6** - Build tool and dev server
+- **Tailwind CSS 3** - Utility-first styling
+- **React Router 6** - Client-side routing
+- **Playwright** - E2E testing
+
+## 📱 Mobile-First Design
+
+This application is designed with mobile-first principles:
+- Responsive layouts that adapt from 320px to 1280px+
+- Touch-friendly targets (minimum 44x44px)
+- Optimized animations and transitions
+- See [claude.md](claude.md) for detailed guidelines
+
+---
+
+## 🚀 Development
+
+### Prerequisites
+- Node.js 18+
+- npm 9+
+
+### Quick Start
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm run preview
+```
 
 ### Testing
 
-This project uses [Playwright](https://playwright.dev/) for E2E testing and demo recordings.
-
-**Quick Start:**
 ```bash
-./run-all-tests.sh
-```
+# Run all tests
+npm test
 
-**Available Commands:**
-- `npx playwright test --project=tests` - Run all unit/seeded tests
-- `npx playwright test --project=demo` - Run demo recording (creates video)
-- `npx playwright show-report` - View interactive test report
+# Run tests with visible browser
+npm run test:headed
+
+# Run full demo recording
+npm run demo
+```
 
 See [tests.md](tests.md) for complete test documentation.
 
+---
 
-## Acknowledgements & AI Investment
-This project was developed with significant assistance from advanced AI tools, representing a financial investment in state-of-the-art technology to explore the future of coding.
-Options:
-- `--demo`: Run full demo recording.
-- `--split`: Run split parallel demos.
-- `--headed`: Run in visible browser.
-- `--speed=2.0`: Run at 2x speed.
+## 📁 Project Structure
 
-### 2048
-A single-player sliding block puzzle using numbered tiles. Features an Expectimax AI solver, multiple themes, and seeded randomness for reproducible runs.
+```
+.
+├── src/
+│   ├── components/     # Shared UI components
+│   ├── games/          # Individual games
+│   │   ├── Bank/
+│   │   ├── Game2048/
+│   │   ├── RandomEventDice/
+│   │   └── SlidingPuzzle/
+│   ├── pages/          # Page components
+│   ├── App.jsx         # Router configuration
+│   ├── main.jsx        # Entry point
+│   └── index.css       # Tailwind styles
+├── _original/          # Original vanilla JS version (backup)
+├── tests/              # Playwright test specs
+├── claude.md           # Mobile-first development guidelines
+└── package.json
+```
 
-### Sliding Puzzle 3x3
-A classic sliding tile puzzle where the player must rearrange scrambled tiles into a specific order.
+---
+
+## 🎲 Game Details
 
 ### Bank
-A multiplayer dice game based on rules from [ThunderHive Games](https://www.thunderhivegames.com/). Players take turns rolling dice to accumulate points in a shared "bank", then strategically decide when to claim those points. Rolling a 7 ends the round and loses unbanked points (except the first 3 rolls which are protected). Doubles double the bank!
+A multiplayer dice game based on rules from [ThunderHive Games](https://www.thunderhivegames.com/). Players take turns rolling dice to accumulate points in a shared "bank", then strategically decide when to claim those points. Features:
+- Multi-player with configurable names
+- Undo/redo with resample or preserve modes
+- BYOD (Bring Your Own Dice) mode
+- Probability cheatsheet
 
-### Acquire (Coming Soon)
-A strategic board game involving the placement of tiles to form and expand corporations. Players buy stock in active chains and earn bonuses when chains merge.
+### 2048
+A single-player sliding block puzzle using numbered tiles. Features:
+- Expectimax AI solver
+- Multiple themes
+- Seeded randomness for reproducible runs
 
-### Mastermind (Coming Soon)
-A logic-based code-breaking game where the player guesses a secret color pattern.
+### Sliding Puzzle 3x3
+A classic sliding tile puzzle. Features:
+- A* pathfinding solver
+- Kids mode (colored tiles) and Advanced mode (numbered)
+- Move counter and optimal move display
 
-### Queens (Coming Soon)
-A classic constraint satisfaction puzzle requiring the placement of N queens on an NxN chessboard so that no two queens threaten each other.
+### Random Event Dice
+A multiplayer dice game with analytics. Features:
+- Configurable game duration and roll interval
+- Real-time leaderboard
+- Roll distribution heatmap
+- Skip to end simulation
 
-### Wordle (Coming Soon)
-A word-guessing game relying on information theory and entropy to maximize information gain with each guess.
+---
 
-### Risk (Coming Soon)
-A complex board game of global domination involving territory control, combat, and alliances.
+## 🙏 Acknowledgements
+
+This project was developed with significant assistance from advanced AI tools including:
+- **Antigravity** with Gemini 3 Pro and Claude Opus 4.5
+- **Playwright** for E2E testing
+
+---
+
+## 📄 License
+
+MIT License - See LICENSE file for details.
+
+## 🔗 Links
+
+- [GitHub Repository](https://github.com/JoeyWilkes12/Games-01-public)
+- [Project Overview (Notion)](https://www.notion.so/Random-Event-Dice-Game-Public-2e2692f524348040969cd794baa02219)

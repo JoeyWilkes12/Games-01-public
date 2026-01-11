@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank - Dice Game</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../home_button_style.css">
+    <link rel="stylesheet" href="../confirm-exit.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <a href="../../../index.html" class="home-button" id="home-btn" title="Back to Game Hub"
+        onclick="return window.game ? window.game.confirmExit() : true">🏠</a>
+
+    <div class="game-container">
+        <!-- Header -->
+        <header>
+            <h1>🏦 BANK</h1>
+            <p class="subtitle">Roll the dice. Bank your points. Don't get busted!</p>
+        </header>
+
+        <!-- Main Game Area -->
+        <main class="main-content">
+            <!-- Round Info -->
+            <div class="round-info">
+                <span class="round-label">Round</span>
+                <span class="round-number" id="round-number">1</span>
+                <span class="round-total">/ <span id="total-rounds">20</span></span>
+                <span class="roll-count">Roll #<span id="roll-number">0</span></span>
+            </div>
+
+            <!-- BANK Score Display -->
+            <div class="bank-display">
+                <div class="bank-label">BANK</div>
+                <div class="bank-score" id="bank-score">0</div>
+                <div class="bank-sublabel">Points available to claim</div>
+            </div>
+
+            <!-- Dice Container -->
+            <div class="dice-area">
+                <div class="dice-container" id="dice-container">
+                    <div class="die" id="die-1">?</div>
+                    <div class="die" id="die-2">?</div>
+                </div>
+                <!-- BYOD (Bring Your Own Dice) Input Panel -->
+                <details class="byod-panel hidden" id="byod-panel" open>
+                    <summary class="byod-header">Enter Dice Sum</summary>
+                    <div class="byod-buttons">
+                        <button class="byod-btn" data-sum="2">2</button>
+                        <button class="byod-btn" data-sum="3">3</button>
+                        <button class="byod-btn" data-sum="4">4</button>
+                        <button class="byod-btn" data-sum="5">5</button>
+                        <button class="byod-btn" data-sum="6">6</button>
+                        <button class="byod-btn byod-seven" data-sum="7">7</button>
+                        <button class="byod-btn" data-sum="8">8</button>
+                        <button class="byod-btn" data-sum="9">9</button>
+                        <button class="byod-btn" data-sum="10">10</button>
+                        <button class="byod-btn" data-sum="11">11</button>
+                        <button class="byod-btn" data-sum="12">12</button>
+                        <button class="byod-btn byod-doubles" data-doubles="true">⚀⚀ Doubles</button>
+                    </div>
+                </details>
+                <div class="last-roll-info" id="last-roll-info"></div>
+            </div>
+
+            <!-- Alert Message -->
+            <div class="alert-message hidden" id="alert-message">
+                <span class="alert-icon">⚠️</span>
+                <span class="alert-text" id="alert-text">Seven! Round Over!</span>
+            </div>
+
+            <!-- Current Player Indicator (moved above Roll button) -->
+            <div class="current-player-section">
+                <span class="current-label">Current Roller:</span>
+                <span class="current-player-name" id="current-player-name">Player 1</span>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-roll" id="roll-btn">🎲 Roll Dice</button>
+                <button class="btn btn-undo" id="undo-btn" disabled title="Undo (Ctrl+Z)">↶ Undo</button>
+            </div>
+
+            <!-- Banking info (hides after roll 3) -->
+            <div class="banking-info" id="banking-info">
+                <span class="info-text">Banking enabled after 3 rolls</span>
+            </div>
+
+            <!-- Collapsible Multi-player BANK Panel -->
+            <details class="bank-action-group disabled" id="bank-action-group">
+                <summary class="bank-panel-summary">
+                    <span>Select players to BANK</span>
+                    <div class="bank-panel-actions">
+                        <button class="btn-small" id="bank-select-all">All</button>
+                        <button class="btn-small" id="bank-clear-all">Clear</button>
+                    </div>
+                </summary>
+                <div class="bank-player-panel disabled" id="bank-player-panel">
+                    <div class="bank-player-options" id="bank-player-options">
+                        <!-- Populated by JavaScript with checkboxes -->
+                    </div>
+                </div>
+                <button class="btn btn-bank" id="bank-btn" disabled>🏦 BANK Selected</button>
+            </details>
+
+            <!-- Fallback dropdown (hidden, for backwards compatibility) -->
+            <select class="bank-player-select hidden" id="bank-player-select" disabled>
+                <option value="">Select player to BANK</option>
+            </select>
+        </main>
+
+        <!-- Players Panel -->
+        <aside class="players-panel" id="players-panel">
+            <div class="panel-header">
+                <h2>🎯 Scoreboard</h2>
+                <div class="panel-controls">
+                    <button class="btn-icon" id="toggle-settings" title="Settings">⚙️</button>
+                </div>
+            </div>
+
+            <!-- Compact Scoreboard (Default View - Current Player) -->
+            <div class="compact-scoreboard" id="compact-scoreboard">
+                <div class="compact-player-name">
+                    <span id="compact-current-name">Player 1</span>
+                    <span class="compact-rank" id="compact-current-rank">1st of 4</span>
+                </div>
+                <div class="compact-score" id="compact-current-score">0</div>
+                <div class="compact-metrics">
+                    <div class="compact-metric">
+                        <span class="metric-label">To tie next:</span>
+                        <span class="metric-value" id="compact-tie-next">--</span>
+                    </div>
+                    <div class="compact-metric">
+                        <span class="metric-label">To tie leader:</span>
+                        <span class="metric-value" id="compact-tie-leader">--</span>
+                    </div>
+                    <div class="compact-metric">
+                        <span class="metric-label">Ahead by:</span>
+                        <span class="metric-value" id="compact-ahead-by">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Full Scoreboard (Collapsible) -->
+            <details class="full-scoreboard-details" id="full-scoreboard-details">
+                <summary>📋 Full Scoreboard</summary>
+                <div class="players-list" id="players-list">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </details>
+        </aside>
+
+        <!-- Settings Panel -->
+        <div class="settings-panel hidden" id="settings-panel">
+            <div class="settings-header">
+                <h3>⚙️ Game Settings</h3>
+                <button class="btn-icon" id="close-settings">✖</button>
+            </div>
+            <div class="settings-content">
+                <div class="setting-group">
+                    <label for="rounds-select">Number of Rounds</label>
+                    <select id="rounds-select">
+                        <option value="1">1 Round (Testing)</option>
+                        <option value="5">5 Rounds</option>
+                        <option value="10">10 Rounds</option>
+                        <option value="15">15 Rounds</option>
+                        <option value="20" selected>20 Rounds</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label for="volume-input">Sound Volume</label>
+                    <input type="range" id="volume-input" min="0" max="100" value="50">
+                </div>
+                <div class="setting-group">
+                    <label>Players</label>
+                    <div class="player-config" id="player-config">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                    <button class="btn btn-add-player" id="add-player-btn">+ Add Player</button>
+                </div>
+                <div class="setting-group" id="undo-setting-group">
+                    <label for="undo-mode-select">Undo Mode</label>
+                    <select id="undo-mode-select">
+                        <option value="resample">Re-sample (new random)</option>
+                        <option value="preserve">Preserve (same rolls)</option>
+                    </select>
+                </div>
+                <div class="setting-group">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="byod-toggle">
+                        <span class="toggle-text">Bring Your Own Dice</span>
+                    </label>
+                    <p class="setting-hint">Use physical dice and enter the sum manually</p>
+                </div>
+                <div class="setting-group json-config-group">
+                    <label>Configuration</label>
+                    <div class="json-config-buttons">
+                        <button id="import-json-btn" class="btn-small" title="Import Configuration">📤 Import</button>
+                        <button id="export-json-btn" class="btn-small" title="Export Configuration">📥 Export</button>
+                        <input type="file" id="json-file-input" accept=".json" hidden>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <button class="btn btn-new-game" id="new-game-btn">🎮 New Game</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Probability Cheatsheet with Survival -->
+        <details class="probability-cheatsheet" id="probability-cheatsheet">
+            <summary>📊</summary>
+            <h4 class="cheatsheet-title">Dice Probabilities (2d6)</h4>
+            <div class="survival-display">
+                <span class="survival-label">Survival (no 7)</span>
+                <span class="survival-value" id="survival-prob">100%</span>
+            </div>
+            <table class="prob-table">
+                <thead>
+                    <tr>
+                        <th>Sum</th>
+                        <th>Prob</th>
+                        <th>Ways</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>2</td>
+                        <td>2.78%</td>
+                        <td>1</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>5.56%</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>8.33%</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>11.11%</td>
+                        <td>4</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>13.89%</td>
+                        <td>5</td>
+                    </tr>
+                    <tr class="highlight-seven">
+                        <td>7</td>
+                        <td>16.67%</td>
+                        <td>6</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>13.89%</td>
+                        <td>5</td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td>11.11%</td>
+                        <td>4</td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td>8.33%</td>
+                        <td>3</td>
+                    </tr>
+                    <tr>
+                        <td>11</td>
+                        <td>5.56%</td>
+                        <td>2</td>
+                    </tr>
+                    <tr>
+                        <td>12</td>
+                        <td>2.78%</td>
+                        <td>1</td>
+                    </tr>
+                </tbody>
+            </table>
+        </details>
+
+        <!-- Game Over Modal -->
+        <div class="modal hidden" id="game-over-modal">
+            <div class="modal-content">
+                <h2>🏆 Game Over!</h2>
+                <div class="winner-display" id="winner-display">
+                    <!-- Populated by JavaScript -->
+                </div>
+                <div class="game-over-actions">
+                    <button class="btn btn-new-game" id="play-again-btn">🎮 Play Again</button>
+                    <button class="btn btn-undo" id="undo-from-gameover-btn" disabled title="Undo last action">↶
+                        Undo</button>
+                </div>
+                <div class="final-scores" id="final-scores">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exit Confirmation Modal -->
+    <div class="confirm-exit-overlay hidden" id="confirm-exit-modal">
+        <div class="confirm-exit-modal">
+            <div class="confirm-exit-icon">⚠️</div>
+            <div class="confirm-exit-title">Leave Game?</div>
+            <div class="confirm-exit-message">Your current game progress will be lost. Are you sure you want to return
+                to the Game Hub?</div>
+            <div class="confirm-exit-buttons">
+                <button class="confirm-exit-btn btn-stay" id="confirm-stay-btn">Stay</button>
+                <button class="confirm-exit-btn btn-leave" id="confirm-leave-btn">Leave</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

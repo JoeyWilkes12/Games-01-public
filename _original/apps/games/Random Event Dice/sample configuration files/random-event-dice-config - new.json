@@ -1,0 +1,128 @@
+{
+  "version": "2.0",
+  "settings": {
+    "interval": 1000,
+    "resetDuration": 1000,
+    "diceCount": 2,
+    "diceSides": 6,
+    "duration": 60,
+    "volume": 0,
+    "soundEnabled": true,
+    "seed": null
+  },
+  "players": {
+    "1": "Joey",
+    "2": "Brinlee",
+    "3": "Braxton",
+    "4": "Gavin",
+    "5": "Hinckley",
+    "6": "London",
+    "7": "Bode",
+    "8": "Macey",
+    "9": "Ryder",
+    "10": "Lily",
+    "11": "Jack",
+    "12": "Cole",
+    "13": "Gracen",
+    "14": "Connor",
+    "15": "Friend"
+  },
+  "analytics": {
+    "enableLeaderboard": true,
+    "enableTimeline": true,
+    "enableHeatmap": true,
+    "panelWidth": 320
+  },
+  "eventDefinitions": [
+    {
+      "id": 1767770702032,
+      "rules": [
+        {
+          "dieIndex": 0,
+          "operator": "==",
+          "value": 1
+        },
+        {
+          "dieIndex": 1,
+          "operator": "==",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "id": 1767770702033,
+      "rules": [
+        {
+          "dieIndex": 0,
+          "operator": "==",
+          "value": 2
+        },
+        {
+          "dieIndex": 1,
+          "operator": "==",
+          "value": 2
+        }
+      ]
+    },
+    {
+      "id": 1767770702034,
+      "rules": [
+        {
+          "dieIndex": 0,
+          "operator": "==",
+          "value": 3
+        },
+        {
+          "dieIndex": 1,
+          "operator": "==",
+          "value": 3
+        }
+      ]
+    },
+    {
+      "id": 1767770702035,
+      "rules": [
+        {
+          "dieIndex": 0,
+          "operator": "==",
+          "value": 4
+        },
+        {
+          "dieIndex": 1,
+          "operator": "==",
+          "value": 4
+        }
+      ]
+    },
+    {
+      "id": 1767770702036,
+      "rules": [
+        {
+          "dieIndex": 0,
+          "operator": "==",
+          "value": 5
+        },
+        {
+          "dieIndex": 1,
+          "operator": "==",
+          "value": 5
+        }
+      ]
+    },
+    {
+      "id": 1767770702037,
+      "rules": [
+        {
+          "dieIndex": 0,
+          "operator": "==",
+          "value": 6
+        },
+        {
+          "dieIndex": 1,
+          "operator": "==",
+          "value": 6
+        }
+      ]
+    }
+  ]
+}

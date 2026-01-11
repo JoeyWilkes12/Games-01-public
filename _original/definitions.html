@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2048 Definitions & Instructions - Game Hub</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+
+<body>
+    <header>
+        <div class="nav-container">
+            <div class="nav-left">
+                <a href="index.html" class="back-link">← Back to Hub</a>
+            </div>
+            <div class="nav-center">
+                <h1>2048 Definitions & Instructions</h1>
+                <p class="subtitle">Understanding algorithms, scoring, and research context</p>
+            </div>
+            <div class="nav-right">
+                <div class="dropdown">
+                    <button class="dropbtn">Menu ▼</button>
+                    <div class="dropdown-content">
+                        <a href="definitions.html" class="active">Definitions</a>
+                        <a href="dashboard.html">Dashboard</a>
+                        <a href="research.html">Research</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="dashboard-container">
+        <!-- Score Definition -->
+        <section class="info-card highlight-card">
+            <div class="info-icon">📊</div>
+            <h2>Understanding the Score</h2>
+            <p class="score-definition">
+                The <strong>score</strong> in 2048 is the <em>cumulative sum of all tile merges</em> throughout the 
+                entire game — not just the value of the maximum tile at the end.
+            </p>
+            <p class="score-example">
+                For example: When two 2-tiles merge into a 4, you earn 4 points. When two 4-tiles merge into an 8, 
+                you earn 8 points. The final score represents the total of all these merges from start to finish.
+            </p>
+        </section>
+
+        <!-- Algorithm Definitions -->
+        <section class="definitions-section">
+            <h2>Algorithm Explanations</h2>
+            <p class="section-intro">
+                The following algorithms were tested to determine optimal strategies for playing 2048 across different grid sizes.
+            </p>
+
+            <div class="algorithm-grid">
+                <div class="algorithm-card">
+                    <div class="algo-header">
+                        <span class="algo-abbrev">Mc</span>
+                        <h3>Monte Carlo</h3>
+                    </div>
+                    <p class="algo-description">
+                        A probabilistic algorithm that uses random sampling to evaluate possible moves. 
+                        It simulates many random games from the current state and chooses the move that 
+                        leads to the best average outcome across all simulations.
+                    </p>
+                    <div class="algo-traits">
+                        <span class="trait">Statistical</span>
+                        <span class="trait">Random Sampling</span>
+                    </div>
+                </div>
+
+                <div class="algorithm-card">
+                    <div class="algo-header">
+                        <span class="algo-abbrev algo-e">E</span>
+                        <h3>Expectimax Tree</h3>
+                    </div>
+                    <p class="algo-description">
+                        A game tree search algorithm designed for games with random elements. Unlike Minimax, 
+                        Expectimax considers chance nodes (random tile spawns) and computes expected values 
+                        rather than worst-case scenarios.
+                    </p>
+                    <div class="algo-traits">
+                        <span class="trait">Tree Search</span>
+                        <span class="trait">Expected Value</span>
+                    </div>
+                </div>
+
+                <div class="algorithm-card">
+                    <div class="algo-header">
+                        <span class="algo-abbrev algo-igs">Igs</span>
+                        <h3>IDDFS Graph Search</h3>
+                    </div>
+                    <p class="algo-description">
+                        Iterative Deepening Depth-First Search with graph-based state management. 
+                        Combines the space efficiency of DFS with the completeness of BFS, incrementally 
+                        exploring deeper levels while avoiding revisiting duplicate states.
+                    </p>
+                    <div class="algo-traits">
+                        <span class="trait">Graph Search</span>
+                        <span class="trait">Iterative Deepening</span>
+                    </div>
+                </div>
+
+                <div class="algorithm-card">
+                    <div class="algo-header">
+                        <span class="algo-abbrev algo-rl">Rl</span>
+                        <h3>Reinforcement Learning</h3>
+                    </div>
+                    <p class="algo-description">
+                        A machine learning approach where an agent learns optimal strategies through 
+                        trial and error. The algorithm develops a policy by receiving rewards for 
+                        successful moves and adjusting its behavior over many training episodes.
+                    </p>
+                    <div class="algo-traits">
+                        <span class="trait">Machine Learning</span>
+                        <span class="trait">Adaptive</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Grid Size Context -->
+        <section class="info-section">
+            <h2>Grid Sizes Tested</h2>
+            <div class="grid-sizes">
+                <div class="grid-size-card">
+                    <div class="grid-visual grid-4x4">
+                        <span>4×4</span>
+                    </div>
+                    <p>Standard grid (16 cells)</p>
+                    <span class="grid-area">Grid Area: 16</span>
+                </div>
+                <div class="grid-size-card">
+                    <div class="grid-visual grid-5x5">
+                        <span>5×5</span>
+                    </div>
+                    <p>Extended grid (25 cells)</p>
+                    <span class="grid-area">Grid Area: 25</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Research Context -->
+        <section class="info-section">
+            <h2>Research Context</h2>
+            <p>
+                This dashboard presents data from systematic testing of AI algorithms playing 2048. 
+                Each algorithm was run multiple times on different grid configurations to evaluate:
+            </p>
+            <ul class="context-list">
+                <li>Average score achieved per algorithm</li>
+                <li>Consistency of performance across runs</li>
+                <li>How grid size affects algorithm effectiveness</li>
+                <li>Whether any algorithm dominates across all conditions</li>
+            </ul>
+            <p>
+                Explore the <a href="dashboard.html">Dashboard</a> for interactive analysis or visit 
+                <a href="research.html">Research</a> for academic references.
+            </p>
+        </section>
+    </main>
+</body>
+
+</html>

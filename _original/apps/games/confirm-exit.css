@@ -1,0 +1,125 @@
+/* Shared Exit Confirmation Modal Styles */
+
+.confirm-exit-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 0.2s ease;
+}
+
+.confirm-exit-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.confirm-exit-modal {
+    background: #1e2328;
+    border: 1px solid #30363d;
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    animation: confirmPopIn 0.2s ease;
+}
+
+@keyframes confirmPopIn {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.confirm-exit-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.confirm-exit-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #f0f6fc;
+    margin-bottom: 0.5rem;
+}
+
+.confirm-exit-message {
+    font-size: 0.95rem;
+    color: #8b949e;
+    margin-bottom: 1.5rem;
+    line-height: 1.4;
+}
+
+.confirm-exit-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.confirm-exit-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 100px;
+}
+
+.confirm-exit-btn.btn-stay {
+    background: #238636;
+    color: white;
+}
+
+.confirm-exit-btn.btn-stay:hover {
+    background: #2ea043;
+    transform: translateY(-1px);
+}
+
+.confirm-exit-btn.btn-leave {
+    background: #21262d;
+    color: #f0f6fc;
+    border: 1px solid #30363d;
+}
+
+.confirm-exit-btn.btn-leave:hover {
+    background: #30363d;
+}
+
+/* Light theme overrides */
+[data-theme="classic"] .confirm-exit-modal,
+[data-theme="pastel"] .confirm-exit-modal {
+    background: #ffffff;
+    border-color: #e1e4e8;
+}
+
+[data-theme="classic"] .confirm-exit-title,
+[data-theme="pastel"] .confirm-exit-title {
+    color: #24292e;
+}
+
+[data-theme="classic"] .confirm-exit-message,
+[data-theme="pastel"] .confirm-exit-message {
+    color: #586069;
+}
+
+[data-theme="classic"] .confirm-exit-btn.btn-leave,
+[data-theme="pastel"] .confirm-exit-btn.btn-leave {
+    background: #f6f8fa;
+    color: #24292e;
+    border-color: #e1e4e8;
+}

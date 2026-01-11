@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RED 2.0 E2E Tests</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #eee;
+        }
+
+        .test-case {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 4px;
+        }
+
+        .pass {
+            border-color: #10b981;
+            background: #064e3b;
+        }
+
+        .fail {
+            border-color: #ef4444;
+            background: #7f1d1d;
+        }
+
+        iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+            background: #fff;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Random Event Dice 2.0 - E2E Tests</h1>
+    <div id="status">Running tests...</div>
+    <div id="results"></div>
+    <iframe id="game-frame" src="index.html"></iframe>
+
+    <script>
+        const frame = document.getElementById('game-frame');
+        const results = document.getElementById('results');
+
+        function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+        async function runTests() {
+            await wait(1000); // Wait for load
+            const win = frame.contentWindow;
+            const doc = frame.contentDocument;
+            const game = win.gameInstance;
+
+            function assert(desc, condition) {
+                const div = document.createElement('div');
+                div.className = 'test-case ' + (condition ? 'pass' : 'fail');
+                div.textContent = (condition ? 'PASS' : 'FAIL') + ': ' + desc;
+                results.appendChild(div);
+                return condition;
+            }
+
+            // Test 1: Initial State
+            assert('Game initializes with 2 dice', doc.querySelectorAll('.die').length === 2);
+            assert('Settings panel exists', !!doc.getElementById('settings-content'));
+
+            // Test 2: Change Dice Count
+            const diceInput = doc.getElementById('dice-count');
+            diceInput.value = 1;
+            diceInput.dispatchEvent(new Event('change'));
+            await wait(100);
+            assert('Updating dice count to 1 updates UI', doc.querySelectorAll('.die').length === 1);
+
+            // Test 3: Settings Persistence in Logic
+            assert('Game setting updated to 1', game.settings.diceCount === 1);
+
+            // Test 4: Start Game
+            const startBtn = doc.getElementById('start-btn');
+            startBtn.click();
+            await wait(100);
+            assert('Game starts (isPlaying true)', game.state.isPlaying === true);
+            assert('Start button disabled', startBtn.disabled === true);
+
+            // Test 5: Volume Control (Manual verification hook)
+            assert('Volume input exists', !!doc.getElementById('alert-volume'));
+
+            // Test 6: Stop Game
+            const stopBtn = doc.getElementById('stop-btn');
+            stopBtn.click();
+            await wait(100);
+            assert('Game stops', game.state.isPlaying === false);
+
+            document.getElementById('status').textContent = 'Tests Completed.';
+        }
+
+        frame.onload = runTests;
+    </script>
+</body>
+
+</html>

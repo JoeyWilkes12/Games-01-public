@@ -1,0 +1,43 @@
+{
+    "name": "bank-config-party",
+    "version": "1.0",
+    "settings": {
+        "totalRounds": 10,
+        "volume": 75,
+        "undoMode": "resample"
+    },
+    "players": [
+        {
+            "id": 1,
+            "name": "Joey"
+        },
+        {
+            "id": 2,
+            "name": "Brinlee"
+        },
+        {
+            "id": 3,
+            "name": "Braxton"
+        },
+        {
+            "id": 4,
+            "name": "Gavin"
+        },
+        {
+            "id": 5,
+            "name": "Hinckley"
+        },
+        {
+            "id": 6,
+            "name": "London"
+        },
+        {
+            "id": 7,
+            "name": "Bode"
+        },
+        {
+            "id": 8,
+            "name": "Macey"
+        }
+    ]
+}

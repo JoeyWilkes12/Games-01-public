@@ -1,0 +1,12 @@
+{
+    "version": "1.0",
+    "name": "Seeded Test Configuration",
+    "settings": {
+        "gridSize": 4,
+        "seed": 42,
+        "prob4": 0.1,
+        "winScore": 2048,
+        "autoPlaySpeed": 200
+    },
+    "description": "Basic test configuration with seed 42 for reproducible game states"
+}

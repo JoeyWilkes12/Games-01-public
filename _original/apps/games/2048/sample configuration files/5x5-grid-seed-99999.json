@@ -1,0 +1,12 @@
+{
+    "version": "1.0",
+    "name": "5x5 Grid Test Configuration",
+    "settings": {
+        "gridSize": 5,
+        "seed": 99999,
+        "prob4": 0.1,
+        "winScore": 4096,
+        "autoPlaySpeed": 150
+    },
+    "description": "Test configuration for 5x5 grid variant with higher win target"
+}

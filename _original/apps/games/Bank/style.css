@@ -1,0 +1,1504 @@
+/* Bank Game Styles */
+:root {
+    --bg-primary: #0d1117;
+    --bg-secondary: #161b22;
+    --bg-tertiary: #21262d;
+    --text-primary: #f0f6fc;
+    --text-secondary: #8b949e;
+    --accent-gold: #ffd700;
+    --accent-green: #238636;
+    --accent-green-light: #2ea043;
+    --accent-red: #f85149;
+    --accent-blue: #58a6ff;
+    --border-color: #30363d;
+    --shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    --shadow-glow: 0 0 40px rgba(255, 215, 0, 0.3);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg-primary);
+    background-image:
+        radial-gradient(ellipse at 20% 0%, rgba(35, 134, 54, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 100%, rgba(255, 215, 0, 0.1) 0%, transparent 50%);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.game-container {
+    max-width: 1200px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    grid-template-rows: auto 1fr;
+    gap: 1.5rem;
+}
+
+/* Header */
+header {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 1rem 0;
+}
+
+header h1 {
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent-gold) 0%, #ffa500 50%, var(--accent-green-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 60px rgba(255, 215, 0, 0.4);
+    margin-bottom: 0.5rem;
+}
+
+header .subtitle {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+/* Main Content */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1rem;
+}
+
+/* Round Info */
+.round-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+}
+
+.round-label {
+    color: var(--text-secondary);
+}
+
+.round-number {
+    font-weight: 700;
+    color: var(--accent-gold);
+    font-size: 1.5rem;
+}
+
+.round-total {
+    color: var(--text-secondary);
+}
+
+.roll-count {
+    margin-left: 1rem;
+    padding-left: 1rem;
+    border-left: 1px solid var(--border-color);
+    color: var(--text-secondary);
+}
+
+/* Bank Display */
+.bank-display {
+    text-align: center;
+    padding: 2rem 4rem;
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+    border: 2px solid var(--accent-gold);
+    border-radius: 20px;
+    box-shadow: var(--shadow-glow);
+    position: relative;
+    overflow: hidden;
+}
+
+.bank-display::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.bank-label {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--accent-gold);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.bank-score {
+    font-size: 5rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+    line-height: 1;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.bank-score.pulse {
+    animation: scorePulse 0.3s ease;
+}
+
+.bank-score.doubled {
+    color: var(--accent-gold);
+}
+
+@keyframes scorePulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.bank-sublabel {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+}
+
+/* Dice Area */
+.dice-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.dice-container {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+}
+
+.die {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(145deg, #ffffff 0%, #e8e8e8 100%);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.3),
+        inset 0 2px 4px rgba(255, 255, 255, 0.8);
+    transition: transform 0.1s ease;
+}
+
+.die.rolling {
+    animation: diceRoll 0.1s ease infinite;
+}
+
+@keyframes diceRoll {
+    0% {
+        transform: rotate(-5deg) scale(1.05);
+    }
+
+    50% {
+        transform: rotate(5deg) scale(0.95);
+    }
+
+    100% {
+        transform: rotate(-5deg) scale(1.05);
+    }
+}
+
+.die.seven {
+    background: linear-gradient(145deg, #ff6b6b 0%, #ee5a5a 100%);
+    color: white;
+}
+
+.die.doubles {
+    background: linear-gradient(145deg, #ffd700 0%, #ffb700 100%);
+    color: #1a1a1a;
+}
+
+.last-roll-info {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    min-height: 1.5rem;
+}
+
+.last-roll-info.special {
+    color: var(--accent-gold);
+    font-weight: 600;
+}
+
+/* Alert Message */
+.alert-message {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, rgba(248, 81, 73, 0.2) 0%, rgba(248, 81, 73, 0.1) 100%);
+    border: 2px solid var(--accent-red);
+    border-radius: 12px;
+    animation: alertPulse 0.5s ease;
+}
+
+.alert-message.hidden {
+    display: none;
+}
+
+.alert-icon {
+    font-size: 1.5rem;
+}
+
+.alert-text {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--accent-red);
+}
+
+@keyframes alertPulse {
+    0% {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 1.5rem;
+    margin: 1rem 0;
+    align-items: center;
+}
+
+/* Bank Action Group - now handles multi-select panel */
+.bank-action-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.bank-action-group.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* Multi-select Bank Panel */
+.bank-player-panel {
+    width: 100%;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem;
+}
+
+.bank-player-panel.disabled {
+    opacity: 0.6;
+}
+
+.bank-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.bank-panel-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-small {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-small:hover {
+    background: var(--accent-green);
+    color: white;
+}
+
+.bank-player-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.bank-player-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.bank-player-checkbox:hover {
+    border-color: var(--accent-green);
+}
+
+.bank-player-checkbox input:checked+span {
+    color: var(--accent-green);
+    font-weight: 600;
+}
+
+/* Fallback dropdown (hidden by default now) */
+.bank-player-select {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    color: var(--text-primary);
+    cursor: pointer;
+    min-width: 180px;
+    transition: all 0.2s ease;
+}
+
+.bank-player-select.hidden {
+    display: none;
+}
+
+/* Round Statistics */
+.round-stats {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.stat-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--accent-gold);
+}
+
+/* Undo Button */
+.btn-undo {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+}
+
+.btn-undo:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+}
+
+.btn-undo:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Banking Info */
+.banking-info {
+    text-align: center;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.banking-info.active {
+    opacity: 1;
+}
+
+.banking-info.hidden {
+    display: none;
+}
+
+.banking-info .info-text {
+    font-size: 0.85rem;
+    color: var(--accent-green);
+    background: rgba(35, 134, 54, 0.1);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+/* Probability Cheatsheet */
+.probability-cheatsheet {
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0.75rem;
+    max-width: 250px;
+    z-index: 50;
+    box-shadow: var(--shadow);
+}
+
+.probability-cheatsheet summary {
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    padding: 0.25rem 0;
+}
+
+.probability-cheatsheet summary:hover {
+    color: var(--accent-gold);
+}
+
+/* Survival Display inside Cheatsheet */
+.survival-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    background: rgba(35, 134, 54, 0.15);
+    border: 1px solid var(--accent-green);
+    border-radius: 8px;
+}
+
+.survival-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.survival-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent-green);
+}
+
+.prob-table {
+    width: 100%;
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    border-collapse: collapse;
+}
+
+.prob-table th,
+.prob-table td {
+    padding: 0.25rem 0.5rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.prob-table th {
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.prob-table .highlight-seven {
+    background: rgba(248, 81, 73, 0.2);
+    color: var(--accent-red);
+    font-weight: 700;
+}
+
+/* Compact Scoreboard (Default View) */
+.compact-scoreboard {
+    padding: 1rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.compact-player-name {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.compact-player-name span:first-child {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--accent-blue);
+}
+
+.compact-rank {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+}
+
+.compact-score {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--accent-gold);
+    margin: 0.5rem 0;
+}
+
+.compact-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.compact-metric {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+    background: var(--bg-secondary);
+    border-radius: 6px;
+    font-size: 0.85rem;
+}
+
+.compact-metric:last-child {
+    grid-column: span 2;
+}
+
+.metric-label {
+    color: var(--text-secondary);
+}
+
+.metric-value {
+    font-weight: 600;
+    color: var(--accent-green);
+}
+
+/* Full Scoreboard (Collapsible) */
+.full-scoreboard-details {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 0.5rem;
+}
+
+.full-scoreboard-details summary {
+    cursor: pointer;
+    padding: 0.5rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    list-style: none;
+}
+
+.full-scoreboard-details summary::-webkit-details-marker {
+    display: none;
+}
+
+.full-scoreboard-details summary::before {
+    content: '▶ ';
+    font-size: 0.75rem;
+}
+
+.full-scoreboard-details[open] summary::before {
+    content: '▼ ';
+}
+
+.full-scoreboard-details .players-list {
+    margin-top: 0.5rem;
+}
+
+/* Player Card Gap Column */
+.player-gap {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    min-width: 50px;
+    text-align: right;
+}
+
+.player-gap.leader {
+    color: var(--accent-gold);
+}
+
+
+.btn {
+    padding: 1rem 2rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-roll {
+    background: linear-gradient(135deg, var(--accent-blue) 0%, #4090e0 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(88, 166, 255, 0.4);
+}
+
+.btn-roll:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(88, 166, 255, 0.5);
+}
+
+.btn-roll:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-bank {
+    background: linear-gradient(135deg, var(--accent-green) 0%, var(--accent-green-light) 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(35, 134, 54, 0.4);
+}
+
+.btn-bank:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(35, 134, 54, 0.5);
+}
+
+.btn-bank:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-bank.highlight {
+    animation: bankGlow 1s ease infinite;
+}
+
+@keyframes bankGlow {
+
+    0%,
+    100% {
+        box-shadow: 0 4px 15px rgba(35, 134, 54, 0.4);
+    }
+
+    50% {
+        box-shadow: 0 4px 30px rgba(35, 134, 54, 0.8);
+    }
+}
+
+.btn-icon {
+    background: transparent;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+}
+
+.btn-icon:hover {
+    background: var(--bg-tertiary);
+}
+
+.btn-new-game {
+    background: linear-gradient(135deg, var(--accent-gold) 0%, #ffa500 100%);
+    color: #1a1a1a;
+    width: 100%;
+}
+
+.btn-new-game:hover {
+    transform: translateY(-2px);
+}
+
+.btn-add-player {
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.btn-add-player:hover {
+    background: var(--border-color);
+    color: var(--text-primary);
+}
+
+/* Current Player Section */
+.current-player-section {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+}
+
+.current-label {
+    color: var(--text-secondary);
+}
+
+.current-player-name {
+    font-weight: 700;
+    color: var(--accent-blue);
+}
+
+/* Players Panel */
+.players-panel {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1rem;
+    height: fit-content;
+    max-height: calc(100vh - 200px);
+    overflow-y: auto;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.panel-header h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.players-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.player-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.player-card.current {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 10px rgba(88, 166, 255, 0.3);
+}
+
+.player-card.banked {
+    opacity: 0.6;
+    border-color: var(--accent-green);
+}
+
+.player-card.banked .player-status {
+    color: var(--accent-green);
+}
+
+.player-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.player-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.player-status {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.player-score {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent-gold);
+}
+
+.player-rank {
+    font-size: 1.25rem;
+    margin-right: 0.5rem;
+}
+
+/* Settings Panel */
+.settings-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.5rem;
+    width: 90%;
+    max-width: 400px;
+    max-height: 80vh;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: var(--shadow);
+}
+
+.settings-panel.hidden {
+    display: none;
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.setting-group {
+    margin-bottom: 1.25rem;
+}
+
+.setting-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.setting-group select,
+.setting-group input[type="text"] {
+    width: 100%;
+    padding: 0.75rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 1rem;
+}
+
+.setting-group input[type="range"] {
+    width: 100%;
+}
+
+.player-config {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.player-config-item {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.player-config-item input {
+    flex: 1;
+    padding: 0.5rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+}
+
+.player-config-item .btn-remove {
+    background: transparent;
+    border: none;
+    color: var(--accent-red);
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+.player-config-item .btn-remove:hover {
+    background: rgba(248, 81, 73, 0.2);
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    margin: 2rem auto;
+}
+
+.modal-content h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: var(--accent-gold);
+    flex-shrink: 0;
+}
+
+.winner-display {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    flex-shrink: 0;
+}
+
+.winner-name {
+    font-weight: 800;
+    color: var(--accent-gold);
+    font-size: 2rem;
+}
+
+.winner-score {
+    color: var(--text-secondary);
+}
+
+/* Play Again button - positioned at top of action area */
+.modal-content .btn-new-game {
+    flex-shrink: 0;
+}
+
+/* Game Over action buttons container */
+.game-over-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.game-over-actions .btn {
+    flex-shrink: 0;
+}
+
+.final-scores {
+    margin-bottom: 1rem;
+    text-align: left;
+    max-height: 40vh;
+    overflow-y: auto;
+    flex-shrink: 1;
+    padding-right: 0.5rem;
+}
+
+.final-scores .player-final {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Backdrop for settings */
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+}
+
+.backdrop.hidden {
+    display: none;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .game-container {
+        grid-template-columns: 1fr;
+    }
+
+    .players-panel {
+        order: -1;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+
+    .bank-score {
+        font-size: 3.5rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ==================== NEW UI ELEMENTS ==================== */
+
+/* Collapsible Stats Dashboard */
+.stats-dashboard {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 0.5rem 0.75rem;
+    width: fit-content;
+}
+
+.stats-dashboard summary {
+    cursor: pointer;
+    font-size: 1.25rem;
+    padding: 0.25rem;
+    list-style: none;
+}
+
+.stats-dashboard summary::-webkit-details-marker {
+    display: none;
+}
+
+.stats-dashboard[open] summary {
+    margin-bottom: 0.5rem;
+}
+
+.stats-dashboard .round-stats {
+    padding: 0;
+    background: transparent;
+    border: none;
+}
+
+/* Collapsible Bank Action Group (as details) */
+details.bank-action-group {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0.75rem;
+    width: 100%;
+    max-width: 400px;
+    transition: opacity 0.3s ease;
+}
+
+details.bank-action-group.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+details.bank-action-group summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    color: var(--text-primary);
+    padding: 0.25rem 0;
+}
+
+details.bank-action-group summary::-webkit-details-marker {
+    display: none;
+}
+
+details.bank-action-group summary::before {
+    content: '▶';
+    margin-right: 0.5rem;
+    font-size: 0.75rem;
+    transition: transform 0.2s ease;
+}
+
+details.bank-action-group[open] summary::before {
+    transform: rotate(90deg);
+}
+
+.bank-panel-summary {
+    gap: 0.5rem;
+}
+
+.bank-panel-summary .bank-panel-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+details.bank-action-group .bank-player-panel {
+    margin-top: 0.5rem;
+    border: none;
+    padding: 0;
+    background: transparent;
+}
+
+details.bank-action-group .btn-bank {
+    width: 100%;
+    margin-top: 0.75rem;
+}
+
+/* Panel Controls */
+.panel-controls {
+    display: flex;
+    gap: 0.25rem;
+}
+
+/* Summary Scoreboard */
+.summary-scoreboard {
+    padding: 1rem;
+}
+
+.summary-scoreboard.hidden {
+    display: none;
+}
+
+.summary-current-player {
+    text-align: center;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+}
+
+.summary-current-player h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--accent-blue);
+    margin-bottom: 0.25rem;
+}
+
+.summary-score {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--accent-gold);
+}
+
+.summary-targets {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.summary-target {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+}
+
+.target-label {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.target-value {
+    font-weight: 700;
+    color: var(--accent-green);
+}
+
+.summary-rankings {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.summary-rank-item {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 6px;
+    margin-bottom: 0.25rem;
+}
+
+.summary-rank-item.current {
+    background: rgba(88, 166, 255, 0.15);
+    border: 1px solid var(--accent-blue);
+}
+
+.summary-rank-item .rank {
+    font-weight: 700;
+    color: var(--text-secondary);
+    min-width: 30px;
+}
+
+.summary-rank-item .name {
+    flex: 1;
+}
+
+.summary-rank-item .score {
+    font-weight: 600;
+    color: var(--accent-gold);
+}
+
+/* JSON Config Buttons */
+.json-config-group .json-config-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.json-config-group .btn-small {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem;
+}
+
+/* Probability Cheatsheet Title */
+.cheatsheet-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    padding-top: 0.25rem;
+}
+
+/* ==================== MOBILE ENHANCEMENTS ==================== */
+
+@media (max-width: 768px) {
+    .game-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+
+    .bank-display {
+        padding: 1.5rem 2rem;
+    }
+
+    .bank-score {
+        font-size: 3.5rem;
+    }
+
+    .dice-container {
+        gap: 1.5rem;
+    }
+
+    .die {
+        width: 70px;
+        height: 70px;
+        font-size: 2rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .players-panel {
+        order: -1;
+        max-height: 250px;
+    }
+
+    details.bank-action-group {
+        width: 100%;
+        max-width: none;
+    }
+
+    .probability-cheatsheet {
+        left: 1rem;
+        bottom: 1rem;
+        max-width: 150px;
+    }
+
+    .summary-score {
+        font-size: 2rem;
+    }
+}
+
+/* Touch-friendly targets */
+@media (pointer: coarse) {
+    .btn {
+        min-height: 48px;
+        min-width: 48px;
+    }
+
+    .btn-small {
+        min-height: 40px;
+        padding: 0.5rem 1rem;
+    }
+
+    .bank-player-checkbox {
+        padding: 0.75rem 1rem;
+    }
+
+    .btn-icon {
+        min-width: 44px;
+        min-height: 44px;
+    }
+}
+
+/* ==================== BYOD (Bring Your Own Dice) ==================== */
+
+.byod-panel {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem;
+    width: 100%;
+    max-width: 350px;
+}
+
+.byod-panel.hidden {
+    display: none;
+}
+
+.byod-header {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-primary);
+    padding: 0.5rem;
+    list-style: none;
+}
+
+.byod-header::-webkit-details-marker {
+    display: none;
+}
+
+.byod-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.byod-btn {
+    padding: 1rem 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--bg-tertiary) 0%, #2d333b 100%);
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 60px;
+}
+
+.byod-btn:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-blue);
+    box-shadow: 0 4px 12px rgba(88, 166, 255, 0.3);
+}
+
+.byod-btn:active {
+    transform: translateY(0);
+}
+
+/* Seven button - RED */
+.byod-seven {
+    background: linear-gradient(135deg, var(--accent-red) 0%, #c73e39 100%);
+    border-color: var(--accent-red);
+    color: white;
+}
+
+.byod-seven:hover {
+    border-color: #ff6b6b;
+    box-shadow: 0 4px 12px rgba(248, 81, 73, 0.4);
+}
+
+/* Doubles button - Gold accent */
+.byod-doubles {
+    grid-column: span 4;
+    background: linear-gradient(135deg, var(--accent-gold) 0%, #e6b800 100%);
+    border-color: var(--accent-gold);
+    color: #1a1a1a;
+    font-size: 1rem;
+}
+
+.byod-doubles:hover {
+    border-color: #ffd700;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+}
+
+/* Toggle label styling */
+.toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+}
+
+.toggle-label input[type="checkbox"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+}
+
+.toggle-text {
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.setting-hint {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+
+/* Hide dice container when BYOD is active */
+.dice-container.byod-hidden {
+    display: none;
+}
+
+/* Hide roll button when BYOD is active */
+.btn-roll.byod-hidden {
+    display: none;
+}

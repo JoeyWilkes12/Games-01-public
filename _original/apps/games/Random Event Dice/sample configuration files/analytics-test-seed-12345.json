@@ -1,0 +1,129 @@
+{
+    "version": "2.0",
+    "name": "Analytics Test Configuration",
+    "settings": {
+        "interval": 500,
+        "resetDuration": 500,
+        "diceCount": 2,
+        "diceSides": 6,
+        "duration": 10,
+        "volume": 0,
+        "soundEnabled": false,
+        "seed": 12345
+    },
+    "players": {
+        "1": "Joey",
+        "2": "Brinlee",
+        "3": "Braxton",
+        "4": "Gavin",
+        "5": "Hinckley",
+        "6": "London",
+        "7": "Bode",
+        "8": "Macey",
+        "9": "Ryder",
+        "10": "Lily",
+        "11": "Jack",
+        "12": "Cole",
+        "13": "Gracen",
+        "14": "Connor",
+        "15": "Friend"
+    },
+    "analytics": {
+        "enableLeaderboard": true,
+        "enableTimeline": true,
+        "enableHeatmap": true,
+        "panelWidth": 320
+    },
+    "eventDefinitions": [
+        {
+            "id": 1,
+            "rules": [
+                {
+                    "dieIndex": 0,
+                    "operator": "==",
+                    "value": 1
+                },
+                {
+                    "dieIndex": 1,
+                    "operator": "==",
+                    "value": 1
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "rules": [
+                {
+                    "dieIndex": 0,
+                    "operator": "==",
+                    "value": 2
+                },
+                {
+                    "dieIndex": 1,
+                    "operator": "==",
+                    "value": 2
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "rules": [
+                {
+                    "dieIndex": 0,
+                    "operator": "==",
+                    "value": 3
+                },
+                {
+                    "dieIndex": 1,
+                    "operator": "==",
+                    "value": 3
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "rules": [
+                {
+                    "dieIndex": 0,
+                    "operator": "==",
+                    "value": 4
+                },
+                {
+                    "dieIndex": 1,
+                    "operator": "==",
+                    "value": 4
+                }
+            ]
+        },
+        {
+            "id": 5,
+            "rules": [
+                {
+                    "dieIndex": 0,
+                    "operator": "==",
+                    "value": 5
+                },
+                {
+                    "dieIndex": 1,
+                    "operator": "==",
+                    "value": 5
+                }
+            ]
+        },
+        {
+            "id": 6,
+            "rules": [
+                {
+                    "dieIndex": 0,
+                    "operator": "==",
+                    "value": 6
+                },
+                {
+                    "dieIndex": 1,
+                    "operator": "==",
+                    "value": 6
+                }
+            ]
+        }
+    ]
+}

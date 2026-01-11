@@ -1,0 +1,198 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CSS Custom Properties for legacy compatibility */
+:root {
+  --bg-color: #0f172a;
+  --card-bg: rgba(30, 41, 59, 0.7);
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --accent-color: #38bdf8;
+  --accent-glow: rgba(56, 189, 248, 0.5);
+  --primary-color: #38bdf8;
+  --grid-gap: 2rem;
+  --transition-speed: 0.3s;
+}
+
+/* Base Styles */
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-bg-primary text-text-primary min-h-screen font-sans;
+    background-image:
+      radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.15) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+  }
+}
+
+/* Component Styles */
+@layer components {
+
+  /* Card hover effects */
+  .game-card {
+    @apply relative overflow-hidden rounded-2xl backdrop-blur-xl transition-all duration-300;
+    @apply border border-white/10 bg-bg-card;
+    @apply hover:translate-y-[-8px] hover:shadow-2xl hover:border-white/20;
+  }
+
+  .game-card::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-b from-transparent to-black/40 opacity-60 transition-opacity duration-300;
+  }
+
+  .game-card:hover::before {
+    @apply opacity-30;
+  }
+
+  /* Button styles */
+  .btn-primary {
+    @apply px-6 py-3 rounded-xl font-semibold transition-all duration-200;
+    @apply bg-accent text-bg-primary hover:bg-accent/90;
+    @apply shadow-lg shadow-accent/25 hover:shadow-xl hover:shadow-accent/30;
+    @apply active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply px-4 py-2 rounded-lg font-medium transition-all duration-200;
+    @apply bg-white/10 text-text-primary hover:bg-white/20;
+    @apply border border-white/10 hover:border-white/20;
+  }
+
+  .btn-icon {
+    @apply p-2 rounded-full transition-all duration-200;
+    @apply bg-transparent hover:bg-white/10;
+    @apply text-2xl;
+  }
+
+  /* Modal styles */
+  .modal-overlay {
+    @apply fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50;
+    @apply opacity-0 invisible transition-all duration-300;
+  }
+
+  .modal-overlay.show {
+    @apply opacity-100 visible;
+  }
+
+  .modal-content {
+    @apply bg-bg-card border border-white/10 rounded-2xl p-6 max-w-md w-full mx-4;
+    @apply backdrop-blur-xl shadow-2xl;
+    @apply transform scale-95 transition-transform duration-300;
+  }
+
+  .modal-overlay.show .modal-content {
+    @apply scale-100;
+  }
+
+  /* Toast notification */
+  .toast {
+    @apply fixed bottom-8 left-1/2 transform -translate-x-1/2 translate-y-24;
+    @apply bg-bg-primary/90 backdrop-blur-lg border border-white/10;
+    @apply px-6 py-4 rounded-full text-white shadow-2xl;
+    @apply opacity-0 transition-all duration-300 z-50;
+  }
+
+  .toast.show {
+    @apply translate-y-0 opacity-100;
+  }
+
+  /* Status badges */
+  .status-playable {
+    @apply text-success text-sm uppercase tracking-wider font-semibold;
+  }
+
+  .status-soon {
+    @apply text-text-secondary text-sm uppercase tracking-wider font-semibold;
+  }
+
+  /* Gradient backgrounds for game cards */
+  .gradient-puzzle {
+    @apply bg-gradient-to-br from-amber-500 to-amber-600;
+  }
+
+  .gradient-2048 {
+    @apply bg-gradient-to-br from-yellow-400 to-orange-300;
+  }
+
+  .gradient-dice {
+    @apply bg-gradient-to-br from-blue-500 to-blue-700;
+  }
+
+  .gradient-bank {
+    @apply bg-gradient-to-br from-emerald-600 to-emerald-700;
+  }
+
+  .gradient-acquire {
+    @apply bg-gradient-to-br from-emerald-500 to-emerald-600;
+  }
+
+  .gradient-mastermind {
+    @apply bg-gradient-to-br from-red-500 to-red-700;
+  }
+
+  .gradient-queens {
+    @apply bg-gradient-to-br from-violet-500 to-violet-700;
+  }
+
+  .gradient-wordle {
+    @apply bg-gradient-to-br from-green-500 to-green-600;
+  }
+
+  .gradient-risk {
+    @apply bg-gradient-to-br from-red-600 to-red-800;
+  }
+}
+
+/* Utility classes */
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-accent to-violet-400;
+  }
+
+  /* Animation delays for staggered effects */
+  .animation-delay-100 {
+    animation-delay: 0.1s;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 0.2s;
+  }
+
+  .animation-delay-300 {
+    animation-delay: 0.3s;
+  }
+
+  .animation-delay-400 {
+    animation-delay: 0.4s;
+  }
+
+  .animation-delay-500 {
+    animation-delay: 0.5s;
+  }
+
+  /* Touch target size for mobile */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  @apply w-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-white/20 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-white/30;
+}

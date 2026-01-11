@@ -1,0 +1,42 @@
+{
+    "version": "2.0",
+    "name": "Minimal Analytics Test",
+    "settings": {
+        "interval": 200,
+        "resetDuration": 200,
+        "diceCount": 2,
+        "diceSides": 6,
+        "duration": 5,
+        "volume": 0,
+        "soundEnabled": false,
+        "seed": 42
+    },
+    "players": {
+        "1": "Player A",
+        "2": "Player B",
+        "3": "Player C"
+    },
+    "analytics": {
+        "enableLeaderboard": true,
+        "enableTimeline": true,
+        "enableHeatmap": true,
+        "panelWidth": 280
+    },
+    "eventDefinitions": [
+        {
+            "id": 1,
+            "rules": [
+                {
+                    "dieIndex": 0,
+                    "operator": "==",
+                    "value": 6
+                },
+                {
+                    "dieIndex": 1,
+                    "operator": "==",
+                    "value": 6
+                }
+            ]
+        }
+    ]
+}

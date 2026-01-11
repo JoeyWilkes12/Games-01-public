@@ -1,0 +1,31 @@
+{
+  "version": "2.0",
+  "name": "Only 6 Doubles",
+  "settings": {
+    "interval": 500,
+    "resetDuration": 1000,
+    "diceCount": 2,
+    "diceSides": 6,
+    "duration": 10,
+    "volume": 0,
+    "soundEnabled": false,
+    "seed": null
+  },
+  "eventDefinitions": [
+    {
+      "id": 1767754547130,
+      "rules": [
+        {
+          "dieIndex": 0,
+          "operator": "==",
+          "value": 6
+        },
+        {
+          "dieIndex": 1,
+          "operator": "==",
+          "value": 6
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Event Dice Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Using Inter font for premium look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../confirm-exit.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header>
+            <a href="../../../index.html" class="home-btn" id="home-btn" title="Back to Game Hub"
+                onclick="return window.confirmGameExit ? window.confirmGameExit() : true">🏠</a>
+            <h1>Random Event Dice</h1>
+            <div class="timer-container">
+                <div class="timer-display" id="timer-display">60:00</div>
+                <button id="toggle-timer-visibility" class="icon-button" title="Hide/Show Timer"
+                    aria-label="Toggle Timer Visibility">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" class="arrow-icon" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14"></path>
+                        <path d="M12 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <main class="game-area">
+            <div class="dice-container" id="dice-container">
+                <!-- Dice will be injected here via JS -->
+                <div class="die placeholder">?</div>
+                <div class="die placeholder">?</div>
+            </div>
+            <div id="alert-message" class="alert-message hidden">EVENT TRIGGERED!</div>
+            <div class="rolls-counter" id="rolls-counter-container">
+                Rolls since last event: <span id="rolls-count">0</span>
+            </div>
+            <button id="extend-btn" class="primary-btn extend-btn hidden">+10 Minutes</button>
+        </main>
+
+        <!-- Analytics Dashboard (hidden by default, left side) -->
+        <div class="analytics-panel hidden" id="analytics-panel">
+            <div class="analytics-header">
+                <span>📊 Analytics Dashboard</span>
+                <button id="toggle-analytics" class="icon-button" title="Toggle Analytics">◀</button>
+            </div>
+            <div class="analytics-content" id="analytics-content">
+                <!-- Current Turn Info -->
+                <div class="analytics-section">
+                    <h3>Current Turn</h3>
+                    <div class="current-turn-info">
+                        <div class="player-name" id="current-player-name">--</div>
+                        <div class="turn-stats">
+                            <span>Rolls: <strong id="current-turn-rolls">0</strong></span>
+                            <span>Time: <strong id="current-turn-time">0:00</strong></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leaderboard Section -->
+                <div class="analytics-section" id="leaderboard-section">
+                    <h3>🏆 Leaderboard</h3>
+                    <div class="leaderboard" id="leaderboard">
+                        <div class="leaderboard-placeholder">Start game to see stats</div>
+                    </div>
+                </div>
+
+                <!-- Timeline Section & Graph -->
+                <div class="analytics-section" id="timeline-section">
+                    <h3>📅 Recent Turns (Last 10)</h3>
+                    <div class="timeline-visual" id="timeline-graph-container">
+                        <canvas id="timeline-canvas"></canvas>
+                    </div>
+                    <div class="timeline" id="timeline">
+                        <div class="timeline-placeholder">No turns yet</div>
+                    </div>
+                </div>
+
+                <!-- Heatmap Section (2 dice only) -->
+                <div class="analytics-section" id="heatmap-section">
+                    <h3>🔥 Dice Heatmap (Law of Large Numbers)</h3>
+                    <div class="heatmap-legend">
+                        <div class="legend-item"><span class="color-box cold"></span> Cold (Under)</div>
+                        <div class="legend-item"><span class="color-box expected"></span> Expected</div>
+                        <div class="legend-item"><span class="color-box hot"></span> Hot (Over)</div>
+                    </div>
+                    <div class="heatmap-container" id="heatmap-container">
+                        <div class="heatmap-placeholder">Available for 2 dice only</div>
+                    </div>
+                </div>
+
+                <!-- Skip to End Button -->
+                <div class="analytics-actions">
+                    <button id="skip-to-end-btn" class="secondary-btn" disabled>⏩ Skip to End</button>
+                    <div class="mobile-warning">
+                        <p><em>This dashboard has best user view when accessing via desktop as opposed to mobile</em>
+                        </p>
+                    </div>
+                    <div class="spacer-bottom"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Toggle Button (visible when panel hidden) -->
+        <button id="show-analytics-btn" class="analytics-toggle-btn" title="Show Analytics">📊</button>
+
+        <aside class="controls-panel">
+            <div class="controls-header">
+                <h2>Settings</h2>
+                <button id="toggle-settings" class="icon-button" aria-label="Toggle Settings">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
+                        </path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="settings-content collapsed" id="settings-content">
+                <div class="control-group">
+                    <label for="interval-input">Roll Interval (seconds)</label>
+                    <input type="number" id="interval-input" value="1.0" min="0.1" step="0.1">
+                </div>
+
+                <div class="control-group">
+                    <label for="dice-count-input">Number of Dice</label>
+                    <input type="number" id="dice-count-input" value="2" min="1" max="10">
+                </div>
+
+                <div class="control-group">
+                    <label for="dice-sides-input">Sides per Die</label>
+                    <input type="number" id="dice-sides-input" value="6" min="2" max="100">
+                </div>
+
+                <div class="control-group">
+                    <label for="duration-input">Duration (minutes)</label>
+                    <input type="number" id="duration-input" value="60" min="1">
+                </div>
+
+                <div class="control-group checkbox-group">
+                    <input type="checkbox" id="sound-toggle" checked>
+                    <label for="sound-toggle">Enable Sound Alert</label>
+                </div>
+
+                <div class="control-group">
+                    <label>Volume</label>
+                    <input type="range" id="volume-input" min="0" max="100" value="0">
+                    <span style="font-size: 0.8em; color: var(--secondary-color);">Alert Volume (0%)</span>
+                </div>
+
+                <div class="control-group">
+                    <label for="reset-duration-input">Reset Duration (sec)</label>
+                    <input type="number" id="reset-duration-input" value="1.0" step="0.1" min="0.1">
+                </div>
+
+                <div class="control-group">
+                    <label for="panel-width-input">Dashboard Panel Width</label>
+                    <input type="range" id="panel-width-input" min="280" max="600" value="320">
+                    <span id="panel-width-display" style="font-size: 0.8em; color: var(--secondary-color);">320px</span>
+                </div>
+
+                <div class="control-group">
+                    <label for="seed-select">Random Seed (Testing)</label>
+                    <select id="seed-select">
+                        <option value="">None (Random)</option>
+                        <option value="12345">12345</option>
+                        <option value="42">42</option>
+                        <option value="777">777</option>
+                        <option value="99999">99999</option>
+                        <option value="1">1</option>
+                    </select>
+                </div>
+
+                <button id="advanced-settings-btn" class="secondary-btn"
+                    style="width: 100%; margin-top: 0.5rem;">Advanced Event Settings</button>
+            </div>
+
+            <div class="action-buttons">
+                <button id="start-btn" class="primary-btn">Start Game</button>
+                <button id="stop-btn" class="secondary-btn" disabled>Stop</button>
+            </div>
+        </aside>
+
+        <!-- Debug Console (Right side, collapsed by default) -->
+        <div class="debug-console collapsed" id="debug-console">
+            <div class="debug-header">
+                <span>Debug Console</span>
+                <button id="toggle-debug" class="icon-button" title="Toggle Debug Console">◀</button>
+            </div>
+            <div class="debug-content" id="debug-content">
+                <div class="debug-messages" id="debug-messages"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Settings Modal -->
+    <div id="advanced-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Advanced Event Logic</h2>
+                <button id="close-modal" class="icon-button">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-body-columns">
+                    <!-- Player Configuration Section (Left Panel) -->
+                    <div class="player-config-section">
+                        <h3 style="font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--secondary-color);">👥 Player
+                            Configuration</h3>
+                        <div id="player-list" class="player-list">
+                            <!-- Player inputs injected via JS -->
+                        </div>
+                        <button id="add-player-btn" class="secondary-btn dashed"
+                            style="width: 100%; margin-top: 0.5rem;">+
+                            Add Player</button>
+                    </div>
+
+                    <!-- Event Definitions Section (Right Panel) -->
+                    <div class="event-definitions-section">
+                        <h3 style="font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--secondary-color);">⚡ Event
+                            Logic</h3>
+                        <p class="modal-intro">Alerts trigger if <strong>ANY</strong> enabled Event Definition is met.
+                        </p>
+                        <div id="event-definitions-list">
+                            <!-- Event Definitions injected via JS -->
+                        </div>
+                        <button id="add-event-btn" class="secondary-btn dashed"
+                            style="width: 100%; margin-top: 0.5rem;">+ Add Event Definition</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="import-section">
+                    <button id="import-json-btn" class="icon-btn" title="Import Configuration">📤</button>
+                    <input type="file" id="json-file-input" accept=".json" hidden>
+                </div>
+                <div class="save-button-group">
+                    <button id="save-export-btn" class="primary-btn split-left">Save & Export</button>
+                    <button id="save-advanced-btn" class="primary-btn split-right">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exit Confirmation Modal -->
+    <div class="confirm-exit-overlay hidden" id="confirm-exit-modal">
+        <div class="confirm-exit-modal">
+            <div class="confirm-exit-icon">⚠️</div>
+            <div class="confirm-exit-title">Leave Game?</div>
+            <div class="confirm-exit-message">Your current game progress will be lost. Are you sure you want to return
+                to the Game Hub?</div>
+            <div class="confirm-exit-buttons">
+                <button class="confirm-exit-btn btn-stay" id="confirm-stay-btn">Stay</button>
+                <button class="confirm-exit-btn btn-leave" id="confirm-leave-btn">Leave</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio context for simple beep -->
+    <script src="script.js"></script>
+</body>
+
+</html>
