@@ -3,7 +3,8 @@
  * Brain Gym Style
  */
 
-const GRID_SIZE = 4;
+let GRID_SIZE = 4; // Can be changed dynamically (3, 4, or 5)
+let currentGridSize = 4;
 
 // --- Seeded Random Number Generator ---
 class SeededRandom {
@@ -173,6 +174,14 @@ const closeSettingsBtn = document.getElementById('close-settings');
 const themePicker = document.getElementById('theme-picker');
 const algoPicker = document.getElementById('algo-picker');
 const speedRange = document.getElementById('speed-range');
+const gridSizePicker = document.getElementById('grid-size-picker');
+const useSeedToggle = document.getElementById('use-seed-toggle');
+const seedInput = document.getElementById('seed-input');
+const bulkCountInput = document.getElementById('bulk-count');
+const startBulkBtn = document.getElementById('start-bulk-btn');
+const exportBulkBtn = document.getElementById('export-bulk-btn');
+const bulkProgress = document.getElementById('bulk-progress');
+const exportGameBtn = document.getElementById('export-game-btn');
 
 // --- State ---
 let board = [];
@@ -183,6 +192,15 @@ let gameWon = false;
 let autoPlayInterval = null;
 let isAutoPlaying = false;
 let autoSpeed = 200; // ms
+
+// --- Game Tracking ---
+let moveCount = 0;
+let usedAI = false;
+let currentSeed = null;
+let useDeterminism = false;
+let gameStartTime = null;
+let bulkResults = [];
+let isBulkRunning = false;
 
 // --- Initialization ---
 
@@ -195,12 +213,35 @@ function init() {
 
 function startNewGame() {
     stopAutoPlay();
+
+    // Reset tracking
+    moveCount = 0;
+    usedAI = false;
+    gameStartTime = Date.now();
+
+    // Handle determinism
+    if (useDeterminism && currentSeed !== null) {
+        rng = new SeededRandom(currentSeed);
+    } else {
+        rng = new SeededRandom(Date.now());
+        currentSeed = null;
+    }
+
+    // Update grid size
+    GRID_SIZE = currentGridSize;
     board = Array(GRID_SIZE).fill().map(() => Array(GRID_SIZE).fill(0));
+
+    // Update CSS grid
+    if (gridContainer) {
+        gridContainer.style.gridTemplateColumns = `repeat(${GRID_SIZE}, 1fr)`;
+        gridContainer.style.gridTemplateRows = `repeat(${GRID_SIZE}, 1fr)`;
+    }
+
     score = 0;
     gameOver = false;
     gameWon = false;
     updateScore(0);
-    gameMsg.classList.add('hidden');
+    if (gameMsg) gameMsg.classList.add('hidden');
 
     // Add two starting tiles
     addRandomTile();
@@ -236,20 +277,17 @@ function setupInputs() {
 }
 
 function setupSettings() {
-    settingsBtn.addEventListener('click', () => settingsModal.classList.remove('hidden'));
-    closeSettingsBtn.addEventListener('click', () => settingsModal.classList.add('hidden'));
-    settingsModal.addEventListener('click', (e) => {
+    if (settingsBtn) settingsBtn.addEventListener('click', () => settingsModal.classList.remove('hidden'));
+    if (closeSettingsBtn) closeSettingsBtn.addEventListener('click', () => settingsModal.classList.add('hidden'));
+    if (settingsModal) settingsModal.addEventListener('click', (e) => {
         if (e.target === settingsModal) settingsModal.classList.add('hidden');
     });
 
-    themePicker.addEventListener('change', (e) => {
+    if (themePicker) themePicker.addEventListener('change', (e) => {
         document.body.setAttribute('data-theme', e.target.value);
     });
 
-    speedRange.addEventListener('input', (e) => {
-        // Range 50 (Slow) to 500 (Fast) -> Invert logic for delay?
-        // Let's make Slider Right = Faster (Lower Delay)
-        // Value 500 = 50ms delay. Value 50 = 500ms delay.
+    if (speedRange) speedRange.addEventListener('input', (e) => {
         autoSpeed = 550 - parseInt(e.target.value);
     });
 
@@ -258,7 +296,58 @@ function setupSettings() {
         algoPicker.addEventListener('change', (e) => {
             ALGORITHM_CONFIG.current = e.target.value;
             console.log('Algorithm switched to:', e.target.value);
+            updateDashboardAlgorithm();
         });
+    }
+
+    // Grid size selection
+    if (gridSizePicker) {
+        gridSizePicker.addEventListener('change', (e) => {
+            const newSize = parseInt(e.target.value);
+            if (newSize !== currentGridSize) {
+                currentGridSize = newSize;
+                // Start new game with new size
+                startNewGame();
+            }
+        });
+    }
+
+    // Determinism toggle
+    if (useSeedToggle) {
+        useSeedToggle.addEventListener('change', (e) => {
+            useDeterminism = e.target.checked;
+            if (seedInput) {
+                seedInput.disabled = !useDeterminism;
+                if (useDeterminism && seedInput.value) {
+                    currentSeed = parseInt(seedInput.value);
+                } else if (!useDeterminism) {
+                    currentSeed = null;
+                }
+            }
+        });
+    }
+
+    // Seed input
+    if (seedInput) {
+        seedInput.addEventListener('change', (e) => {
+            if (useDeterminism && e.target.value) {
+                currentSeed = parseInt(e.target.value);
+            }
+        });
+    }
+
+    // Bulk gameplay
+    if (startBulkBtn) {
+        startBulkBtn.addEventListener('click', startBulkGameplay);
+    }
+
+    if (exportBulkBtn) {
+        exportBulkBtn.addEventListener('click', exportBulkResults);
+    }
+
+    // Export current game
+    if (exportGameBtn) {
+        exportGameBtn.addEventListener('click', exportCurrentGame);
     }
 }
 
@@ -948,6 +1037,24 @@ function getGreedyMove(grid) {
     return bestMove;
 }
 
+// Get best move using Naive (uniform random sampling)
+function getNaiveMove(grid) {
+    // Get all valid moves
+    const validMoves = [];
+    for (let dir = 0; dir < 4; dir++) {
+        let sim = simulateMove(grid, dir);
+        if (sim.moved) {
+            validMoves.push(dir);
+        }
+    }
+
+    if (validMoves.length === 0) return -1;
+
+    // Uniformly sample from valid moves
+    const randomIndex = Math.floor(rng.next() * validMoves.length);
+    return validMoves[randomIndex];
+}
+
 // Unified move selection based on current algorithm
 function getBestMoveUnified(grid) {
     switch (ALGORITHM_CONFIG.current) {
@@ -955,6 +1062,8 @@ function getBestMoveUnified(grid) {
             return getMCTSMove(grid);
         case 'greedy':
             return getGreedyMove(grid);
+        case 'naive':
+            return getNaiveMove(grid);
         case 'expectimax':
         default:
             const depth = getAdaptiveDepth(grid);
@@ -1010,8 +1119,8 @@ function updateDashboardAlgorithm() {
     const algoIndicator = document.getElementById('algo-indicator');
     if (!algoIndicator) return;
 
-    const icons = { expectimax: '🧠', mcts: '🎲', greedy: '⚡' };
-    const names = { expectimax: 'Expectimax', mcts: 'Monte Carlo', greedy: 'Greedy' };
+    const icons = { expectimax: '🧠', mcts: '🎲', greedy: '⚡', naive: '🎯' };
+    const names = { expectimax: 'Expectimax', mcts: 'Monte Carlo', greedy: 'Greedy', naive: 'Naive (Random)' };
 
     const icon = algoIndicator.querySelector('.algo-icon');
     const name = algoIndicator.querySelector('.algo-name');
@@ -1029,6 +1138,10 @@ function updateDashboardAlgorithm() {
         const mctsSection = document.querySelector('.mcts-section');
         if (mctsSection) mctsSection.classList.remove('hidden');
     } else if (ALGORITHM_CONFIG.current === 'greedy') {
+        const greedySection = document.querySelector('.greedy-section');
+        if (greedySection) greedySection.classList.remove('hidden');
+    } else if (ALGORITHM_CONFIG.current === 'naive') {
+        // Naive uses greedy section but can be updated with different display
         const greedySection = document.querySelector('.greedy-section');
         if (greedySection) greedySection.classList.remove('hidden');
     }
@@ -1288,14 +1401,238 @@ const originalStartAutoPlay = startAutoPlay;
 startAutoPlay = function () {
     if (isAutoPlaying || gameOver) return;
     isAutoPlaying = true;
-    solveBtn.textContent = "⏹ Stop";
-    solveBtn.classList.remove('btn-highlight');
-    solveBtn.classList.add('btn-secondary');
+    usedAI = true; // Track that AI was used
+    if (solveBtn) {
+        solveBtn.textContent = "⏹ Stop";
+        solveBtn.classList.remove('btn-highlight');
+        solveBtn.classList.add('btn-secondary');
+    }
 
     // Update dashboard algorithm display when starting
     updateDashboardAlgorithm();
 
     playNextMoveWithDashboard();
+};
+
+// ===================================
+// Game Export Functions
+// ===================================
+
+function getMaxTile(grid) {
+    let max = 0;
+    for (let r = 0; r < grid.length; r++) {
+        for (let c = 0; c < grid[r].length; c++) {
+            if (grid[r][c] > max) max = grid[r][c];
+        }
+    }
+    return max;
+}
+
+function generateGameSummary() {
+    const endTime = Date.now();
+    const duration = gameStartTime ? endTime - gameStartTime : 0;
+
+    return {
+        timestamp: new Date().toISOString(),
+        version: "1.0",
+        settings: {
+            gridSize: GRID_SIZE,
+            seed: useDeterminism ? currentSeed : null,
+            deterministic: useDeterminism
+        },
+        gameplay: {
+            usedAI: usedAI,
+            algorithm: usedAI ? ALGORITHM_CONFIG.current : null,
+            moveCount: moveCount,
+            finalScore: score,
+            maxTile: getMaxTile(board),
+            gameOver: gameOver,
+            won: gameWon,
+            durationMs: duration
+        },
+        finalBoard: board.map(row => [...row])
+    };
+}
+
+function exportCurrentGame() {
+    const summary = generateGameSummary();
+    const filename = `2048_game_${GRID_SIZE}x${GRID_SIZE}_${Date.now()}.json`;
+
+    const blob = new Blob([JSON.stringify(summary, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    console.log('Game exported:', filename);
+}
+
+// ===================================
+// Bulk Gameplay Functions
+// ===================================
+
+async function startBulkGameplay() {
+    if (isBulkRunning) return;
+
+    const count = parseInt(bulkCountInput?.value || 10);
+    if (count < 1 || count > 100) {
+        alert('Please enter 1-100 games');
+        return;
+    }
+
+    isBulkRunning = true;
+    bulkResults = [];
+
+    // Update UI
+    if (startBulkBtn) startBulkBtn.disabled = true;
+    if (exportBulkBtn) exportBulkBtn.disabled = true;
+    if (bulkProgress) bulkProgress.classList.remove('hidden');
+
+    const progressFill = bulkProgress?.querySelector('.progress-fill');
+    const progressText = bulkProgress?.querySelector('.progress-text');
+
+    // Store original settings
+    const originalGridSize = currentGridSize;
+    const originalSeed = currentSeed;
+    const originalDeterminism = useDeterminism;
+
+    for (let i = 0; i < count; i++) {
+        // Update progress
+        const pct = ((i + 1) / count) * 100;
+        if (progressFill) progressFill.style.width = pct + '%';
+        if (progressText) progressText.textContent = `${i + 1} / ${count}`;
+
+        // Set seed for this game if deterministic
+        if (useDeterminism && currentSeed !== null) {
+            rng = new SeededRandom(currentSeed + i); // Different seed for each game
+        } else {
+            rng = new SeededRandom(Date.now() + i);
+        }
+
+        // Start new game
+        startNewGame();
+
+        // Play game to completion using AI
+        usedAI = true;
+        gameStartTime = Date.now();
+
+        while (!gameOver) {
+            const result = getBestMoveWithStats(board);
+            if (result.direction === -1) break;
+
+            move(result.direction);
+            moveCount++;
+            addRandomTile();
+
+            if (checkGameOver()) {
+                gameOver = true;
+            }
+
+            // Check for win
+            if (getMaxTile(board) >= CONF.winScore && !gameWon) {
+                gameWon = true;
+            }
+
+            // Yield to prevent blocking
+            if (moveCount % 50 === 0) {
+                await new Promise(r => setTimeout(r, 1));
+            }
+        }
+
+        // Record result
+        bulkResults.push(generateGameSummary());
+
+        // Small delay between games
+        await new Promise(r => setTimeout(r, 10));
+    }
+
+    // Restore settings
+    currentGridSize = originalGridSize;
+    currentSeed = originalSeed;
+    useDeterminism = originalDeterminism;
+
+    // Reset UI
+    isBulkRunning = false;
+    if (startBulkBtn) startBulkBtn.disabled = false;
+    if (exportBulkBtn) exportBulkBtn.disabled = false;
+
+    // Start fresh game
+    startNewGame();
+    render();
+
+    console.log(`Bulk gameplay complete: ${count} games`);
+    alert(`Completed ${count} games! Click Export to download results.`);
+}
+
+function exportBulkResults() {
+    if (bulkResults.length === 0) {
+        alert('No bulk results to export. Run bulk gameplay first.');
+        return;
+    }
+
+    const summary = {
+        timestamp: new Date().toISOString(),
+        version: "1.0",
+        totalGames: bulkResults.length,
+        settings: {
+            gridSize: GRID_SIZE,
+            algorithm: ALGORITHM_CONFIG.current,
+            deterministic: useDeterminism,
+            baseSeed: currentSeed
+        },
+        statistics: calculateBulkStats(),
+        games: bulkResults
+    };
+
+    const filename = `2048_bulk_${GRID_SIZE}x${GRID_SIZE}_${bulkResults.length}games_${Date.now()}.json`;
+
+    const blob = new Blob([JSON.stringify(summary, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    console.log('Bulk results exported:', filename);
+}
+
+function calculateBulkStats() {
+    if (bulkResults.length === 0) return null;
+
+    const scores = bulkResults.map(g => g.gameplay.finalScore);
+    const maxTiles = bulkResults.map(g => g.gameplay.maxTile);
+    const moves = bulkResults.map(g => g.gameplay.moveCount);
+    const wins = bulkResults.filter(g => g.gameplay.won).length;
+
+    return {
+        avgScore: Math.round(scores.reduce((a, b) => a + b, 0) / scores.length),
+        maxScore: Math.max(...scores),
+        minScore: Math.min(...scores),
+        avgMaxTile: Math.round(maxTiles.reduce((a, b) => a + b, 0) / maxTiles.length),
+        highestTile: Math.max(...maxTiles),
+        avgMoves: Math.round(moves.reduce((a, b) => a + b, 0) / moves.length),
+        winRate: (wins / bulkResults.length * 100).toFixed(1) + '%',
+        totalWins: wins
+    };
+}
+
+// Track move count in the move function
+const originalMove = move;
+move = function (direction) {
+    const result = originalMove(direction);
+    if (result) {
+        moveCount++;
+    }
+    return result;
 };
 
 // Start

@@ -76,11 +76,21 @@
                 </div>
 
                 <div class="setting-item">
+                    <label for="grid-size-picker">Grid Size:</label>
+                    <select id="grid-size-picker">
+                        <option value="3">3×3</option>
+                        <option value="4" selected>4×4 (Classic)</option>
+                        <option value="5">5×5</option>
+                    </select>
+                </div>
+
+                <div class="setting-item">
                     <label for="algo-picker">AI Algorithm:</label>
                     <select id="algo-picker">
                         <option value="expectimax">🧠 Expectimax (Best)</option>
                         <option value="mcts">🎲 Monte Carlo</option>
                         <option value="greedy">⚡ Greedy (Fast)</option>
+                        <option value="naive">🎯 Naive (Random)</option>
                     </select>
                 </div>
 
@@ -92,6 +102,41 @@
                         <span>Fast</span>
                     </div>
                 </div>
+
+                <div class="setting-item setting-group">
+                    <label>Determinism:</label>
+                    <div class="determinism-controls">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="use-seed-toggle">
+                            <span>Use Fixed Seed</span>
+                        </label>
+                        <input type="number" id="seed-input" placeholder="Seed (e.g. 42)" disabled>
+                    </div>
+                </div>
+
+                <hr class="setting-divider">
+
+                <div class="setting-item setting-group">
+                    <label>🔄 Bulk Gameplay:</label>
+                    <div class="bulk-controls">
+                        <div class="bulk-row">
+                            <label for="bulk-count">Games:</label>
+                            <input type="number" id="bulk-count" value="10" min="1" max="100">
+                        </div>
+                        <button id="start-bulk-btn" class="btn-small">▶️ Run Bulk</button>
+                        <button id="export-bulk-btn" class="btn-small" disabled>📥 Export</button>
+                    </div>
+                    <div id="bulk-progress" class="bulk-progress hidden">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <span class="progress-text">0 / 0</span>
+                    </div>
+                </div>
+
+                <hr class="setting-divider">
+
+                <button id="export-game-btn" class="btn-full">📊 Export Current Game</button>
 
                 <p class="modal-note">Use Arrow Keys or Swipe to play!</p>
             </div>
