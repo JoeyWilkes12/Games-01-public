@@ -1372,3 +1372,122 @@ details.bank-action-group .btn-bank {
         min-height: 44px;
     }
 }
+
+/* ==================== BYOD (Bring Your Own Dice) ==================== */
+
+.byod-panel {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem;
+    width: 100%;
+    max-width: 350px;
+}
+
+.byod-panel.hidden {
+    display: none;
+}
+
+.byod-header {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--text-primary);
+    padding: 0.5rem;
+    list-style: none;
+}
+
+.byod-header::-webkit-details-marker {
+    display: none;
+}
+
+.byod-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+}
+
+.byod-btn {
+    padding: 1rem 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--bg-tertiary) 0%, #2d333b 100%);
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 60px;
+}
+
+.byod-btn:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-blue);
+    box-shadow: 0 4px 12px rgba(88, 166, 255, 0.3);
+}
+
+.byod-btn:active {
+    transform: translateY(0);
+}
+
+/* Seven button - RED */
+.byod-seven {
+    background: linear-gradient(135deg, var(--accent-red) 0%, #c73e39 100%);
+    border-color: var(--accent-red);
+    color: white;
+}
+
+.byod-seven:hover {
+    border-color: #ff6b6b;
+    box-shadow: 0 4px 12px rgba(248, 81, 73, 0.4);
+}
+
+/* Doubles button - Gold accent */
+.byod-doubles {
+    grid-column: span 4;
+    background: linear-gradient(135deg, var(--accent-gold) 0%, #e6b800 100%);
+    border-color: var(--accent-gold);
+    color: #1a1a1a;
+    font-size: 1rem;
+}
+
+.byod-doubles:hover {
+    border-color: #ffd700;
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+}
+
+/* Toggle label styling */
+.toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+}
+
+.toggle-label input[type="checkbox"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+}
+
+.toggle-text {
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.setting-hint {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+
+/* Hide dice container when BYOD is active */
+.dice-container.byod-hidden {
+    display: none;
+}
+
+/* Hide roll button when BYOD is active */
+.btn-roll.byod-hidden {
+    display: none;
+}

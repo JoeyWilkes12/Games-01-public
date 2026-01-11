@@ -95,6 +95,9 @@ class BankGame {
         this.undoMode = 'resample'; // 'resample' or 'preserve'
         this.preservedRolls = []; // Store dice values for preserve mode
 
+        // BYOD (Bring Your Own Dice) mode
+        this.byodEnabled = false;
+
 
         // DOM elements
         this.dom = {
@@ -146,7 +149,16 @@ class BankGame {
             // JSON import/export
             importJsonBtn: document.getElementById('import-json-btn'),
             exportJsonBtn: document.getElementById('export-json-btn'),
-            jsonFileInput: document.getElementById('json-file-input')
+            jsonFileInput: document.getElementById('json-file-input'),
+            // BYOD elements
+            byodToggle: document.getElementById('byod-toggle'),
+            byodPanel: document.getElementById('byod-panel'),
+            diceContainer: document.getElementById('dice-container'),
+            // Exit confirmation modal
+            confirmExitModal: document.getElementById('confirm-exit-modal'),
+            confirmStayBtn: document.getElementById('confirm-stay-btn'),
+            confirmLeaveBtn: document.getElementById('confirm-leave-btn'),
+            homeBtn: document.getElementById('home-btn')
         };
 
         this.init();
@@ -246,6 +258,55 @@ class BankGame {
         }
         if (this.dom.exportJsonBtn) {
             this.dom.exportJsonBtn.addEventListener('click', () => this.exportConfig());
+        }
+
+        // BYOD toggle
+        if (this.dom.byodToggle) {
+            this.dom.byodToggle.addEventListener('change', (e) => this.toggleBYOD(e.target.checked));
+        }
+
+        // BYOD buttons
+        if (this.dom.byodPanel) {
+            this.dom.byodPanel.querySelectorAll('.byod-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const sum = e.target.dataset.sum ? parseInt(e.target.dataset.sum) : null;
+                    const isDoubles = e.target.dataset.doubles === 'true';
+                    this.handleBYODInput(sum, isDoubles);
+                });
+            });
+        }
+
+        // Confirmation modal buttons
+        if (this.dom.confirmStayBtn) {
+            this.dom.confirmStayBtn.addEventListener('click', () => this.hideConfirmModal());
+        }
+        if (this.dom.confirmLeaveBtn) {
+            this.dom.confirmLeaveBtn.addEventListener('click', () => {
+                window.location.href = this.dom.homeBtn?.href || '../../../index.html';
+            });
+        }
+    }
+
+    /**
+     * Confirm exit - shows modal if game is in progress
+     * @returns {boolean} false to prevent navigation, true to allow
+     */
+    confirmExit() {
+        // If game hasn't started or game is over, allow immediate navigation
+        if (!this.gameStarted || this.gameOver) {
+            return true;
+        }
+
+        // Show confirmation modal
+        if (this.dom.confirmExitModal) {
+            this.dom.confirmExitModal.classList.remove('hidden');
+        }
+        return false;
+    }
+
+    hideConfirmModal() {
+        if (this.dom.confirmExitModal) {
+            this.dom.confirmExitModal.classList.add('hidden');
         }
     }
 
@@ -837,6 +898,142 @@ class BankGame {
 
     hideAlert() {
         this.dom.alertMessage.classList.add('hidden');
+    }
+
+    // ==================== BYOD (Bring Your Own Dice) ====================
+
+    /**
+     * Toggle BYOD mode - switch between virtual dice and manual input
+     */
+    toggleBYOD(enabled) {
+        this.byodEnabled = enabled;
+
+        if (this.dom.diceContainer) {
+            if (enabled) {
+                this.dom.diceContainer.classList.add('byod-hidden');
+            } else {
+                this.dom.diceContainer.classList.remove('byod-hidden');
+            }
+        }
+
+        if (this.dom.byodPanel) {
+            if (enabled) {
+                this.dom.byodPanel.classList.remove('hidden');
+            } else {
+                this.dom.byodPanel.classList.add('hidden');
+            }
+        }
+
+        if (this.dom.rollBtn) {
+            if (enabled) {
+                this.dom.rollBtn.classList.add('byod-hidden');
+            } else {
+                this.dom.rollBtn.classList.remove('byod-hidden');
+            }
+        }
+    }
+
+    /**
+     * Handle BYOD input - process manual dice sum entry
+     * @param {number|null} sum - The dice sum (2-12), or null if doubles
+     * @param {boolean} isDoubles - True if doubles button was pressed
+     */
+    handleBYODInput(sum, isDoubles) {
+        if (this.roundOver || this.gameOver) return;
+
+        // Save state for undo before the roll
+        this.pushState();
+
+        this.gameStarted = true;
+        this.rollNumber++;
+        const isProtected = this.rollNumber <= 3;
+
+        // For BYOD doubles, we need the user to have clicked "doubles"
+        // We'll pick a representative die value (user doesn't specify which double)
+        // For scoring purposes, we'll use a mid-range double (3+3=6 as default display)
+        if (isDoubles) {
+            this.die1 = 3;
+            this.die2 = 3;
+        } else if (sum !== null) {
+            // Calculate representative die values
+            const half = Math.floor(sum / 2);
+            this.die1 = Math.min(6, Math.max(1, half));
+            this.die2 = sum - this.die1;
+            // Clamp die2
+            if (this.die2 < 1) { this.die2 = 1; this.die1 = sum - 1; }
+            if (this.die2 > 6) { this.die2 = 6; this.die1 = sum - 6; }
+        }
+
+        const actualSum = isDoubles ? (this.die1 + this.die2) : sum;
+        const isSeven = actualSum === 7 && !isDoubles;
+
+        // Update dice display
+        this.dom.die1.textContent = this.die1;
+        this.dom.die2.textContent = this.die2;
+        this.dom.die1.classList.remove('seven', 'doubles');
+        this.dom.die2.classList.remove('seven', 'doubles');
+
+        // Handle roll outcome
+        let message = '';
+
+        if (isSeven) {
+            if (isProtected) {
+                // First 3 rolls: 7 = 70 points
+                this.bankScore += 70;
+                message = `🛡️ Protected! 7 = +70 points`;
+                this.dom.lastRollInfo.className = 'last-roll-info special';
+                this.dom.die1.classList.add('seven');
+                this.dom.die2.classList.add('seven');
+            } else {
+                // Round ends, bank is lost
+                this.endRound(true);
+                message = `💥 SEVEN! Round over - bank lost!`;
+                this.dom.lastRollInfo.className = 'last-roll-info';
+                this.dom.die1.classList.add('seven');
+                this.dom.die2.classList.add('seven');
+                this.showAlert('SEVEN! Round Over! 💥');
+                this.playSound(false);
+            }
+        } else if (isDoubles) {
+            if (isProtected) {
+                // First 3 rolls: doubles = face value only
+                const faceValue = this.die1 * 2;
+                this.bankScore += faceValue;
+                message = `🛡️ Protected doubles! +${faceValue} (face value)`;
+                this.dom.lastRollInfo.className = 'last-roll-info special';
+            } else {
+                // Doubles after protection: double the bank!
+                const oldBank = this.bankScore;
+                this.bankScore *= 2;
+                message = `🎉 DOUBLES! Bank doubled: ${oldBank} → ${this.bankScore}`;
+                this.dom.lastRollInfo.className = 'last-roll-info special';
+                this.dom.bankScore.classList.add('doubled');
+                setTimeout(() => this.dom.bankScore.classList.remove('doubled'), 500);
+            }
+            this.dom.die1.classList.add('doubles');
+            this.dom.die2.classList.add('doubles');
+            this.playSound(true);
+        } else {
+            // Normal roll: add sum to bank
+            this.bankScore += actualSum;
+            message = `+${actualSum}`;
+            this.dom.lastRollInfo.className = 'last-roll-info';
+        }
+
+        if (!isSeven || isProtected) {
+            this.dom.lastRollInfo.textContent = message;
+        }
+
+        // Move to next player
+        if (!this.roundOver) {
+            this.advancePlayer();
+        }
+
+        // Pulse animation
+        this.dom.bankScore.classList.add('pulse');
+        setTimeout(() => this.dom.bankScore.classList.remove('pulse'), 300);
+
+        this.updateUI();
     }
 
     playSound(positive) {

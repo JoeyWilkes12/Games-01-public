@@ -2016,4 +2016,39 @@ class DiceGame {
 let game;
 window.addEventListener('DOMContentLoaded', () => {
     game = new DiceGame();
+
+    // ==================== Exit Confirmation ====================
+
+    // Confirm exit - shows modal if game is playing
+    window.confirmGameExit = function () {
+        // If game not playing, allow immediate navigation
+        if (!game || !game.isPlaying) {
+            return true;
+        }
+
+        // Show confirmation modal
+        const modal = document.getElementById('confirm-exit-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+        }
+        return false;
+    };
+
+    // Set up modal button handlers
+    const stayBtn = document.getElementById('confirm-stay-btn');
+    const leaveBtn = document.getElementById('confirm-leave-btn');
+    const modal = document.getElementById('confirm-exit-modal');
+    const homeBtn = document.getElementById('home-btn');
+
+    if (stayBtn) {
+        stayBtn.addEventListener('click', function () {
+            modal.classList.add('hidden');
+        });
+    }
+
+    if (leaveBtn && homeBtn) {
+        leaveBtn.addEventListener('click', function () {
+            window.location.href = homeBtn.href;
+        });
+    }
 });

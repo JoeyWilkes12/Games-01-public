@@ -677,5 +677,59 @@ function evaluateGrid(grid) {
     return score;
 }
 
+// ==================== Exit Confirmation ====================
+
+let gameModified = false;
+
+// Track when game is modified
+function markGameModified() {
+    gameModified = true;
+}
+
+// Confirm exit - shows modal if game is in progress
+window.confirmGameExit = function () {
+    // If game hasn't been modified, allow immediate navigation
+    if (!gameModified || gameOver) {
+        return true;
+    }
+
+    // Show confirmation modal
+    const modal = document.getElementById('confirm-exit-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+    }
+    return false;
+};
+
+// Set up modal button handlers on load
+document.addEventListener('DOMContentLoaded', function () {
+    const stayBtn = document.getElementById('confirm-stay-btn');
+    const leaveBtn = document.getElementById('confirm-leave-btn');
+    const modal = document.getElementById('confirm-exit-modal');
+    const homeBtn = document.getElementById('home-btn');
+
+    if (stayBtn) {
+        stayBtn.addEventListener('click', function () {
+            modal.classList.add('hidden');
+        });
+    }
+
+    if (leaveBtn && homeBtn) {
+        leaveBtn.addEventListener('click', function () {
+            window.location.href = homeBtn.href;
+        });
+    }
+});
+
+// Mark game modified after successful move
+const originalMove = move;
+move = function (direction) {
+    const result = originalMove.call(this, direction);
+    if (result) {
+        markGameModified();
+    }
+    return result;
+};
+
 // Start
 init();

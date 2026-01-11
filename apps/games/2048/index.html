@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2048 - Brain Gym</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../confirm-exit.css">
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
 </head>
 
@@ -13,11 +14,12 @@
     <div class="game-container">
         <header>
             <div class="header-left">
-                <a href="../../../index.html" class="home-btn" aria-label="Back to Hub">🏠</a>
+                <a href="../../../index.html" class="home-btn" id="home-btn" aria-label="Back to Hub"
+                    onclick="return window.confirmGameExit ? window.confirmGameExit() : true">🏠</a>
                 <h1>2048!</h1>
             </div>
             <div class="header-right">
-                <a href="../../../dashboard.html" class="research-btn">AI, Analytics & Research ➔</a>
+                <a href="../../../definitions.html" class="research-btn">AI, Analytics & Research ➔</a>
                 <button id="settings-btn" class="settings-icon" aria-label="Settings">⚙️</button>
             </div>
         </header>
@@ -88,6 +90,21 @@
             </div>
         </div>
     </div>
+
+    <!-- Exit Confirmation Modal -->
+    <div class="confirm-exit-overlay hidden" id="confirm-exit-modal">
+        <div class="confirm-exit-modal">
+            <div class="confirm-exit-icon">⚠️</div>
+            <div class="confirm-exit-title">Leave Game?</div>
+            <div class="confirm-exit-message">Your current game progress will be lost. Are you sure you want to return
+                to the Game Hub?</div>
+            <div class="confirm-exit-buttons">
+                <button class="confirm-exit-btn btn-stay" id="confirm-stay-btn">Stay</button>
+                <button class="confirm-exit-btn btn-leave" id="confirm-leave-btn">Leave</button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 

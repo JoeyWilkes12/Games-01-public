@@ -10,12 +10,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../confirm-exit.css">
 </head>
 
 <body>
     <div class="app-container">
         <header>
-            <a href="../../../index.html" class="home-btn" title="Back to Game Hub">🏠</a>
+            <a href="../../../index.html" class="home-btn" id="home-btn" title="Back to Game Hub"
+                onclick="return window.confirmGameExit ? window.confirmGameExit() : true">🏠</a>
             <h1>Random Event Dice</h1>
             <div class="timer-container">
                 <div class="timer-display" id="timer-display">60:00</div>
@@ -244,6 +246,20 @@
                     <button id="save-export-btn" class="primary-btn split-left">Save & Export</button>
                     <button id="save-advanced-btn" class="primary-btn split-right">Save</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exit Confirmation Modal -->
+    <div class="confirm-exit-overlay hidden" id="confirm-exit-modal">
+        <div class="confirm-exit-modal">
+            <div class="confirm-exit-icon">⚠️</div>
+            <div class="confirm-exit-title">Leave Game?</div>
+            <div class="confirm-exit-message">Your current game progress will be lost. Are you sure you want to return
+                to the Game Hub?</div>
+            <div class="confirm-exit-buttons">
+                <button class="confirm-exit-btn btn-stay" id="confirm-stay-btn">Stay</button>
+                <button class="confirm-exit-btn btn-leave" id="confirm-leave-btn">Leave</button>
             </div>
         </div>
     </div>
