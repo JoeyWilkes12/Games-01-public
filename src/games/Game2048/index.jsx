@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { HomeButton } from '../../components'
 import useGame2048 from './hooks/useGame2048'
 
@@ -229,13 +230,21 @@ export default function Game2048() {
                             2048!
                         </h1>
                     </div>
-                    <button
-                        onClick={() => setSettingsOpen(true)}
-                        className="btn-icon text-2xl"
-                        aria-label="Settings"
-                    >
-                        ⚙️
-                    </button>
+                    <div className="flex items-center gap-2">
+                        <Link
+                            to="/definitions"
+                            className="text-xs text-text-secondary hover:text-accent hidden md:block"
+                        >
+                            AI, Analytics & Research →
+                        </Link>
+                        <button
+                            onClick={() => setSettingsOpen(true)}
+                            className="btn-icon text-2xl"
+                            aria-label="Settings"
+                        >
+                            ⚙️
+                        </button>
+                    </div>
                 </header>
 
                 {/* Score */}

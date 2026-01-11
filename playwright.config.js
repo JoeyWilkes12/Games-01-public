@@ -1,15 +1,20 @@
 // @ts-check
-const { defineConfig, devices } = require('@playwright/test');
+import { defineConfig, devices } from '@playwright/test';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 /**
- * Playwright configuration for Game Hub
+ * Playwright configuration for Game Hub (React + Vite)
  * Configured for testing, demo recording, and parallel split demos
  * 
  * Environment Variables:
  *   DEMO_SPEED - Speed multiplier for demos (e.g., 2.0 = 2x faster)
  *   HEADLESS   - Set to 'false' for headed mode
  */
-module.exports = defineConfig({
+export default defineConfig({
   testDir: './',
 
   // Global timeout for tests (2 minutes default)
@@ -39,8 +44,8 @@ module.exports = defineConfig({
   ],
 
   use: {
-    // Base URL for local file access
-    baseURL: `file://${__dirname}`,
+    // Base URL for React development server
+    baseURL: 'http://localhost:5173/Games-01-public',
 
     // Collect trace when retrying the failed test
     trace: 'on-first-retry',
@@ -60,8 +65,42 @@ module.exports = defineConfig({
     }
   },
 
+  // Start Vite dev server before running tests
+  webServer: {
+    command: 'npm run dev -- --port 5173',
+    url: 'http://localhost:5173/Games-01-public/',
+    reuseExistingServer: !process.env.CI,
+    timeout: 120000,
+  },
+
   // Configure projects
   projects: [
+    // React migration tests (primary)
+    {
+      name: 'react-tests',
+      testDir: './tests',
+      testMatch: /react-.*\.spec\.js$/,
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: { width: 1280, height: 720 },
+        video: 'off',
+        launchOptions: {
+          slowMo: 50
+        }
+      },
+    },
+
+    // Mobile tests
+    {
+      name: 'mobile-tests',
+      testDir: './tests',
+      testMatch: /react-.*\.spec\.js$/,
+      use: {
+        ...devices['iPhone 14'],
+        video: 'off',
+      },
+    },
+
     // Full demo recording (sequential, single worker)
     {
       name: 'demo',
@@ -101,13 +140,13 @@ module.exports = defineConfig({
       timeout: 180000, // 3 minutes per split demo
     },
 
-    // Unit/seeded tests (fast, no video)
+    // Legacy vanilla JS tests (for _original files)
     {
-      name: 'tests',
-      testMatch: /.*\.spec\.js$/,
-      testIgnore: [/demo-recording\.spec\.js$/, /tests\/demo-.*\.spec\.js$/],
+      name: 'legacy-tests',
+      testMatch: /apps\/games\/.*\.spec\.js$/,
       use: {
         ...devices['Desktop Chrome'],
+        baseURL: `file://${__dirname}/_original`,
         viewport: { width: 1280, height: 720 },
         video: 'off',
         launchOptions: {
@@ -120,3 +159,4 @@ module.exports = defineConfig({
   // Output folder for test artifacts
   outputDir: './test-results/',
 });
+

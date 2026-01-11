@@ -126,22 +126,18 @@ if [ -n "$DEMO_SPEED" ]; then
     SPEED_ENV="DEMO_SPEED=$DEMO_SPEED"
 fi
 
-# Run unit/seeded tests
+# Run React Migration Tests (primary)
 if [ "$RUN_TESTS" = true ]; then
-    echo -e "${BLUE}--- Unit & Seeded Tests ---${NC}"
+    echo -e "${BLUE}--- React Migration Tests ---${NC}"
     echo ""
     
-    # Random Event Dice seeded tests
-    run_test "Random Event Dice - Seeded Tests" \
-        "npx playwright test apps/games/Random\\ Event\\ Dice/seeded-tests.spec.js --project=tests --reporter=list $HEADED_FLAG"
+    # React navigation and functionality tests
+    run_test "React Migration Tests" \
+        "npx playwright test tests/react-migration.spec.js --project=react-tests --reporter=list $HEADED_FLAG"
     
-    # Random Event Dice UI tests
-    run_test "Random Event Dice - UI Tests" \
-        "npx playwright test apps/games/Random\\ Event\\ Dice/new-seeded-tests.spec.js --project=tests --reporter=list $HEADED_FLAG"
-    
-    # Bank seeded tests
-    run_test "Bank - Seeded Tests" \
-        "npx playwright test apps/games/Bank/seeded-tests.spec.js --project=tests --reporter=list $HEADED_FLAG"
+    # Mobile responsiveness tests
+    run_test "Mobile Responsiveness Tests" \
+        "npx playwright test tests/react-migration.spec.js --project=mobile-tests --reporter=list --grep='Mobile' $HEADED_FLAG"
 fi
 
 # Run Split Demo Tests (parallel)
