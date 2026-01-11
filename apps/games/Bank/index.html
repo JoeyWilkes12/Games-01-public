@@ -52,67 +52,85 @@
                 <span class="alert-text" id="alert-text">Seven! Round Over!</span>
             </div>
 
+            <!-- Current Player Indicator (moved above Roll button) -->
+            <div class="current-player-section">
+                <span class="current-label">Current Roller:</span>
+                <span class="current-player-name" id="current-player-name">Player 1</span>
+            </div>
+
             <!-- Action Buttons -->
             <div class="action-buttons">
                 <button class="btn btn-roll" id="roll-btn">🎲 Roll Dice</button>
                 <button class="btn btn-undo" id="undo-btn" disabled title="Undo (Ctrl+Z)">↶ Undo</button>
             </div>
 
-            <!-- Round Statistics -->
-            <div class="round-stats" id="round-stats">
-                <div class="stat">
-                    <span class="stat-label">Survival (no 7)</span>
-                    <span class="stat-value" id="survival-prob">100%</span>
-                </div>
-                <div class="stat">
-                    <span class="stat-label">Risk per roll</span>
-                    <span class="stat-value">16.67%</span>
-                </div>
+            <!-- Banking info (hides after roll 3) -->
+            <div class="banking-info" id="banking-info">
+                <span class="info-text">Banking enabled after 3 rolls</span>
             </div>
 
-            <!-- Multi-player BANK Panel -->
-            <div class="bank-action-group disabled" id="bank-action-group">
-                <div class="bank-player-panel disabled" id="bank-player-panel">
-                    <div class="bank-panel-header">
-                        <span>Select players to BANK:</span>
-                        <div class="bank-panel-actions">
-                            <button class="btn-small" id="bank-select-all">All</button>
-                            <button class="btn-small" id="bank-clear-all">Clear</button>
-                        </div>
+            <!-- Collapsible Multi-player BANK Panel -->
+            <details class="bank-action-group disabled" id="bank-action-group">
+                <summary class="bank-panel-summary">
+                    <span>Select players to BANK</span>
+                    <div class="bank-panel-actions">
+                        <button class="btn-small" id="bank-select-all">All</button>
+                        <button class="btn-small" id="bank-clear-all">Clear</button>
                     </div>
+                </summary>
+                <div class="bank-player-panel disabled" id="bank-player-panel">
                     <div class="bank-player-options" id="bank-player-options">
                         <!-- Populated by JavaScript with checkboxes -->
                     </div>
                 </div>
                 <button class="btn btn-bank" id="bank-btn" disabled>🏦 BANK Selected</button>
-            </div>
-
-            <!-- Banking info -->
-            <div class="banking-info" id="banking-info">
-                <span class="info-text">Banking enabled after 3 rolls</span>
-            </div>
+            </details>
 
             <!-- Fallback dropdown (hidden, for backwards compatibility) -->
             <select class="bank-player-select hidden" id="bank-player-select" disabled>
                 <option value="">Select player to BANK</option>
             </select>
-
-            <!-- Current Player Indicator -->
-            <div class="current-player-section">
-                <span class="current-label">Current Roller:</span>
-                <span class="current-player-name" id="current-player-name">Player 1</span>
-            </div>
         </main>
 
         <!-- Players Panel -->
         <aside class="players-panel" id="players-panel">
             <div class="panel-header">
                 <h2>🎯 Scoreboard</h2>
-                <button class="btn-icon" id="toggle-settings" title="Settings">⚙️</button>
+                <div class="panel-controls">
+                    <button class="btn-icon" id="toggle-settings" title="Settings">⚙️</button>
+                </div>
             </div>
-            <div class="players-list" id="players-list">
-                <!-- Populated by JavaScript -->
+
+            <!-- Compact Scoreboard (Default View - Current Player) -->
+            <div class="compact-scoreboard" id="compact-scoreboard">
+                <div class="compact-player-name">
+                    <span id="compact-current-name">Player 1</span>
+                    <span class="compact-rank" id="compact-current-rank">1st of 4</span>
+                </div>
+                <div class="compact-score" id="compact-current-score">0</div>
+                <div class="compact-metrics">
+                    <div class="compact-metric">
+                        <span class="metric-label">To tie next:</span>
+                        <span class="metric-value" id="compact-tie-next">--</span>
+                    </div>
+                    <div class="compact-metric">
+                        <span class="metric-label">To tie leader:</span>
+                        <span class="metric-value" id="compact-tie-leader">--</span>
+                    </div>
+                    <div class="compact-metric">
+                        <span class="metric-label">Ahead by:</span>
+                        <span class="metric-value" id="compact-ahead-by">0</span>
+                    </div>
+                </div>
             </div>
+
+            <!-- Full Scoreboard (Collapsible) -->
+            <details class="full-scoreboard-details" id="full-scoreboard-details">
+                <summary>📋 Full Scoreboard</summary>
+                <div class="players-list" id="players-list">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </details>
         </aside>
 
         <!-- Settings Panel -->
@@ -125,6 +143,8 @@
                 <div class="setting-group">
                     <label for="rounds-select">Number of Rounds</label>
                     <select id="rounds-select">
+                        <option value="1">1 Round (Testing)</option>
+                        <option value="5">5 Rounds</option>
                         <option value="10">10 Rounds</option>
                         <option value="15">15 Rounds</option>
                         <option value="20" selected>20 Rounds</option>
@@ -148,15 +168,28 @@
                         <option value="preserve">Preserve (same rolls)</option>
                     </select>
                 </div>
+                <div class="setting-group json-config-group">
+                    <label>Configuration</label>
+                    <div class="json-config-buttons">
+                        <button id="import-json-btn" class="btn-small" title="Import Configuration">📤 Import</button>
+                        <button id="export-json-btn" class="btn-small" title="Export Configuration">📥 Export</button>
+                        <input type="file" id="json-file-input" accept=".json" hidden>
+                    </div>
+                </div>
                 <div class="setting-group">
                     <button class="btn btn-new-game" id="new-game-btn">🎮 New Game</button>
                 </div>
             </div>
         </div>
 
-        <!-- Probability Cheatsheet -->
+        <!-- Probability Cheatsheet with Survival -->
         <details class="probability-cheatsheet" id="probability-cheatsheet">
-            <summary>📊 Dice Probabilities (2d6)</summary>
+            <summary>📊</summary>
+            <h4 class="cheatsheet-title">Dice Probabilities (2d6)</h4>
+            <div class="survival-display">
+                <span class="survival-label">Survival (no 7)</span>
+                <span class="survival-value" id="survival-prob">100%</span>
+            </div>
             <table class="prob-table">
                 <thead>
                     <tr>
@@ -232,10 +265,10 @@
                 <div class="winner-display" id="winner-display">
                     <!-- Populated by JavaScript -->
                 </div>
+                <button class="btn btn-new-game" id="play-again-btn">🎮 Play Again</button>
                 <div class="final-scores" id="final-scores">
                     <!-- Populated by JavaScript -->
                 </div>
-                <button class="btn btn-new-game" id="play-again-btn">🎮 Play Again</button>
             </div>
         </div>
     </div>

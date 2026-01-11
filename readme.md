@@ -21,6 +21,9 @@ Welcome to my games repository! I explore logical aspects and algorithmic soluti
 ### Sliding Puzzle 3x3
 ![Sliding Puzzle](screenshots/sliding_puzzle.png)
 
+### Bank
+![Bank Game](screenshots/bank.png)
+
 ---
 
 ## Playable Games

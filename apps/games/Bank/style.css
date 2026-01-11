@@ -463,6 +463,10 @@ header .subtitle {
     opacity: 1;
 }
 
+.banking-info.hidden {
+    display: none;
+}
+
 .banking-info .info-text {
     font-size: 0.85rem;
     color: var(--accent-green);
@@ -476,19 +480,19 @@ header .subtitle {
 .probability-cheatsheet {
     position: fixed;
     bottom: 1rem;
-    right: 1rem;
+    left: 1rem;
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 0.75rem;
-    max-width: 200px;
+    max-width: 250px;
     z-index: 50;
     box-shadow: var(--shadow);
 }
 
 .probability-cheatsheet summary {
     cursor: pointer;
-    font-size: 0.85rem;
+    font-size: 1rem;
     font-weight: 600;
     color: var(--text-secondary);
     padding: 0.25rem 0;
@@ -496,6 +500,29 @@ header .subtitle {
 
 .probability-cheatsheet summary:hover {
     color: var(--accent-gold);
+}
+
+/* Survival Display inside Cheatsheet */
+.survival-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    background: rgba(35, 134, 54, 0.15);
+    border: 1px solid var(--accent-green);
+    border-radius: 8px;
+}
+
+.survival-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+}
+
+.survival-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent-green);
 }
 
 .prob-table {
@@ -521,6 +548,105 @@ header .subtitle {
     background: rgba(248, 81, 73, 0.2);
     color: var(--accent-red);
     font-weight: 700;
+}
+
+/* Compact Scoreboard (Default View) */
+.compact-scoreboard {
+    padding: 1rem;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.compact-player-name {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.compact-player-name span:first-child {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--accent-blue);
+}
+
+.compact-rank {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+}
+
+.compact-score {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--accent-gold);
+    margin: 0.5rem 0;
+}
+
+.compact-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.compact-metric {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem;
+    background: var(--bg-secondary);
+    border-radius: 6px;
+    font-size: 0.85rem;
+}
+
+.compact-metric:last-child {
+    grid-column: span 2;
+}
+
+.metric-label {
+    color: var(--text-secondary);
+}
+
+.metric-value {
+    font-weight: 600;
+    color: var(--accent-green);
+}
+
+/* Full Scoreboard (Collapsible) */
+.full-scoreboard-details {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 0.5rem;
+}
+
+.full-scoreboard-details summary {
+    cursor: pointer;
+    padding: 0.5rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    list-style: none;
+}
+
+.full-scoreboard-details summary::-webkit-details-marker {
+    display: none;
+}
+
+.full-scoreboard-details summary::before {
+    content: '▶ ';
+    font-size: 0.75rem;
+}
+
+.full-scoreboard-details[open] summary::before {
+    content: '▼ ';
+}
+
+.full-scoreboard-details .players-list {
+    margin-top: 0.5rem;
 }
 
 /* Player Card Gap Column */
@@ -858,17 +984,23 @@ header .subtitle {
     text-align: center;
     max-width: 500px;
     width: 90%;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    margin: 2rem auto;
 }
 
 .modal-content h2 {
     font-size: 2rem;
     margin-bottom: 1.5rem;
     color: var(--accent-gold);
+    flex-shrink: 0;
 }
 
 .winner-display {
     font-size: 1.5rem;
     margin-bottom: 1.5rem;
+    flex-shrink: 0;
 }
 
 .winner-name {
@@ -881,9 +1013,19 @@ header .subtitle {
     color: var(--text-secondary);
 }
 
+/* Play Again button - positioned at top of action area */
+.modal-content .btn-new-game {
+    flex-shrink: 0;
+    margin-bottom: 1rem;
+}
+
 .final-scores {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
     text-align: left;
+    max-height: 40vh;
+    overflow-y: auto;
+    flex-shrink: 1;
+    padding-right: 0.5rem;
 }
 
 .final-scores .player-final {
@@ -934,5 +1076,299 @@ header .subtitle {
     .btn {
         width: 100%;
         justify-content: center;
+    }
+}
+
+/* ==================== NEW UI ELEMENTS ==================== */
+
+/* Collapsible Stats Dashboard */
+.stats-dashboard {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 0.5rem 0.75rem;
+    width: fit-content;
+}
+
+.stats-dashboard summary {
+    cursor: pointer;
+    font-size: 1.25rem;
+    padding: 0.25rem;
+    list-style: none;
+}
+
+.stats-dashboard summary::-webkit-details-marker {
+    display: none;
+}
+
+.stats-dashboard[open] summary {
+    margin-bottom: 0.5rem;
+}
+
+.stats-dashboard .round-stats {
+    padding: 0;
+    background: transparent;
+    border: none;
+}
+
+/* Collapsible Bank Action Group (as details) */
+details.bank-action-group {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0.75rem;
+    width: 100%;
+    max-width: 400px;
+    transition: opacity 0.3s ease;
+}
+
+details.bank-action-group.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+details.bank-action-group summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    color: var(--text-primary);
+    padding: 0.25rem 0;
+}
+
+details.bank-action-group summary::-webkit-details-marker {
+    display: none;
+}
+
+details.bank-action-group summary::before {
+    content: '▶';
+    margin-right: 0.5rem;
+    font-size: 0.75rem;
+    transition: transform 0.2s ease;
+}
+
+details.bank-action-group[open] summary::before {
+    transform: rotate(90deg);
+}
+
+.bank-panel-summary {
+    gap: 0.5rem;
+}
+
+.bank-panel-summary .bank-panel-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+details.bank-action-group .bank-player-panel {
+    margin-top: 0.5rem;
+    border: none;
+    padding: 0;
+    background: transparent;
+}
+
+details.bank-action-group .btn-bank {
+    width: 100%;
+    margin-top: 0.75rem;
+}
+
+/* Panel Controls */
+.panel-controls {
+    display: flex;
+    gap: 0.25rem;
+}
+
+/* Summary Scoreboard */
+.summary-scoreboard {
+    padding: 1rem;
+}
+
+.summary-scoreboard.hidden {
+    display: none;
+}
+
+.summary-current-player {
+    text-align: center;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+}
+
+.summary-current-player h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--accent-blue);
+    margin-bottom: 0.25rem;
+}
+
+.summary-score {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--accent-gold);
+}
+
+.summary-targets {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.summary-target {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    background: var(--bg-tertiary);
+    border-radius: 8px;
+}
+
+.target-label {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.target-value {
+    font-weight: 700;
+    color: var(--accent-green);
+}
+
+.summary-rankings {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.summary-rank-item {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 6px;
+    margin-bottom: 0.25rem;
+}
+
+.summary-rank-item.current {
+    background: rgba(88, 166, 255, 0.15);
+    border: 1px solid var(--accent-blue);
+}
+
+.summary-rank-item .rank {
+    font-weight: 700;
+    color: var(--text-secondary);
+    min-width: 30px;
+}
+
+.summary-rank-item .name {
+    flex: 1;
+}
+
+.summary-rank-item .score {
+    font-weight: 600;
+    color: var(--accent-gold);
+}
+
+/* JSON Config Buttons */
+.json-config-group .json-config-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.json-config-group .btn-small {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem;
+}
+
+/* Probability Cheatsheet Title */
+.cheatsheet-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    padding-top: 0.25rem;
+}
+
+/* ==================== MOBILE ENHANCEMENTS ==================== */
+
+@media (max-width: 768px) {
+    .game-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    header h1 {
+        font-size: 2rem;
+    }
+
+    .bank-display {
+        padding: 1.5rem 2rem;
+    }
+
+    .bank-score {
+        font-size: 3.5rem;
+    }
+
+    .dice-container {
+        gap: 1.5rem;
+    }
+
+    .die {
+        width: 70px;
+        height: 70px;
+        font-size: 2rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .players-panel {
+        order: -1;
+        max-height: 250px;
+    }
+
+    details.bank-action-group {
+        width: 100%;
+        max-width: none;
+    }
+
+    .probability-cheatsheet {
+        left: 1rem;
+        bottom: 1rem;
+        max-width: 150px;
+    }
+
+    .summary-score {
+        font-size: 2rem;
+    }
+}
+
+/* Touch-friendly targets */
+@media (pointer: coarse) {
+    .btn {
+        min-height: 48px;
+        min-width: 48px;
+    }
+
+    .btn-small {
+        min-height: 40px;
+        padding: 0.5rem 1rem;
+    }
+
+    .bank-player-checkbox {
+        padding: 0.75rem 1rem;
+    }
+
+    .btn-icon {
+        min-width: 44px;
+        min-height: 44px;
     }
 }

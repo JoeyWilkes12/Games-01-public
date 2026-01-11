@@ -31,7 +31,8 @@ test.describe('Bank Game - Core Mechanics', () => {
     test('should load game correctly', async ({ page }) => {
         // Verify core elements exist
         await expect(page.locator('#roll-btn')).toBeVisible();
-        await expect(page.locator('#bank-btn')).toBeVisible();
+        // Bank button is inside collapsible details, check it exists in DOM
+        await expect(page.locator('#bank-btn')).toHaveCount(1);
         await expect(page.locator('#bank-score')).toHaveText('0');
         await expect(page.locator('#round-number')).toHaveText('1');
         await expect(page.locator('#roll-number')).toHaveText('0');

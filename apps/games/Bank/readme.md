@@ -2,14 +2,16 @@
 
 A web-based implementation of the "Bank" dice game, based on rules from [ThunderHive Games](https://www.thunderhivegames.com/).
 
+![Bank Game - Initial View](screenshots/bank_initial_view.png)
+
 ## How to Play
 
 ### Objective
-Be the player with the most BANKED points after 10, 15, or 20 rounds!
+Be the player with the most BANKED points after 1, 5, 10, 15, or 20 rounds!
 
 ### Setup
 1. Add player names (2+ players)
-2. Choose number of rounds (10, 15, or 20)
+2. Choose number of rounds 
 3. Start rolling!
 
 ### Gameplay
@@ -34,42 +36,73 @@ After all rounds complete, the player with the highest score wins!
 
 ## Features
 
+### Core Gameplay
 - **Manual Rolling**: Click to roll (no automatic timer)
 - **Multi-Select Banking**: After roll 3, select multiple players and bank them all at once
 - **Undo**: Undo last action with Ctrl+Z (supports re-sample or preserve modes)
-- **Probability Display**: Live survival probability + static 2d6 cheatsheet
-- **Gap Column**: Scoreboard shows "+X to tie" for each player vs leader
-- **Visual Feedback**: Dice animations, score pulses, status indicators
-- **Real-time Scoreboard**: See all players ranked by score with gap to leader
-- **Sound Effects**: Optional audio feedback for events
 - **Keyboard Shortcuts**: SPACE to roll, B to bank, Ctrl+Z to undo
-- **Mobile Responsive**: Works on phones and tablets
 
-### Multi-Player Bulk Banking (After Roll 3)
-Once the protected first 3 rolls are complete, a checkbox panel appears. Select one or more players and click "BANK Selected" to have them all bank the current score simultaneously. This adds group decision-making strategy!
+### UI & Visual
+- **Collapsible Stats Dashboard**: Probability info in a collapsible panel
+- **Collapsible Bank Panel**: Player selection in an expandable dropdown
+- **Summary Scoreboard**: Toggle between full and summary views with gap calculations
+- **Visual Feedback**: Dice animations, score pulses, status indicators
+- **Gap Column**: Scoreboard shows "+X to tie" for each player vs leader
+- **Mobile Responsive**: Touch-friendly targets, responsive layouts
 
-### Undo Modes
-Settings provide two undo modes:
-- **Re-sample**: Undo reverts state, next roll generates new random values
-- **Preserve**: Undo replays the exact same dice sequence (deterministic)
+### Configuration
+- **JSON Import/Export**: Save and load game configurations
+- **Deterministic Testing**: Seed support for reproducible gameplay
+- **Sample Configurations**: Pre-built JSON files for quick setup
+
+![Bank Game - Settings with JSON Import/Export](screenshots/bank_settings.png)
 
 ### Probability Dashboard
 - **Survival probability**: Shows (5/6)^rollNumber = odds of no 7 so far
 - **Risk per roll**: Constant 16.67% (1/6) chance of rolling 7
 - **Cheatsheet**: Collapsible table with all 2d6 probabilities (2-12)
 
+### Summary Scoreboard
+Toggle to a compact view showing:
+- Current player's score
+- Points needed to tie next player
+- Points needed to tie leader
+- Rankings with tie handling
+
+![Bank Game - Summary Scoreboard](screenshots/bank_gameplay.png)
+
+### Game Over Modal
+
+When all rounds complete, a Game Over modal displays:
+- Winner announcement
+- Play Again button (fixed at top)
+- Scrollable final scoreboard (supports many players)
+
+![Bank Game - Game Over Modal](screenshots/bank_game_over.png)
+
 ## Default Configuration
 
 ```json
 {
-  "totalRounds": 20,
-  "volume": 50,
+  "name": "bank-game-config",
+  "version": "1.0",
+  "seed": 12345,
+  "settings": {
+    "totalRounds": 20,
+    "volume": 50,
+    "undoMode": "resample"
+  },
   "players": [
     { "id": 1, "name": "Player 1" },
     { "id": 2, "name": "Player 2" },
     { "id": 3, "name": "Player 3" },
     { "id": 4, "name": "Player 4" }
-  ]
+  ],
+  "deterministic": {
+    "seed": 12345,
+    "maxRolls": null,
+    "expectedFinalScores": null
+  }
 }
 ```
 
@@ -80,6 +113,27 @@ Settings provide two undo modes:
 | `index.html` | Game UI and structure |
 | `style.css` | Visual styling (dark theme) |
 | `script.js` | BankGame class and logic |
+| `seeded-tests.spec.js` | Playwright test suite (28 tests) |
+| `enhancements.md` | Proposed future enhancements |
+| `sample configuration files/` | Pre-built JSON configs |
+
+## Testing
+
+Run the seeded tests with:
+```bash
+./node_modules/.bin/playwright test apps/games/Bank/seeded-tests.spec.js --project=tests
+```
+
+All 28 tests cover:
+- Core game mechanics
+- Dice rolling behavior
+- First 3 roll protection
+- Doubles scoring
+- Banking functionality
+- Round progression
+- Game completion
+- Multi-player banking
+- Settings
 
 ## Strategy Tips
 
@@ -87,7 +141,7 @@ Settings provide two undo modes:
 2. **Watch for Doubles**: After roll 3, doubles can massively increase the bank
 3. **Bank Before 7**: The odds of rolling a 7 are 1/6 (16.7%) - don't be greedy!
 4. **Let Others Risk**: If the bank is high, consider banking early and letting others take the risk
-5. **Last Player Advantage**: The last unbaked player can keep rolling and take all remaining points
+5. **Last Player Advantage**: The last unbanked player can keep rolling and take all remaining points
 
 ## Credits
 
