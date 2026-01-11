@@ -47,7 +47,34 @@ Tests include:
 - **Definitions/Dashboard/Research**: Page load, tab navigation
 - **Mobile**: Responsive layout, touch targets
 
-### 2. Mobile Responsiveness Tests
+### 2. Seeded Game Tests
+Deterministic tests for game logic validation.
+
+```bash
+# Bank seeded tests
+npx playwright test tests/seeded-bank.spec.js --project=react-tests
+
+# 2048 seeded tests
+npx playwright test tests/seeded-2048.spec.js --project=react-tests
+```
+
+**Bank tests include:**
+- Initial game state verification
+- Dice rolling and bank updates
+- Probability cheatsheet display
+- Undo functionality
+- Settings panel
+- Exit confirmation modal
+
+**2048 tests include:**
+- 4x4 grid rendering
+- Arrow key input handling
+- Hint button functionality
+- Auto-play toggle
+- Settings modal
+- AI research link navigation
+
+### 3. Mobile Responsiveness Tests
 Runs React tests on iPhone 14 viewport.
 
 ```bash

@@ -135,6 +135,14 @@ if [ "$RUN_TESTS" = true ]; then
     run_test "React Migration Tests" \
         "npx playwright test tests/react-migration.spec.js --project=react-tests --reporter=list $HEADED_FLAG"
     
+    # Seeded Bank tests
+    run_test "Bank - Seeded Tests" \
+        "npx playwright test tests/seeded-bank.spec.js --project=react-tests --reporter=list $HEADED_FLAG"
+    
+    # Seeded 2048 tests
+    run_test "2048 - Seeded Tests" \
+        "npx playwright test tests/seeded-2048.spec.js --project=react-tests --reporter=list $HEADED_FLAG"
+    
     # Mobile responsiveness tests
     run_test "Mobile Responsiveness Tests" \
         "npx playwright test tests/react-migration.spec.js --project=mobile-tests --reporter=list --grep='Mobile' $HEADED_FLAG"

@@ -37,8 +37,8 @@ function Tile({ value }) {
 
 function GameGrid({ board }) {
     return (
-        <div className="bg-slate-800 rounded-xl p-3 shadow-2xl max-w-sm mx-auto">
-            <div className="grid grid-cols-4 gap-2">
+        <div className="bg-slate-800 rounded-xl p-3 md:p-4 shadow-2xl max-w-sm md:max-w-md lg:max-w-lg mx-auto">
+            <div className="grid grid-cols-4 gap-2 md:gap-3">
                 {board.flat().map((value, idx) => (
                     <Tile key={idx} value={value} />
                 ))}

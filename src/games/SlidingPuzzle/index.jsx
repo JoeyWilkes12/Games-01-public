@@ -184,10 +184,10 @@ export default function SlidingPuzzle() {
                 </div>
 
                 {/* Puzzle Grids */}
-                <div className="grid grid-cols-2 gap-6 mb-6">
+                <div className="grid grid-cols-2 gap-4 md:gap-8 lg:gap-12 mb-6">
                     {/* Current State (Interactive) */}
                     <div>
-                        <h3 className="text-center text-sm text-text-secondary mb-2">Your Puzzle</h3>
+                        <h3 className="text-center text-sm md:text-base text-text-secondary mb-2">Your Puzzle</h3>
                         <PuzzleGrid
                             state={game.currentState}
                             isAdvanced={game.isAdvancedMode}
@@ -198,7 +198,7 @@ export default function SlidingPuzzle() {
 
                     {/* Target State */}
                     <div>
-                        <h3 className="text-center text-sm text-text-secondary mb-2">Target</h3>
+                        <h3 className="text-center text-sm md:text-base text-text-secondary mb-2">Target</h3>
                         <PuzzleGrid
                             state={game.targetState}
                             isAdvanced={game.isAdvancedMode}

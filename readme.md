@@ -117,9 +117,25 @@ See [tests.md](tests.md) for complete test documentation.
 │   └── index.css       # Tailwind styles
 ├── _original/          # Original vanilla JS version (backup)
 ├── tests/              # Playwright test specs
+├── to_developer/       # Developer documentation
+│   ├── developer.md    # Getting started guide
+│   └── alternatives.md # Alternative frameworks
 ├── claude.md           # Mobile-first development guidelines
 └── package.json
 ```
+
+---
+
+## 📚 Developer Documentation
+
+New to React, Vite, or Tailwind? Check out our comprehensive guides:
+
+| Document | Description |
+|----------|-------------|
+| [Developer Guide](to_developer/developer.md) | Complete introduction to the stack, local development, and GitHub Pages deployment |
+| [Alternatives Guide](to_developer/alternatives.md) | Comparison of alternative frameworks and deployment platforms |
+| [Mobile-First Guidelines](claude.md) | Design principles and responsive patterns |
+| [Testing Documentation](tests.md) | How to run and write tests |
 
 ---
 
