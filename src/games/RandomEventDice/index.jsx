@@ -100,27 +100,35 @@ function Controls({ isPlaying, isPaused, onStart, onPause, onResume, onStop, onR
     )
 }
 
-// Leaderboard
-function Leaderboard({ players, currentPlayerIndex }) {
+// Leaderboard (uses analytics tracker data)
+function Leaderboard({ leaderboard }) {
+    if (!leaderboard || leaderboard.length === 0) {
+        return (
+            <div className="bg-bg-card rounded-xl p-4">
+                <h3 className="font-bold text-lg mb-3">🏆 Leaderboard</h3>
+                <div className="text-text-secondary text-sm">Start game to see stats</div>
+            </div>
+        )
+    }
+
     return (
         <div className="bg-bg-card rounded-xl p-4">
             <h3 className="font-bold text-lg mb-3">🏆 Leaderboard</h3>
             <div className="space-y-2">
-                {players.map((player, idx) => (
+                {leaderboard.map((player, idx) => (
                     <div
-                        key={player.id}
-                        className={`flex justify-between items-center p-2 rounded-lg ${idx === currentPlayerIndex ? 'bg-accent/20' : 'bg-white/5'
-                            }`}
+                        key={player.playerIndex}
+                        className={`flex justify-between items-center p-2 rounded-lg ${player.isCurrent ? 'bg-accent/20' : 'bg-white/5'}`}
                     >
                         <div className="flex items-center gap-2">
                             <span className="w-6">
                                 {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : ''}
                             </span>
-                            <span>{player.name}</span>
+                            <span>{player.playerName}</span>
                         </div>
                         <div className="text-right">
-                            <div className="font-bold">{player.rolls} rolls</div>
-                            <div className="text-xs text-text-secondary">{player.turns} turns</div>
+                            <div className="font-bold">{player.totalRolls} rolls</div>
+                            <div className="text-xs text-text-secondary">{player.turnCount} turns | {player.totalTime.toFixed(1)}s</div>
                         </div>
                     </div>
                 ))}
@@ -129,50 +137,83 @@ function Leaderboard({ players, currentPlayerIndex }) {
     )
 }
 
-// Heatmap
-function Heatmap({ data, diceCount, diceSides }) {
-    const minSum = diceCount
-    const maxSum = diceCount * diceSides
-    const maxCount = Math.max(...Object.values(data), 1)
+// 6x6 Heatmap (matches original)
+function Heatmap6x6({ heatmapData, totalRolls }) {
+    if (!heatmapData) {
+        return (
+            <div className="bg-bg-card rounded-xl p-4">
+                <h3 className="font-bold text-lg mb-3">📊 Roll Distribution (2d6)</h3>
+                <div className="text-text-secondary text-sm">Roll dice to see distribution</div>
+            </div>
+        )
+    }
+
+    const heatColors = [
+        'bg-blue-900', // very cold
+        'bg-blue-700', // cold
+        'bg-blue-500', // slightly cold
+        'bg-gray-500', // expected
+        'bg-orange-500', // slightly hot
+        'bg-orange-600', // hot
+        'bg-red-600', // very hot
+    ]
 
     return (
         <div className="bg-bg-card rounded-xl p-4">
-            <h3 className="font-bold text-lg mb-3">📊 Roll Distribution</h3>
-            <div className="flex flex-wrap gap-2 justify-center">
-                {Array.from({ length: maxSum - minSum + 1 }, (_, i) => {
-                    const sum = minSum + i
-                    const count = data[sum] || 0
-                    const intensity = count / maxCount
-                    return (
-                        <div
-                            key={sum}
-                            className="w-12 h-12 rounded-lg flex flex-col items-center justify-center text-xs"
-                            style={{
-                                backgroundColor: `rgba(56, 189, 248, ${intensity})`,
-                                border: '1px solid rgba(255,255,255,0.1)'
-                            }}
-                        >
-                            <div className="font-bold">{sum}</div>
-                            <div>{count}</div>
-                        </div>
-                    )
-                })}
+            <h3 className="font-bold text-lg mb-3">📊 Roll Distribution (2d6)</h3>
+            <div className="overflow-x-auto">
+                <div className="inline-grid gap-0.5" style={{ gridTemplateColumns: 'auto repeat(6, 1fr)' }}>
+                    {/* Header row */}
+                    <div className="w-8 h-8"></div>
+                    {[1, 2, 3, 4, 5, 6].map(j => (
+                        <div key={`h-${j}`} className="w-8 h-8 flex items-center justify-center text-xs font-bold text-text-secondary">{j}</div>
+                    ))}
+                    {/* Data rows */}
+                    {heatmapData.map((row, i) => (
+                        <>
+                            <div key={`l-${i}`} className="w-8 h-8 flex items-center justify-center text-xs font-bold text-text-secondary">{i + 1}</div>
+                            {row.map((cell, j) => (
+                                <div
+                                    key={`${i}-${j}`}
+                                    className={`w-8 h-8 flex items-center justify-center text-xs rounded ${heatColors[cell.heatLevel]}`}
+                                    title={`${cell.count} (${(cell.proportion * 100).toFixed(1)}%)`}
+                                >
+                                    {cell.count}
+                                </div>
+                            ))}
+                        </>
+                    ))}
+                </div>
             </div>
+            <div className="flex justify-between text-xs mt-2 text-text-secondary">
+                <span>Cold (under)</span>
+                <span>Expected: 2.78%</span>
+                <span>Hot (over)</span>
+            </div>
+            <div className="text-center text-xs mt-1">Total: {totalRolls} rolls</div>
         </div>
     )
 }
 
 // Stats panel
-function StatsPanel({ rollCount, currentPlayer }) {
+function StatsPanel({ totalRolls, currentPlayerName, currentTurnRolls, rollsSinceLastEvent }) {
     return (
-        <div className="flex gap-4 justify-center">
-            <div className="bg-bg-card rounded-xl px-6 py-3 text-center">
+        <div className="flex gap-4 justify-center flex-wrap">
+            <div className="bg-bg-card rounded-xl px-4 py-2 text-center">
                 <div className="text-xs uppercase text-text-secondary">Total Rolls</div>
-                <div className="text-2xl font-bold text-accent">{rollCount}</div>
+                <div className="text-2xl font-bold text-accent">{totalRolls}</div>
             </div>
-            <div className="bg-bg-card rounded-xl px-6 py-3 text-center">
-                <div className="text-xs uppercase text-text-secondary">Current</div>
-                <div className="text-lg font-bold">{currentPlayer?.name}</div>
+            <div className="bg-bg-card rounded-xl px-4 py-2 text-center">
+                <div className="text-xs uppercase text-text-secondary">Current Player</div>
+                <div className="text-lg font-bold">{currentPlayerName}</div>
+            </div>
+            <div className="bg-bg-card rounded-xl px-4 py-2 text-center">
+                <div className="text-xs uppercase text-text-secondary">Turn Rolls</div>
+                <div className="text-lg font-bold">{currentTurnRolls}</div>
+            </div>
+            <div className="bg-bg-card rounded-xl px-4 py-2 text-center">
+                <div className="text-xs uppercase text-text-secondary">Since Event</div>
+                <div className="text-lg font-bold">{rollsSinceLastEvent}</div>
             </div>
         </div>
     )
@@ -246,7 +287,7 @@ function SettingsPanel({
 function Dashboard({ isOpen, onToggle, game }) {
     return (
         <div className={`
-      fixed right-0 top-0 h-full w-80 bg-bg-card border-l border-white/10
+      fixed right-0 top-0 h-full w-80 md:w-96 bg-bg-card border-l border-white/10
       transform transition-transform duration-300 z-30
       ${isOpen ? 'translate-x-0' : 'translate-x-full'}
       overflow-y-auto
@@ -258,15 +299,27 @@ function Dashboard({ isOpen, onToggle, game }) {
                 </div>
 
                 <div className="space-y-6">
-                    <Leaderboard
-                        players={game.leaderboard}
-                        currentPlayerIndex={game.currentPlayerIndex}
-                    />
-                    <Heatmap
-                        data={game.heatmap}
-                        diceCount={game.diceCount}
-                        diceSides={game.diceSides}
-                    />
+                    <Leaderboard leaderboard={game.leaderboard} />
+
+                    {/* 6x6 Heatmap for 2d6 */}
+                    {game.diceCount === 2 && game.diceSides === 6 && (
+                        <Heatmap6x6 heatmapData={game.heatmapData} totalRolls={game.totalRolls} />
+                    )}
+
+                    {/* Timeline */}
+                    {game.timeline.length > 0 && (
+                        <div className="bg-bg-card rounded-xl p-4">
+                            <h3 className="font-bold text-lg mb-3">⏱️ Recent Turns</h3>
+                            <div className="space-y-1 max-h-48 overflow-y-auto">
+                                {game.timeline.map((turn, idx) => (
+                                    <div key={idx} className="flex justify-between text-sm p-1 bg-white/5 rounded">
+                                        <span>#{turn.turnNumber} {turn.playerName}</span>
+                                        <span>{turn.rolls} rolls | {turn.time.toFixed(1)}s</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
@@ -305,8 +358,10 @@ export default function RandomEventDice() {
                 {/* Stats */}
                 <div className="mb-6">
                     <StatsPanel
-                        rollCount={game.rollCount}
-                        currentPlayer={game.currentPlayer}
+                        totalRolls={game.totalRolls}
+                        currentPlayerName={game.currentPlayerName}
+                        currentTurnRolls={game.currentTurnRolls}
+                        rollsSinceLastEvent={game.rollsSinceLastEvent}
                     />
                 </div>
 
@@ -321,7 +376,9 @@ export default function RandomEventDice() {
 
                 {/* Current Sum */}
                 <div className="text-center mb-6">
-                    <span className="text-6xl font-bold text-accent">{game.currentSum}</span>
+                    <span className="text-6xl font-bold text-accent">
+                        {game.diceValues.reduce((a, b) => a + b, 0)}
+                    </span>
                 </div>
 
                 {/* Controls */}

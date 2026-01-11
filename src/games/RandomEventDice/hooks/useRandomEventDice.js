@@ -1,171 +1,478 @@
 import { useState, useCallback, useRef, useEffect } from 'react'
 
-// Seeded RNG
+/**
+ * Seeded Random Number Generator (Linear Congruential Generator)
+ * Used for deterministic testing with specific seeds
+ * Matches original implementation exactly
+ */
 class SeededRNG {
     constructor(seed) {
         this.seed = seed
     }
     next() {
-        this.seed = (this.seed * 1103515245 + 12345) & 0x7fffffff
-        return this.seed / 0x7fffffff
+        this.seed = (this.seed * 9301 + 49297) % 233280
+        return this.seed / 233280
     }
     roll(sides) {
         return Math.floor(this.next() * sides) + 1
     }
 }
 
-// Default Events
-const DEFAULT_EVENTS = [
-    { id: 1, diceSum: 7, name: 'Lucky Seven!', color: '#22c55e' },
-    { id: 2, diceSum: 2, name: 'Snake Eyes!', color: '#ef4444' },
-    { id: 3, diceSum: 12, name: 'Boxcars!', color: '#8b5cf6' },
-    { id: 4, diceSum: 11, name: 'Yo-leven!', color: '#f59e0b' },
+/**
+ * Sample Pool for pre-generating dice roll samples
+ * Generates samples ahead of time for better performance and deterministic testing
+ */
+class SamplePool {
+    constructor(diceCount, diceSides, seed = null) {
+        this.diceCount = diceCount
+        this.diceSides = diceSides
+        this.seed = seed
+        this.samples = []
+        this.currentIndex = 0
+        this.rng = seed !== null ? new SeededRNG(seed) : null
+    }
+
+    static calculateRequiredSamples(durationMin, intervalMs, resetDurationMs) {
+        const totalSeconds = durationMin * 60
+        const cycleTime = (intervalMs + resetDurationMs) / 1000
+        return Math.ceil(totalSeconds / cycleTime) + 100
+    }
+
+    generate(count) {
+        const samplesToGenerate = Math.max(0, count - this.samples.length)
+        if (samplesToGenerate === 0) return
+
+        for (let i = 0; i < samplesToGenerate; i++) {
+            const roll = []
+            for (let d = 0; d < this.diceCount; d++) {
+                const value = this.rng
+                    ? this.rng.roll(this.diceSides)
+                    : Math.floor(Math.random() * this.diceSides) + 1
+                roll.push(value)
+            }
+            this.samples.push(roll)
+        }
+    }
+
+    getNext() {
+        if (this.currentIndex >= this.samples.length) {
+            this.generate(this.samples.length + 100)
+        }
+        return this.samples[this.currentIndex++]
+    }
+
+    reset() {
+        this.currentIndex = 0
+    }
+
+    regenerate(seed) {
+        this.seed = seed
+        this.rng = seed !== null ? new SeededRNG(seed) : null
+        this.samples = []
+        this.currentIndex = 0
+        const count = SamplePool.calculateRequiredSamples(60, 1000, 1000)
+        this.generate(count)
+    }
+
+    updateConfig(diceCount, diceSides) {
+        if (this.diceCount !== diceCount || this.diceSides !== diceSides) {
+            this.diceCount = diceCount
+            this.diceSides = diceSides
+            this.samples = []
+            this.currentIndex = 0
+        }
+    }
+}
+
+/**
+ * Analytics Tracker for player statistics
+ * Tracks turns, rolls per turn, time per turn, and dice heatmap
+ */
+class AnalyticsTracker {
+    constructor(players, diceCount, diceSides) {
+        this.players = players
+        this.playerCount = players.length
+        this.diceCount = diceCount
+        this.diceSides = diceSides
+
+        this.currentPlayerIndex = 0
+        this.currentTurnRolls = 0
+        this.currentTurnStartTime = null
+        this.turnNumber = 0
+
+        this.playerStats = {}
+        for (let i = 0; i < this.playerCount; i++) {
+            this.playerStats[i] = { totalRolls: 0, totalTime: 0, turnCount: 0 }
+        }
+
+        this.timeline = []
+
+        // Heatmap: 6x6 grid for two dice
+        this.heatmap = []
+        if (diceCount === 2 && diceSides === 6) {
+            for (let i = 0; i < 6; i++) {
+                this.heatmap[i] = new Array(6).fill(0)
+            }
+        }
+        this.totalRolls = 0
+    }
+
+    startTurn() {
+        this.currentTurnStartTime = Date.now()
+        this.currentTurnRolls = 0
+    }
+
+    recordRoll(diceValues) {
+        this.currentTurnRolls++
+        this.totalRolls++
+
+        // Update 6x6 heatmap for 2d6
+        if (this.heatmap.length > 0 && diceValues.length === 2) {
+            const d1 = diceValues[0] - 1
+            const d2 = diceValues[1] - 1
+            if (d1 >= 0 && d1 < 6 && d2 >= 0 && d2 < 6) {
+                this.heatmap[d1][d2]++
+            }
+        }
+    }
+
+    endTurn() {
+        const elapsed = this.currentTurnStartTime
+            ? (Date.now() - this.currentTurnStartTime) / 1000
+            : 0
+
+        const stats = this.playerStats[this.currentPlayerIndex]
+        stats.totalRolls += this.currentTurnRolls
+        stats.totalTime += elapsed
+        stats.turnCount++
+
+        this.turnNumber++
+
+        this.timeline.unshift({
+            turnNumber: this.turnNumber,
+            playerIndex: this.currentPlayerIndex,
+            playerName: this.players[this.currentPlayerIndex]?.name || `Player ${this.currentPlayerIndex + 1}`,
+            rolls: this.currentTurnRolls,
+            time: elapsed
+        })
+
+        if (this.timeline.length > 10) {
+            this.timeline.pop()
+        }
+
+        this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.playerCount
+        this.startTurn()
+    }
+
+    getCurrentPlayerName() {
+        return this.players[this.currentPlayerIndex]?.name || `Player ${this.currentPlayerIndex + 1}`
+    }
+
+    getCurrentTurnTime() {
+        if (!this.currentTurnStartTime) return 0
+        return (Date.now() - this.currentTurnStartTime) / 1000
+    }
+
+    getLeaderboard() {
+        const leaderboard = []
+        for (const [id, stats] of Object.entries(this.playerStats)) {
+            const idx = parseInt(id)
+            leaderboard.push({
+                playerIndex: idx,
+                playerName: this.players[idx]?.name || `Player ${idx + 1}`,
+                totalRolls: stats.totalRolls,
+                totalTime: stats.totalTime,
+                turnCount: stats.turnCount,
+                isCurrent: idx === this.currentPlayerIndex
+            })
+        }
+        return leaderboard.sort((a, b) => b.totalRolls - a.totalRolls)
+    }
+
+    getHeatmapData() {
+        if (this.heatmap.length === 0) return null
+
+        const data = []
+        const expected = 1 / 36
+
+        for (let i = 0; i < 6; i++) {
+            const row = []
+            for (let j = 0; j < 6; j++) {
+                const count = this.heatmap[i][j]
+                const proportion = this.totalRolls > 0 ? count / this.totalRolls : 0
+                let heatLevel = 3
+                if (this.totalRolls > 0) {
+                    const deviation = proportion - expected
+                    if (deviation < -expected * 0.5) heatLevel = 0
+                    else if (deviation < -expected * 0.25) heatLevel = 1
+                    else if (deviation < 0) heatLevel = 2
+                    else if (deviation < expected * 0.25) heatLevel = 3
+                    else if (deviation < expected * 0.5) heatLevel = 4
+                    else if (deviation < expected) heatLevel = 5
+                    else heatLevel = 6
+                }
+                row.push({ count, proportion, heatLevel })
+            }
+            data.push(row)
+        }
+        return data
+    }
+
+    simulateToEnd(samplePool, eventDefinitions, checkConditionFn, intervalSeconds) {
+        const results = { events: 0, totalRolls: 0 }
+        const rollTime = intervalSeconds
+
+        while (samplePool.currentIndex < samplePool.samples.length) {
+            const roll = samplePool.getNext()
+            this.currentTurnRolls++
+            this.totalRolls++
+
+            if (this.heatmap.length > 0 && roll.length === 2) {
+                const d1 = roll[0] - 1
+                const d2 = roll[1] - 1
+                if (d1 >= 0 && d1 < 6 && d2 >= 0 && d2 < 6) this.heatmap[d1][d2]++
+            }
+
+            results.totalRolls++
+
+            if (checkConditionFn(roll, eventDefinitions)) {
+                const stats = this.playerStats[this.currentPlayerIndex]
+                stats.totalRolls += this.currentTurnRolls
+                stats.totalTime += (this.currentTurnRolls * rollTime)
+                stats.turnCount++
+                this.turnNumber++
+
+                this.timeline.unshift({
+                    turnNumber: this.turnNumber,
+                    playerIndex: this.currentPlayerIndex,
+                    playerName: this.players[this.currentPlayerIndex]?.name || `Player ${this.currentPlayerIndex + 1}`,
+                    rolls: this.currentTurnRolls,
+                    time: (this.currentTurnRolls * rollTime)
+                })
+                if (this.timeline.length > 10) this.timeline.pop()
+
+                this.currentPlayerIndex = (this.currentPlayerIndex + 1) % this.playerCount
+                this.currentTurnRolls = 0
+                results.events++
+            }
+        }
+
+        // Commit pending rolls
+        if (this.currentTurnRolls > 0) {
+            const stats = this.playerStats[this.currentPlayerIndex]
+            stats.totalRolls += this.currentTurnRolls
+            stats.totalTime += (this.currentTurnRolls * rollTime)
+            stats.turnCount++
+            this.turnNumber++
+        }
+
+        return results
+    }
+
+    reset() {
+        this.currentPlayerIndex = 0
+        this.currentTurnRolls = 0
+        this.currentTurnStartTime = null
+        this.turnNumber = 0
+
+        for (let i = 0; i < this.playerCount; i++) {
+            this.playerStats[i] = { totalRolls: 0, totalTime: 0, turnCount: 0 }
+        }
+
+        this.timeline = []
+
+        if (this.heatmap.length > 0) {
+            for (let i = 0; i < 6; i++) {
+                this.heatmap[i] = new Array(6).fill(0)
+            }
+        }
+        this.totalRolls = 0
+    }
+
+    updateConfig(players, diceCount, diceSides) {
+        this.players = players
+        this.playerCount = players.length
+        this.diceCount = diceCount
+        this.diceSides = diceSides
+
+        this.playerStats = {}
+        for (let i = 0; i < this.playerCount; i++) {
+            this.playerStats[i] = { totalRolls: 0, totalTime: 0, turnCount: 0 }
+        }
+
+        this.heatmap = []
+        if (diceCount === 2 && diceSides === 6) {
+            for (let i = 0; i < 6; i++) {
+                this.heatmap[i] = new Array(6).fill(0)
+            }
+        }
+    }
+}
+
+// Default event definitions: Doubles for 2d6 (matches original)
+function getDefaultEventDefinitions() {
+    const definitions = []
+    for (let i = 1; i <= 6; i++) {
+        definitions.push({
+            id: Date.now() + i,
+            name: `Double ${i}s`,
+            rules: [
+                { dieIndex: 0, operator: '==', value: i },
+                { dieIndex: 1, operator: '==', value: i }
+            ]
+        })
+    }
+    return definitions
+}
+
+// Default players (matches original)
+const DEFAULT_PLAYERS = [
+    { id: 1, name: 'Joey' },
+    { id: 2, name: 'Brinlee' },
+    { id: 3, name: 'Braxton' },
+    { id: 4, name: 'Gavin' },
+    { id: 5, name: 'Hinckley' },
+    { id: 6, name: 'London' },
+    { id: 7, name: 'Bode' },
+    { id: 8, name: 'Macey' },
 ]
 
-// Default Players
-const DEFAULT_PLAYERS = [
-    { id: 1, name: 'Player 1' },
-    { id: 2, name: 'Player 2' },
-    { id: 3, name: 'Player 3' },
-    { id: 4, name: 'Player 4' },
-]
+// Check if roll matches any event definition
+function checkEventCondition(roll, eventDefinitions) {
+    for (const def of eventDefinitions) {
+        const met = def.rules.every(rule => {
+            const val = roll[rule.dieIndex]
+            if (val === undefined) return false
+            switch (rule.operator) {
+                case '==': return val == rule.value
+                case '!=': return val != rule.value
+                case '>': return val > rule.value
+                case '<': return val < rule.value
+                case '>=': return val >= rule.value
+                case '<=': return val <= rule.value
+                default: return false
+            }
+        })
+        if (met) return def
+    }
+    return null
+}
 
 export default function useRandomEventDice(config = {}) {
+    // Settings
+    const [diceCount, setDiceCount] = useState(config.diceCount || 2)
+    const [diceSides, setDiceSides] = useState(config.diceSides || 6)
+    const [rollInterval, setRollInterval] = useState(config.rollInterval || 1000)
+    const [gameDuration, setGameDuration] = useState(config.gameDuration || 5)
+    const [resetDuration, setResetDuration] = useState(config.resetDuration || 3)
+    const [seed, setSeed] = useState(config.seed || null)
+
+    // Players and event definitions
+    const [players, setPlayers] = useState(config.players || DEFAULT_PLAYERS)
+    const [eventDefinitions, setEventDefinitions] = useState(
+        config.eventDefinitions || getDefaultEventDefinitions()
+    )
+
     // Game state
     const [isPlaying, setIsPlaying] = useState(false)
     const [isPaused, setIsPaused] = useState(false)
     const [isResetting, setIsResetting] = useState(false)
 
     // Dice state
-    const [diceCount, setDiceCount] = useState(config.diceCount || 2)
-    const [diceSides, setDiceSides] = useState(config.diceSides || 6)
-    const [diceValues, setDiceValues] = useState([1, 1])
-    const [currentSum, setCurrentSum] = useState(2)
-
-    // Settings
-    const [rollInterval, setRollInterval] = useState(config.rollInterval || 1000)
-    const [gameDuration, setGameDuration] = useState(config.gameDuration || 5)
-    const [resetDuration, setResetDuration] = useState(config.resetDuration || 3)
-
-    // Timer
-    const [timeRemaining, setTimeRemaining] = useState(gameDuration * 60)
-    const [rollCount, setRollCount] = useState(0)
-
-    // Players and events
-    const [players, setPlayers] = useState(
-        (config.players || DEFAULT_PLAYERS).map(p => ({
-            ...p,
-            rolls: 0,
-            turns: 0,
-            totalTime: 0,
-        }))
-    )
-    const [events, setEvents] = useState(config.events || DEFAULT_EVENTS)
-    const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0)
+    const [diceValues, setDiceValues] = useState(Array(diceCount).fill(1))
     const [currentEvent, setCurrentEvent] = useState(null)
 
-    // Analytics
-    const [heatmap, setHeatmap] = useState({})
-    const [recentTurns, setRecentTurns] = useState([])
-    const [turnStartTime, setTurnStartTime] = useState(null)
-    const [turnRolls, setTurnRolls] = useState(0)
+    // Timer and stats
+    const [timeRemaining, setTimeRemaining] = useState(gameDuration * 60)
+    const [rollCount, setRollCount] = useState(0)
+    const [rollsSinceLastEvent, setRollsSinceLastEvent] = useState(0)
 
-    // Refs for intervals
-    const rngRef = useRef(new SeededRNG(config.seed || Date.now()))
+    // Refs
+    const samplePoolRef = useRef(new SamplePool(diceCount, diceSides, seed))
+    const analyticsRef = useRef(new AnalyticsTracker(players, diceCount, diceSides))
     const rollIntervalRef = useRef(null)
     const timerRef = useRef(null)
     const resetTimeoutRef = useRef(null)
+    const analyticsUpdateRef = useRef(null)
+
+    // Analytics state (for React re-renders)
+    const [leaderboard, setLeaderboard] = useState([])
+    const [heatmapData, setHeatmapData] = useState(null)
+    const [timeline, setTimeline] = useState([])
+    const [currentPlayerName, setCurrentPlayerName] = useState('')
+    const [currentTurnRolls, setCurrentTurnRolls] = useState(0)
+    const [totalRolls, setTotalRolls] = useState(0)
+
+    // Update analytics UI state
+    const updateAnalyticsState = useCallback(() => {
+        const analytics = analyticsRef.current
+        setLeaderboard(analytics.getLeaderboard())
+        setHeatmapData(analytics.getHeatmapData())
+        setTimeline([...analytics.timeline])
+        setCurrentPlayerName(analytics.getCurrentPlayerName())
+        setCurrentTurnRolls(analytics.currentTurnRolls)
+        setTotalRolls(analytics.totalRolls)
+    }, [])
 
     // Roll dice
     const rollDice = useCallback(() => {
-        const values = []
-        for (let i = 0; i < diceCount; i++) {
-            values.push(rngRef.current.roll(diceSides))
-        }
-        const sum = values.reduce((a, b) => a + b, 0)
-
+        const values = samplePoolRef.current.getNext()
         setDiceValues(values)
-        setCurrentSum(sum)
         setRollCount(prev => prev + 1)
-        setTurnRolls(prev => prev + 1)
+        setRollsSinceLastEvent(prev => prev + 1)
 
-        // Update heatmap
-        setHeatmap(prev => ({
-            ...prev,
-            [sum]: (prev[sum] || 0) + 1
-        }))
+        // Record in analytics
+        analyticsRef.current.recordRoll(values)
 
-        // Update current player rolls
-        setPlayers(prev => prev.map((p, idx) =>
-            idx === currentPlayerIndex ? { ...p, rolls: p.rolls + 1 } : p
-        ))
-
-        // Check for events
-        const matchedEvent = events.find(e => e.diceSum === sum)
+        // Check for event
+        const matchedEvent = checkEventCondition(values, eventDefinitions)
         if (matchedEvent) {
             setCurrentEvent(matchedEvent)
             triggerEvent(matchedEvent)
         }
 
-        return { values, sum }
-    }, [diceCount, diceSides, events, currentPlayerIndex])
+        return values
+    }, [eventDefinitions])
 
     // Trigger event
     const triggerEvent = useCallback((event) => {
-        // End current turn
-        const turnDuration = turnStartTime ? (Date.now() - turnStartTime) / 1000 : 0
-
-        // Record turn
-        setRecentTurns(prev => [...prev.slice(-19), {
-            player: players[currentPlayerIndex].name,
-            rolls: turnRolls,
-            time: turnDuration,
-            event: event.name,
-        }])
-
-        // Update player stats
-        setPlayers(prev => prev.map((p, idx) =>
-            idx === currentPlayerIndex
-                ? { ...p, turns: p.turns + 1, totalTime: p.totalTime + turnDuration }
-                : p
-        ))
+        analyticsRef.current.endTurn()
+        setRollsSinceLastEvent(0)
 
         // Stop rolling during reset
         setIsResetting(true)
         if (rollIntervalRef.current) clearInterval(rollIntervalRef.current)
 
-        // Start reset timer
+        // Reset after duration
         resetTimeoutRef.current = setTimeout(() => {
             setIsResetting(false)
             setCurrentEvent(null)
-            advancePlayer()
-            setTurnRolls(0)
-            setTurnStartTime(Date.now())
+            analyticsRef.current.startTurn()
 
             if (isPlaying && !isPaused) {
                 startRolling()
             }
         }, resetDuration * 1000)
-    }, [players, currentPlayerIndex, turnStartTime, turnRolls, resetDuration, isPlaying, isPaused])
+    }, [resetDuration, isPlaying, isPaused])
 
-    // Advance to next player
-    const advancePlayer = useCallback(() => {
-        setCurrentPlayerIndex(prev => (prev + 1) % players.length)
-    }, [players.length])
-
-    // Start rolling
+    // Start rolling interval
     const startRolling = useCallback(() => {
         if (rollIntervalRef.current) clearInterval(rollIntervalRef.current)
-        rollIntervalRef.current = setInterval(() => {
-            rollDice()
-        }, rollInterval)
+        rollIntervalRef.current = setInterval(rollDice, rollInterval)
     }, [rollDice, rollInterval])
 
     // Start game
     const start = useCallback(() => {
+        // Pre-generate samples
+        const requiredSamples = SamplePool.calculateRequiredSamples(
+            gameDuration, rollInterval, resetDuration * 1000
+        )
+        samplePoolRef.current.generate(requiredSamples)
+        samplePoolRef.current.reset()
+
         setIsPlaying(true)
         setIsPaused(false)
-        setTurnStartTime(Date.now())
+        analyticsRef.current.startTurn()
         startRolling()
 
         // Start timer
@@ -179,7 +486,11 @@ export default function useRandomEventDice(config = {}) {
                 return prev - 1
             })
         }, 1000)
-    }, [startRolling])
+
+        // Start analytics update interval
+        if (analyticsUpdateRef.current) clearInterval(analyticsUpdateRef.current)
+        analyticsUpdateRef.current = setInterval(updateAnalyticsState, 500)
+    }, [gameDuration, rollInterval, resetDuration, startRolling, updateAnalyticsState])
 
     // Pause game
     const pause = useCallback(() => {
@@ -211,50 +522,51 @@ export default function useRandomEventDice(config = {}) {
         if (rollIntervalRef.current) clearInterval(rollIntervalRef.current)
         if (timerRef.current) clearInterval(timerRef.current)
         if (resetTimeoutRef.current) clearTimeout(resetTimeoutRef.current)
-    }, [])
+        if (analyticsUpdateRef.current) clearInterval(analyticsUpdateRef.current)
+        updateAnalyticsState()
+    }, [updateAnalyticsState])
 
     // Reset game
     const reset = useCallback(() => {
         stop()
         setTimeRemaining(gameDuration * 60)
         setRollCount(0)
-        setTurnRolls(0)
-        setCurrentPlayerIndex(0)
+        setRollsSinceLastEvent(0)
         setCurrentEvent(null)
         setIsResetting(false)
         setDiceValues(Array(diceCount).fill(1))
-        setCurrentSum(diceCount)
-        setHeatmap({})
-        setRecentTurns([])
-        setPlayers(prev => prev.map(p => ({ ...p, rolls: 0, turns: 0, totalTime: 0 })))
-        rngRef.current = new SeededRNG(config.seed || Date.now())
-    }, [gameDuration, diceCount, stop])
 
-    // Skip to end
+        samplePoolRef.current.reset()
+        analyticsRef.current.reset()
+        updateAnalyticsState()
+    }, [gameDuration, diceCount, stop, updateAnalyticsState])
+
+    // Skip to end (simulates remaining game)
     const skipToEnd = useCallback(() => {
-        // Simulate remaining rolls
-        const remainingRolls = Math.floor(timeRemaining / (rollInterval / 1000))
+        if (!isPlaying) return
 
-        for (let i = 0; i < remainingRolls; i++) {
-            const values = []
-            for (let j = 0; j < diceCount; j++) {
-                values.push(rngRef.current.roll(diceSides))
-            }
-            const sum = values.reduce((a, b) => a + b, 0)
+        // Stop normal loops
+        if (rollIntervalRef.current) clearInterval(rollIntervalRef.current)
+        if (timerRef.current) clearInterval(timerRef.current)
+        if (resetTimeoutRef.current) clearTimeout(resetTimeoutRef.current)
+        if (analyticsUpdateRef.current) clearInterval(analyticsUpdateRef.current)
 
-            // Update heatmap
-            setHeatmap(prev => ({
-                ...prev,
-                [sum]: (prev[sum] || 0) + 1
-            }))
+        // Simulate remaining
+        const results = analyticsRef.current.simulateToEnd(
+            samplePoolRef.current,
+            eventDefinitions,
+            checkEventCondition,
+            rollInterval / 1000
+        )
 
-            // Update roll count
-            setRollCount(prev => prev + 1)
-        }
+        console.debug(`[Analytics] Skip to end: ${results.totalRolls} rolls, ${results.events} events`)
 
         setTimeRemaining(0)
-        stop()
-    }, [timeRemaining, rollInterval, diceCount, diceSides, stop])
+        setIsPlaying(false)
+        setIsPaused(false)
+        setRollCount(prev => prev + results.totalRolls)
+        updateAnalyticsState()
+    }, [isPlaying, eventDefinitions, rollInterval, updateAnalyticsState])
 
     // Format time
     const formatTime = (seconds) => {
@@ -263,10 +575,33 @@ export default function useRandomEventDice(config = {}) {
         return `${mins}:${secs.toString().padStart(2, '0')}`
     }
 
-    // Get leaderboard
-    const getLeaderboard = useCallback(() => {
-        return [...players].sort((a, b) => b.rolls - a.rolls)
-    }, [players])
+    // Update player name
+    const updatePlayerName = useCallback((index, name) => {
+        setPlayers(prev => prev.map((p, i) => i === index ? { ...p, name } : p))
+    }, [])
+
+    // Add event definition
+    const addEventDefinition = useCallback((definition) => {
+        setEventDefinitions(prev => [...prev, { ...definition, id: Date.now() }])
+    }, [])
+
+    // Remove event definition
+    const removeEventDefinition = useCallback((id) => {
+        setEventDefinitions(prev => prev.filter(e => e.id !== id))
+    }, [])
+
+    // Update config
+    useEffect(() => {
+        samplePoolRef.current.updateConfig(diceCount, diceSides)
+        analyticsRef.current.updateConfig(players, diceCount, diceSides)
+    }, [diceCount, diceSides, players])
+
+    // Update sample pool on seed change
+    useEffect(() => {
+        if (seed !== null) {
+            samplePoolRef.current.regenerate(seed)
+        }
+    }, [seed])
 
     // Clean up on unmount
     useEffect(() => {
@@ -274,6 +609,7 @@ export default function useRandomEventDice(config = {}) {
             if (rollIntervalRef.current) clearInterval(rollIntervalRef.current)
             if (timerRef.current) clearInterval(timerRef.current)
             if (resetTimeoutRef.current) clearTimeout(resetTimeoutRef.current)
+            if (analyticsUpdateRef.current) clearInterval(analyticsUpdateRef.current)
         }
     }, [])
 
@@ -283,7 +619,6 @@ export default function useRandomEventDice(config = {}) {
         isPaused,
         isResetting,
         diceValues,
-        currentSum,
         diceCount,
         diceSides,
         rollInterval,
@@ -291,17 +626,23 @@ export default function useRandomEventDice(config = {}) {
         resetDuration,
         timeRemaining,
         rollCount,
+        rollsSinceLastEvent,
         players,
-        events,
-        currentPlayerIndex,
+        eventDefinitions,
         currentEvent,
-        heatmap,
-        recentTurns,
+        seed,
+
+        // Analytics
+        leaderboard,
+        heatmapData,
+        timeline,
+        currentPlayerName,
+        currentTurnRolls,
+        totalRolls,
 
         // Computed
-        currentPlayer: players[currentPlayerIndex],
         formattedTime: formatTime(timeRemaining),
-        leaderboard: getLeaderboard(),
+        currentPlayerIndex: analyticsRef.current.currentPlayerIndex,
 
         // Actions
         start,
@@ -316,8 +657,12 @@ export default function useRandomEventDice(config = {}) {
         setRollInterval,
         setGameDuration,
         setResetDuration,
+        setSeed,
         setPlayers,
-        setEvents,
+        updatePlayerName,
+        setEventDefinitions,
+        addEventDefinition,
+        removeEventDefinition,
 
         hasModified: rollCount > 0,
     }
