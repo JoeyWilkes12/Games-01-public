@@ -117,7 +117,8 @@
             <div class="panel-header">
                 <h2>🎯 Scoreboard</h2>
                 <div class="panel-controls">
-                    <button class="btn-icon" id="toggle-settings" title="Settings">⚙️</button>
+                    <button class="btn-icon" id="toggle-player-settings" title="Player Settings">👥</button>
+                    <button class="btn-icon" id="toggle-settings" title="Game Settings">⚙️</button>
                 </div>
             </div>
 
@@ -153,7 +154,7 @@
             </details>
         </aside>
 
-        <!-- Settings Panel -->
+        <!-- Game Settings Panel -->
         <div class="settings-panel hidden" id="settings-panel">
             <div class="settings-header">
                 <h3>⚙️ Game Settings</h3>
@@ -174,13 +175,6 @@
                     <label for="volume-input">Sound Volume</label>
                     <input type="range" id="volume-input" min="0" max="100" value="50">
                 </div>
-                <div class="setting-group">
-                    <label>Players</label>
-                    <div class="player-config" id="player-config">
-                        <!-- Populated by JavaScript -->
-                    </div>
-                    <button class="btn btn-add-player" id="add-player-btn">+ Add Player</button>
-                </div>
                 <div class="setting-group" id="undo-setting-group">
                     <label for="undo-mode-select">Undo Mode</label>
                     <select id="undo-mode-select">
@@ -195,6 +189,13 @@
                     </label>
                     <p class="setting-hint">Use physical dice and enter the sum manually</p>
                 </div>
+                <div class="setting-group">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="dynamic-ordering-toggle" checked>
+                        <span class="toggle-text">Dynamic Scoreboard Ordering</span>
+                    </label>
+                    <p class="setting-hint">Sort scoreboard by points (disable to keep input order)</p>
+                </div>
                 <div class="setting-group json-config-group">
                     <label>Configuration</label>
                     <div class="json-config-buttons">
@@ -205,6 +206,30 @@
                 </div>
                 <div class="setting-group">
                     <button class="btn btn-new-game" id="new-game-btn">🎮 New Game</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Player Settings Panel (Slide-in) -->
+        <div class="player-settings-panel hidden" id="player-settings-panel">
+            <div class="settings-header">
+                <h3>👥 Player Settings</h3>
+                <button class="btn-icon" id="close-player-settings">✖</button>
+            </div>
+            <div class="settings-content">
+                <div class="setting-group">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="show-emojis-toggle" checked>
+                        <span class="toggle-text">Show Emojis in Player Names</span>
+                    </label>
+                    <p class="setting-hint">Display emoji avatar next to each player's name</p>
+                </div>
+                <div class="setting-group">
+                    <label>Players</label>
+                    <div class="player-config" id="player-config">
+                        <!-- Populated by JavaScript with emoji pickers -->
+                    </div>
+                    <button class="btn btn-add-player" id="add-player-btn">+ Add Player</button>
                 </div>
             </div>
         </div>

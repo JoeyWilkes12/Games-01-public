@@ -72,15 +72,15 @@ class BankGame {
         this.audioCtx = null;
         this.volume = 50;
 
-        // Default players
+        // Default players with emojis
         this.defaultPlayers = [
-            { id: 1, name: "Player 1" },
-            { id: 2, name: "Player 2" },
-            { id: 3, name: "Player 3" },
-            { id: 4, name: "Player 4" }
+            { id: 1, name: "Player 1", emoji: "🎲" },
+            { id: 2, name: "Player 2", emoji: "🎯" },
+            { id: 3, name: "Player 3", emoji: "🏆" },
+            { id: 4, name: "Player 4", emoji: "🎮" }
         ];
 
-        // Players: {id, name, score, hasBankedThisRound}
+        // Players: {id, name, emoji, score, hasBankedThisRound}
         this.players = this.defaultPlayers.map(p => ({
             ...p,
             score: 0,
@@ -98,6 +98,9 @@ class BankGame {
         // BYOD (Bring Your Own Dice) mode
         this.byodEnabled = false;
 
+        // Scoreboard settings
+        this.scoreboardDynamicOrdering = true; // Default: enabled (sort by score descending)
+        this.showPlayerEmojis = true; // Default: show emojis in player names
 
         // DOM elements
         this.dom = {
@@ -159,7 +162,13 @@ class BankGame {
             confirmExitModal: document.getElementById('confirm-exit-modal'),
             confirmStayBtn: document.getElementById('confirm-stay-btn'),
             confirmLeaveBtn: document.getElementById('confirm-leave-btn'),
-            homeBtn: document.getElementById('home-btn')
+            homeBtn: document.getElementById('home-btn'),
+            // Player Settings Panel (new)
+            playerSettingsPanel: document.getElementById('player-settings-panel'),
+            togglePlayerSettings: document.getElementById('toggle-player-settings'),
+            closePlayerSettings: document.getElementById('close-player-settings'),
+            showEmojisToggle: document.getElementById('show-emojis-toggle'),
+            dynamicOrderingToggle: document.getElementById('dynamic-ordering-toggle')
         };
 
         this.init();
@@ -289,6 +298,33 @@ class BankGame {
         if (this.dom.confirmLeaveBtn) {
             this.dom.confirmLeaveBtn.addEventListener('click', () => {
                 window.location.href = this.dom.homeBtn?.href || '../../../index.html';
+            });
+        }
+
+        // Player Settings Panel toggles
+        if (this.dom.togglePlayerSettings) {
+            this.dom.togglePlayerSettings.addEventListener('click', () => this.togglePlayerSettings());
+        }
+        if (this.dom.closePlayerSettings) {
+            this.dom.closePlayerSettings.addEventListener('click', () => this.togglePlayerSettings());
+        }
+
+        // Show Emojis toggle
+        if (this.dom.showEmojisToggle) {
+            this.dom.showEmojisToggle.addEventListener('change', (e) => {
+                this.showPlayerEmojis = e.target.checked;
+                this.renderPlayers();
+                this.updateCompactScoreboard();
+                this.updateBankPanel();
+                this.updateUI();
+            });
+        }
+
+        // Dynamic Scoreboard Ordering toggle
+        if (this.dom.dynamicOrderingToggle) {
+            this.dom.dynamicOrderingToggle.addEventListener('change', (e) => {
+                this.scoreboardDynamicOrdering = e.target.checked;
+                this.renderPlayers();
             });
         }
     }
@@ -512,7 +548,7 @@ class BankGame {
         // Build options
         let options = '<option value="">Select player to BANK</option>';
         availablePlayers.forEach(player => {
-            options += `<option value="${player.id}">${player.name}</option>`;
+            options += `<option value="${player.id}">${this.getPlayerDisplayName(player)}</option>`;
         });
         this.dom.bankPlayerSelect.innerHTML = options;
 
@@ -616,10 +652,11 @@ class BankGame {
 
         let html = '';
         availablePlayers.forEach(player => {
+            const displayName = this.getPlayerDisplayName(player);
             html += `
                 <label class="bank-player-checkbox">
                     <input type="checkbox" value="${player.id}" onchange="window.game.updateBankButtonState()">
-                    <span>${player.name}</span>
+                    <span>${displayName}</span>
                 </label>
             `;
         });
@@ -700,7 +737,7 @@ class BankGame {
 
         // Show modal
         this.dom.winnerDisplay.innerHTML = `
-            <div class="winner-name">${winner.name}</div>
+            <div class="winner-name">${this.getPlayerDisplayName(winner)}</div>
             <div class="winner-score">with ${winner.score} points!</div>
         `;
 
@@ -709,7 +746,7 @@ class BankGame {
             const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
             scoresHtml += `
                 <div class="player-final">
-                    <span>${medal} ${player.name}</span>
+                    <span>${medal} ${this.getPlayerDisplayName(player)}</span>
                     <span>${player.score}</span>
                 </div>
             `;
@@ -763,7 +800,7 @@ class BankGame {
 
         // Current player
         const currentPlayer = this.players[this.currentPlayerIndex];
-        this.dom.currentPlayerName.textContent = currentPlayer ? currentPlayer.name : 'Unknown';
+        this.dom.currentPlayerName.textContent = currentPlayer ? this.getPlayerDisplayName(currentPlayer) : 'Unknown';
 
         // Button states
         this.dom.rollBtn.disabled = this.roundOver || this.gameOver;
@@ -809,28 +846,40 @@ class BankGame {
         if (!this.dom.playersList) return;
 
         let html = '';
-        const sorted = [...this.players].sort((a, b) => b.score - a.score);
-        const leaderScore = sorted.length > 0 ? sorted[0].score : 0;
+        // Conditionally sort by score or maintain input order
+        const displayOrder = this.scoreboardDynamicOrdering
+            ? [...this.players].sort((a, b) => b.score - a.score)
+            : [...this.players];
 
-        sorted.forEach((player, index) => {
+        // Always compute leader for gap calculation
+        const sortedByScore = [...this.players].sort((a, b) => b.score - a.score);
+        const leaderScore = sortedByScore.length > 0 ? sortedByScore[0].score : 0;
+
+        displayOrder.forEach((player, displayIndex) => {
             const isCurrent = this.players[this.currentPlayerIndex]?.id === player.id;
-            const medalRank = index === 0 && player.score > 0 ? '🥇' :
-                index === 1 && player.score > 0 ? '🥈' :
-                    index === 2 && player.score > 0 ? '🥉' : '';
+
+            // Get actual rank (position when sorted by score)
+            const actualRank = sortedByScore.findIndex(p => p.id === player.id);
+            const medalRank = actualRank === 0 && player.score > 0 ? '🥇' :
+                actualRank === 1 && player.score > 0 ? '🥈' :
+                    actualRank === 2 && player.score > 0 ? '🥉' : '';
 
             const statusText = player.hasBankedThisRound ? '✓ Banked' :
                 isCurrent ? '🎲 Rolling' : 'Waiting';
 
             // Gap column: difference from leader (negative value for non-leaders)
-            const gap = index === 0 ? '-' : `-${leaderScore - player.score}`;
-            const gapClass = index === 0 ? 'player-gap leader' : 'player-gap';
+            const gap = actualRank === 0 ? '-' : `-${leaderScore - player.score}`;
+            const gapClass = actualRank === 0 ? 'player-gap leader' : 'player-gap';
 
-            // Rank column: numerical position
-            const rankNumber = `#${index + 1}`;
+            // Rank column: actual numerical position by score
+            const rankNumber = `#${actualRank + 1}`;
 
             const classes = ['player-card'];
             if (isCurrent && !player.hasBankedThisRound) classes.push('current');
             if (player.hasBankedThisRound) classes.push('banked');
+
+            // Use getPlayerDisplayName for emoji support
+            const displayName = this.getPlayerDisplayName(player);
 
             html += `
                 <div class="${classes.join(' ')}">
@@ -838,7 +887,7 @@ class BankGame {
                     <span class="${gapClass}">${gap}</span>
                     <span class="player-rank">${rankNumber}</span>
                     <div class="player-info">
-                        <span class="player-name">${medalRank} ${player.name}</span>
+                        <span class="player-name">${medalRank} ${displayName}</span>
                         <span class="player-status">${statusText}</span>
                     </div>
                 </div>
@@ -850,15 +899,37 @@ class BankGame {
 
     toggleSettings() {
         this.dom.settingsPanel.classList.toggle('hidden');
+        // Close player settings if open
+        if (!this.dom.settingsPanel.classList.contains('hidden')) {
+            this.dom.playerSettingsPanel?.classList.add('hidden');
+        }
+    }
+
+    togglePlayerSettings() {
+        if (!this.dom.playerSettingsPanel) return;
+        this.dom.playerSettingsPanel.classList.toggle('hidden');
+        // Close game settings if open
+        if (!this.dom.playerSettingsPanel.classList.contains('hidden')) {
+            this.dom.settingsPanel?.classList.add('hidden');
+        }
     }
 
     renderPlayerConfig() {
         if (!this.dom.playerConfig) return;
 
+        // Build emoji options HTML
+        const emojiOptions = BankGame.PLAYER_EMOJIS.map(e => `<option value="${e}">${e}</option>`).join('');
+
         let html = '';
         this.players.forEach((player, index) => {
+            const currentEmoji = player.emoji || '🎲';
             html += `
                 <div class="player-config-item" data-index="${index}">
+                    <select class="emoji-select" onchange="game.updatePlayerEmoji(${index}, this.value)">
+                        ${BankGame.PLAYER_EMOJIS.map(e =>
+                `<option value="${e}" ${e === currentEmoji ? 'selected' : ''}>${e}</option>`
+            ).join('')}
+                    </select>
                     <input type="text" value="${player.name}" 
                            onchange="game.updatePlayerName(${index}, this.value)">
                     ${this.players.length > 2 ?
@@ -875,6 +946,18 @@ class BankGame {
         if (this.players[index]) {
             this.players[index].name = name || `Player ${index + 1}`;
             this.renderPlayers();
+            this.updateCompactScoreboard();
+            this.updateBankPanel();
+        }
+    }
+
+    updatePlayerEmoji(index, emoji) {
+        if (this.players[index]) {
+            this.players[index].emoji = emoji;
+            this.renderPlayers();
+            this.updateCompactScoreboard();
+            this.updateBankPanel();
+            this.updateUI();
         }
     }
 
@@ -883,6 +966,7 @@ class BankGame {
         this.players.push({
             id: newId,
             name: `Player ${this.players.length + 1}`,
+            emoji: this.getRandomEmoji(),
             score: 0,
             hasBankedThisRound: false
         });
@@ -1212,6 +1296,41 @@ class BankGame {
         return this.rng.getSeed();
     }
 
+    // ==================== PLAYER EMOJIS ====================
+
+    /**
+     * Curated list of emojis for player avatars
+     * Inspired by emojidb.org categories
+     */
+    static PLAYER_EMOJIS = [
+        // Dice & Gaming
+        '🎲', '🎯', '🏆', '🎮', '🃏', '♠️', '♥️', '♦️', '♣️',
+        // Faces & Characters
+        '😎', '🤠', '😈', '👻', '🤖', '👽', '🦊', '🐱', '🐶', '🦁', '🐸',
+        // Objects & Symbols
+        '⭐', '🌟', '💎', '🔥', '⚡', '🌈', '🍀', '🎪', '🚀', '🎸', '🎨',
+        // Royalty & Fantasy
+        '👑', '🧙', '🧚', '🦸', '🧛', '🧜', '🎭', '🏴‍☠️'
+    ];
+
+    /**
+     * Get a random emoji from the curated list
+     */
+    getRandomEmoji() {
+        const index = Math.floor(Math.random() * BankGame.PLAYER_EMOJIS.length);
+        return BankGame.PLAYER_EMOJIS[index];
+    }
+
+    /**
+     * Get player display name with optional emoji prefix
+     */
+    getPlayerDisplayName(player) {
+        if (this.showPlayerEmojis && player.emoji) {
+            return `${player.emoji} ${player.name}`;
+        }
+        return player.name;
+    }
+
     // ==================== PROBABILITY CONSTANTS ====================
 
     /**
@@ -1255,7 +1374,7 @@ class BankGame {
 
         // Current player name and score
         if (this.dom.compactCurrentName) {
-            this.dom.compactCurrentName.textContent = currentPlayer.name;
+            this.dom.compactCurrentName.textContent = this.getPlayerDisplayName(currentPlayer);
         }
         if (this.dom.compactCurrentScore) {
             this.dom.compactCurrentScore.textContent = currentPlayer.score;
@@ -1354,16 +1473,19 @@ class BankGame {
     exportConfig() {
         const config = {
             name: "bank-game-config",  // Unused key for identification
-            version: "1.0",
+            version: "1.1",
             seed: this.rng.getSeed(),
             settings: {
                 totalRounds: this.totalRounds,
                 volume: this.volume,
-                undoMode: this.undoMode
+                undoMode: this.undoMode,
+                scoreboardDynamicOrdering: this.scoreboardDynamicOrdering,
+                showPlayerEmojis: this.showPlayerEmojis
             },
             players: this.players.map(p => ({
                 id: p.id,
-                name: p.name
+                name: p.name,
+                emoji: p.emoji || '🎲'
             })),
             // Deterministic gameplay support
             deterministic: {
@@ -1461,12 +1583,27 @@ class BankGame {
                     this.dom.undoModeSelect.value = this.undoMode;
                 }
             }
+            // New settings: scoreboard ordering
+            if (config.settings.scoreboardDynamicOrdering !== undefined) {
+                this.scoreboardDynamicOrdering = config.settings.scoreboardDynamicOrdering;
+                if (this.dom.dynamicOrderingToggle) {
+                    this.dom.dynamicOrderingToggle.checked = this.scoreboardDynamicOrdering;
+                }
+            }
+            // New settings: show player emojis
+            if (config.settings.showPlayerEmojis !== undefined) {
+                this.showPlayerEmojis = config.settings.showPlayerEmojis;
+                if (this.dom.showEmojisToggle) {
+                    this.dom.showEmojisToggle.checked = this.showPlayerEmojis;
+                }
+            }
         }
 
         if (config.players && Array.isArray(config.players)) {
             this.players = config.players.map(p => ({
                 id: p.id,
                 name: p.name,
+                emoji: p.emoji || this.getRandomEmoji(),
                 score: 0,
                 hasBankedThisRound: false
             }));
