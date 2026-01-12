@@ -254,14 +254,14 @@ function SettingsPanel({
                     </div>
 
                     <div>
-                        <label className="block text-sm mb-2">Roll Interval (ms)</label>
+                        <label className="block text-sm mb-2">Roll Interval (seconds)</label>
                         <input
                             type="number"
                             value={rollInterval}
-                            onChange={e => onIntervalChange(parseInt(e.target.value) || 500)}
-                            min={100}
-                            max={5000}
-                            step={100}
+                            onChange={e => onIntervalChange(parseFloat(e.target.value) || 1)}
+                            min={0.1}
+                            max={10}
+                            step={0.1}
                             className="w-full p-3 rounded-lg bg-white/10 border border-white/10"
                         />
                     </div>
@@ -370,7 +370,7 @@ function AdvancedSettingsModal({
         const config = {
             version: '2.1',
             settings: {
-                interval: settings.rollInterval / 1000,
+                interval: settings.rollInterval, // already in seconds
                 resetDuration: settings.resetDuration,
                 diceCount: settings.diceCount,
                 diceSides: settings.diceSides,
@@ -513,16 +513,59 @@ function AdvancedSettingsModal({
                 </div>
 
                 {/* Actions */}
-                <div className="flex gap-3 justify-end border-t border-white/10 pt-4">
-                    <button onClick={handleExport} className="btn-secondary text-sm">
-                        📥 Export Config
-                    </button>
-                    <button onClick={onClose} className="btn-secondary">
-                        Cancel
-                    </button>
-                    <button onClick={handleSave} className="btn-primary">
-                        Save & Close
-                    </button>
+                <div className="space-y-4 border-t border-white/10 pt-4">
+                    {/* Import */}
+                    <div className="flex items-center gap-3">
+                        <label className="btn-secondary text-sm cursor-pointer">
+                            📤 Import Config
+                            <input
+                                type="file"
+                                accept=".json"
+                                className="hidden"
+                                onChange={(e) => {
+                                    const file = e.target.files?.[0]
+                                    if (!file) return
+                                    const reader = new FileReader()
+                                    reader.onload = (event) => {
+                                        try {
+                                            const config = JSON.parse(event.target.result)
+                                            // Apply players
+                                            if (config.players) {
+                                                const imported = Object.entries(config.players).map(([id, name]) => ({
+                                                    id: parseInt(id),
+                                                    name
+                                                }))
+                                                setLocalPlayers(imported)
+                                            }
+                                            // Apply events
+                                            if (config.eventDefinitions) {
+                                                setLocalEvents(config.eventDefinitions.map(def => ({
+                                                    ...def,
+                                                    id: def.id || Date.now() + Math.random()
+                                                })))
+                                            }
+                                            alert('Config imported successfully!')
+                                        } catch (err) {
+                                            alert('Failed to import config: ' + err.message)
+                                        }
+                                    }
+                                    reader.readAsText(file)
+                                    e.target.value = ''
+                                }}
+                            />
+                        </label>
+                        <span className="text-xs text-text-secondary">Import player names and event definitions from JSON</span>
+                    </div>
+
+                    {/* Save buttons */}
+                    <div className="flex gap-3 justify-end">
+                        <button onClick={() => { handleSave(); handleExport() }} className="btn-secondary">
+                            💾 Save & Export
+                        </button>
+                        <button onClick={handleSave} className="btn-primary">
+                            Save
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

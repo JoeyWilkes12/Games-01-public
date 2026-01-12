@@ -325,7 +325,7 @@ function getDefaultEventDefinitions() {
     return definitions
 }
 
-// Default players (matches original)
+// Default players (matches original - 15 players)
 const DEFAULT_PLAYERS = [
     { id: 1, name: 'Joey' },
     { id: 2, name: 'Brinlee' },
@@ -335,6 +335,13 @@ const DEFAULT_PLAYERS = [
     { id: 6, name: 'London' },
     { id: 7, name: 'Bode' },
     { id: 8, name: 'Macey' },
+    { id: 9, name: 'Ryder' },
+    { id: 10, name: 'Lily' },
+    { id: 11, name: 'Jack' },
+    { id: 12, name: 'Cole' },
+    { id: 13, name: 'Gracen' },
+    { id: 14, name: 'Connor' },
+    { id: 15, name: 'Friend' },
 ]
 
 // Check if roll matches any event definition
@@ -359,10 +366,10 @@ function checkEventCondition(roll, eventDefinitions) {
 }
 
 export default function useRandomEventDice(config = {}) {
-    // Settings
+    // Settings (rollInterval is in SECONDS to match original UI)
     const [diceCount, setDiceCount] = useState(config.diceCount || 2)
     const [diceSides, setDiceSides] = useState(config.diceSides || 6)
-    const [rollInterval, setRollInterval] = useState(config.rollInterval || 1000)
+    const [rollInterval, setRollInterval] = useState(config.rollInterval || 1) // seconds
     const [gameDuration, setGameDuration] = useState(config.gameDuration || 5)
     const [resetDuration, setResetDuration] = useState(config.resetDuration || 3)
     const [seed, setSeed] = useState(config.seed || null)
@@ -455,17 +462,17 @@ export default function useRandomEventDice(config = {}) {
         }, resetDuration * 1000)
     }, [resetDuration, isPlaying, isPaused])
 
-    // Start rolling interval
+    // Start rolling interval (rollInterval is in seconds, convert to ms)
     const startRolling = useCallback(() => {
         if (rollIntervalRef.current) clearInterval(rollIntervalRef.current)
-        rollIntervalRef.current = setInterval(rollDice, rollInterval)
+        rollIntervalRef.current = setInterval(rollDice, rollInterval * 1000)
     }, [rollDice, rollInterval])
 
     // Start game
     const start = useCallback(() => {
-        // Pre-generate samples
+        // Pre-generate samples (rollInterval is in seconds, convert to ms)
         const requiredSamples = SamplePool.calculateRequiredSamples(
-            gameDuration, rollInterval, resetDuration * 1000
+            gameDuration, rollInterval * 1000, resetDuration * 1000
         )
         samplePoolRef.current.generate(requiredSamples)
         samplePoolRef.current.reset()
@@ -551,12 +558,12 @@ export default function useRandomEventDice(config = {}) {
         if (resetTimeoutRef.current) clearTimeout(resetTimeoutRef.current)
         if (analyticsUpdateRef.current) clearInterval(analyticsUpdateRef.current)
 
-        // Simulate remaining
+        // Simulate remaining (rollInterval is already in seconds)
         const results = analyticsRef.current.simulateToEnd(
             samplePoolRef.current,
             eventDefinitions,
             checkEventCondition,
-            rollInterval / 1000
+            rollInterval
         )
 
         console.debug(`[Analytics] Skip to end: ${results.totalRolls} rolls, ${results.events} events`)
