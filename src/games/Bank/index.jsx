@@ -31,8 +31,8 @@ function DiceArea({ die1, die2, isRolling, lastRollMessage, lastRollType, byodEn
             {/* Last Roll Info */}
             {lastRollMessage && (
                 <div className={`text-center text-lg font-medium px-4 py-2 rounded-lg ${lastRollType === 'special' ? 'bg-yellow-500/20 text-yellow-300' :
-                        lastRollType === 'seven' ? 'bg-red-500/20 text-red-300' :
-                            'text-text-secondary'
+                    lastRollType === 'seven' ? 'bg-red-500/20 text-red-300' :
+                        'text-text-secondary'
                     }`}>
                     {lastRollMessage}
                 </div>
@@ -50,8 +50,8 @@ function DiceArea({ die1, die2, isRolling, lastRollMessage, lastRollType, byodEn
                                 key={num}
                                 onClick={() => onByodInput(num, false)}
                                 className={`py-3 rounded-lg font-bold transition-all ${num === 7
-                                        ? 'bg-red-500/30 text-red-300 hover:bg-red-500/50 col-span-2'
-                                        : 'bg-white/10 hover:bg-white/20'
+                                    ? 'bg-red-500/30 text-red-300 hover:bg-red-500/50 col-span-2'
+                                    : 'bg-white/10 hover:bg-white/20'
                                     }`}
                             >
                                 {num}
@@ -157,8 +157,8 @@ function BankingPanel({
                     <label
                         key={player.id}
                         className={`flex items-center gap-2 p-3 rounded-lg cursor-pointer transition-all ${selectedIds.includes(player.id)
-                                ? 'bg-accent/30 border-accent'
-                                : 'bg-white/5 hover:bg-white/10'
+                            ? 'bg-accent/30 border-accent'
+                            : 'bg-white/5 hover:bg-white/10'
                             } border border-transparent`}
                     >
                         <input
@@ -249,7 +249,7 @@ function Scoreboard({
 
 function ProbabilityCheatsheet({ survivalProbability }) {
     return (
-        <details className="fixed bottom-4 right-4 bg-bg-card rounded-xl border border-white/10 p-3 max-w-xs z-30">
+        <details className="fixed bottom-4 left-4 bg-bg-card rounded-xl border border-white/10 p-3 max-w-xs z-30">
             <summary className="cursor-pointer text-2xl">📊</summary>
             <h4 className="font-bold mt-2 mb-3">Dice Probabilities (2d6)</h4>
             <div className="mb-4 p-3 bg-white/5 rounded-lg">
