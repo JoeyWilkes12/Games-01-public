@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { HomeButton } from '../../components'
 import useRandomEventDice from './hooks/useRandomEventDice'
 
@@ -283,6 +283,252 @@ function SettingsPanel({
     )
 }
 
+// Advanced Settings Modal - Player config, event rules, JSON export
+function AdvancedSettingsModal({
+    isOpen,
+    onClose,
+    players,
+    onPlayersChange,
+    eventDefinitions,
+    onEventDefinitionsChange,
+    diceCount,
+    diceSides,
+    settings,
+    onExportConfig
+}) {
+    const [localPlayers, setLocalPlayers] = useState(players)
+    const [localEvents, setLocalEvents] = useState(eventDefinitions)
+
+    // Sync local state when props change
+    useEffect(() => {
+        setLocalPlayers(players)
+        setLocalEvents(eventDefinitions)
+    }, [players, eventDefinitions])
+
+    if (!isOpen) return null
+
+    const addPlayer = () => {
+        const newId = localPlayers.length + 1
+        setLocalPlayers([...localPlayers, { id: newId, name: `Player ${newId}` }])
+    }
+
+    const removePlayer = (index) => {
+        if (localPlayers.length <= 1) return
+        setLocalPlayers(localPlayers.filter((_, i) => i !== index))
+    }
+
+    const updatePlayerName = (index, name) => {
+        setLocalPlayers(localPlayers.map((p, i) => i === index ? { ...p, name } : p))
+    }
+
+    const addEventDefinition = () => {
+        setLocalEvents([...localEvents, {
+            id: Date.now(),
+            name: 'New Event',
+            rules: [{ dieIndex: 0, operator: '==', value: 1 }]
+        }])
+    }
+
+    const removeEventDefinition = (index) => {
+        setLocalEvents(localEvents.filter((_, i) => i !== index))
+    }
+
+    const addRule = (eventIndex) => {
+        setLocalEvents(localEvents.map((e, i) => {
+            if (i !== eventIndex) return e
+            return {
+                ...e,
+                rules: [...e.rules, { dieIndex: 0, operator: '==', value: 1 }]
+            }
+        }))
+    }
+
+    const updateRule = (eventIndex, ruleIndex, field, value) => {
+        setLocalEvents(localEvents.map((e, i) => {
+            if (i !== eventIndex) return e
+            return {
+                ...e,
+                rules: e.rules.map((r, j) => j === ruleIndex ? { ...r, [field]: value } : r)
+            }
+        }))
+    }
+
+    const removeRule = (eventIndex, ruleIndex) => {
+        setLocalEvents(localEvents.map((e, i) => {
+            if (i !== eventIndex) return e
+            return { ...e, rules: e.rules.filter((_, j) => j !== ruleIndex) }
+        }))
+    }
+
+    const handleSave = () => {
+        onPlayersChange(localPlayers)
+        onEventDefinitionsChange(localEvents)
+        onClose()
+    }
+
+    const handleExport = () => {
+        const config = {
+            version: '2.1',
+            settings: {
+                interval: settings.rollInterval / 1000,
+                resetDuration: settings.resetDuration,
+                diceCount: settings.diceCount,
+                diceSides: settings.diceSides,
+                duration: settings.gameDuration,
+            },
+            players: localPlayers.reduce((acc, p, i) => ({ ...acc, [i + 1]: p.name }), {}),
+            eventDefinitions: localEvents.map(def => ({
+                id: def.id,
+                name: def.name,
+                rules: def.rules
+            }))
+        }
+
+        const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = 'random-event-dice-config.json'
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+    }
+
+    return (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-start justify-center p-4 overflow-y-auto" onClick={onClose}>
+            <div className="bg-bg-card rounded-2xl border border-white/10 p-6 max-w-2xl w-full my-8" onClick={e => e.stopPropagation()}>
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-bold">⚡ Advanced Settings</h2>
+                    <button onClick={onClose} className="text-2xl hover:text-accent">&times;</button>
+                </div>
+
+                {/* Player Configuration */}
+                <div className="mb-6">
+                    <h3 className="font-bold mb-3">👥 Players ({localPlayers.length})</h3>
+                    <div className="space-y-2 max-h-40 overflow-y-auto bg-white/5 rounded-lg p-3">
+                        {localPlayers.map((player, idx) => (
+                            <div key={idx} className="flex items-center gap-2">
+                                <span className="text-text-secondary w-6">{idx + 1}.</span>
+                                <input
+                                    type="text"
+                                    value={player.name}
+                                    onChange={e => updatePlayerName(idx, e.target.value)}
+                                    className="flex-1 p-2 rounded bg-white/10 border border-white/10"
+                                />
+                                <button
+                                    onClick={() => removePlayer(idx)}
+                                    className="text-red-400 hover:text-red-300 px-2"
+                                    disabled={localPlayers.length <= 1}
+                                >
+                                    ×
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                    <button onClick={addPlayer} className="mt-2 text-accent hover:text-accent/80 text-sm">
+                        + Add Player
+                    </button>
+                </div>
+
+                {/* Event Definitions */}
+                <div className="mb-6">
+                    <h3 className="font-bold mb-3">🎯 Event Definitions ({localEvents.length})</h3>
+                    <div className="space-y-4 max-h-60 overflow-y-auto">
+                        {localEvents.map((event, eventIdx) => (
+                            <div key={event.id} className="bg-white/5 rounded-lg p-3">
+                                <div className="flex justify-between items-center mb-2">
+                                    <input
+                                        type="text"
+                                        value={event.name || `Event ${eventIdx + 1}`}
+                                        onChange={e => setLocalEvents(localEvents.map((ev, i) =>
+                                            i === eventIdx ? { ...ev, name: e.target.value } : ev
+                                        ))}
+                                        className="font-bold bg-transparent border-b border-white/20 focus:border-accent outline-none"
+                                    />
+                                    <button
+                                        onClick={() => removeEventDefinition(eventIdx)}
+                                        className="text-red-400 hover:text-red-300 text-sm"
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+                                <div className="text-xs text-text-secondary mb-2">Rules (AND logic):</div>
+                                <div className="space-y-1">
+                                    {event.rules.map((rule, ruleIdx) => (
+                                        <div key={ruleIdx} className="flex items-center gap-2 text-sm">
+                                            <span>Die</span>
+                                            <select
+                                                value={rule.dieIndex}
+                                                onChange={e => updateRule(eventIdx, ruleIdx, 'dieIndex', parseInt(e.target.value))}
+                                                className="p-1 rounded bg-white/10 border border-white/10"
+                                            >
+                                                {Array.from({ length: diceCount }, (_, i) => (
+                                                    <option key={i} value={i}>{i + 1}</option>
+                                                ))}
+                                            </select>
+                                            <select
+                                                value={rule.operator}
+                                                onChange={e => updateRule(eventIdx, ruleIdx, 'operator', e.target.value)}
+                                                className="p-1 rounded bg-white/10 border border-white/10"
+                                            >
+                                                <option value="==">==</option>
+                                                <option value="!=">!=</option>
+                                                <option value=">">&gt;</option>
+                                                <option value="<">&lt;</option>
+                                                <option value=">=">&gt;=</option>
+                                                <option value="<=">&lt;=</option>
+                                            </select>
+                                            <input
+                                                type="number"
+                                                value={rule.value}
+                                                onChange={e => updateRule(eventIdx, ruleIdx, 'value', parseInt(e.target.value) || 1)}
+                                                min={1}
+                                                max={diceSides}
+                                                className="w-16 p-1 rounded bg-white/10 border border-white/10"
+                                            />
+                                            {event.rules.length > 1 && (
+                                                <button
+                                                    onClick={() => removeRule(eventIdx, ruleIdx)}
+                                                    className="text-red-400 text-xs"
+                                                >
+                                                    ×
+                                                </button>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                                <button
+                                    onClick={() => addRule(eventIdx)}
+                                    className="text-accent hover:text-accent/80 text-xs mt-2"
+                                >
+                                    + Add Rule
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                    <button onClick={addEventDefinition} className="mt-2 text-accent hover:text-accent/80 text-sm">
+                        + Add Event Definition
+                    </button>
+                </div>
+
+                {/* Actions */}
+                <div className="flex gap-3 justify-end border-t border-white/10 pt-4">
+                    <button onClick={handleExport} className="btn-secondary text-sm">
+                        📥 Export Config
+                    </button>
+                    <button onClick={onClose} className="btn-secondary">
+                        Cancel
+                    </button>
+                    <button onClick={handleSave} className="btn-primary">
+                        Save & Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    )
+}
+
 // Dashboard (collapsible)
 function Dashboard({ isOpen, onToggle, game }) {
     return (
@@ -330,6 +576,7 @@ function Dashboard({ isOpen, onToggle, game }) {
 export default function RandomEventDice() {
     const [settingsOpen, setSettingsOpen] = useState(false)
     const [dashboardOpen, setDashboardOpen] = useState(false)
+    const [advancedOpen, setAdvancedOpen] = useState(false)
 
     const game = useRandomEventDice()
 
@@ -396,12 +643,18 @@ export default function RandomEventDice() {
                 </div>
 
                 {/* Quick Actions */}
-                <div className="flex gap-3 justify-center">
+                <div className="flex gap-3 justify-center flex-wrap">
                     <button
                         onClick={() => setDashboardOpen(true)}
                         className="btn-secondary"
                     >
                         📊 Dashboard
+                    </button>
+                    <button
+                        onClick={() => setAdvancedOpen(true)}
+                        className="btn-secondary"
+                    >
+                        ⚡ Advanced
                     </button>
                     <button
                         onClick={() => setSettingsOpen(true)}
@@ -439,6 +692,25 @@ export default function RandomEventDice() {
                 onIntervalChange={game.setRollInterval}
                 resetDuration={game.resetDuration}
                 onResetChange={game.setResetDuration}
+            />
+
+            {/* Advanced Settings */}
+            <AdvancedSettingsModal
+                isOpen={advancedOpen}
+                onClose={() => setAdvancedOpen(false)}
+                players={game.players}
+                onPlayersChange={game.setPlayers}
+                eventDefinitions={game.eventDefinitions}
+                onEventDefinitionsChange={game.setEventDefinitions}
+                diceCount={game.diceCount}
+                diceSides={game.diceSides}
+                settings={{
+                    rollInterval: game.rollInterval,
+                    resetDuration: game.resetDuration,
+                    diceCount: game.diceCount,
+                    diceSides: game.diceSides,
+                    gameDuration: game.gameDuration
+                }}
             />
         </div>
     )
