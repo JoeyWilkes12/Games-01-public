@@ -60,8 +60,10 @@ Reproducibility is ensured through semantic versioning of game logic and determi
 
 ### Deployment (GitHub Pages)
 This repository is deployed using [GitHub Pages](https://pages.github.com/).
-- **Method**: Static file serving from the `main` branch.
-- **CI/CD**: Currently, there are no GitHub Actions or complex build pipelines. Updates are live immediately upon push to the main branch.
+- **Source**: The root (`/`) of `codex/mobile-game-lab`, published directly as a preview without merging into `main`.
+- **Build**: GitHub’s generated Pages workflow serves the static files; `.nojekyll` bypasses Jekyll processing. Future pushes to this branch trigger publication after the workflow succeeds.
+- **Scope**: `main` remains the default branch. Local research PDFs and review screenshots are ignored and are not published.
+- **Appearance**: Every HTML page supports Light, Dark, and System modes.
 
 ### Testing
 

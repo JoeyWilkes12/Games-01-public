@@ -12,3 +12,5 @@ Original prompt: Verify the Games-01-public Git remote, work in a worktree, redo
 
 
 Follow-up on 2026-10-12: User requested Light/Dark/System on every page and explicitly authorized switching GitHub Pages to this worktree branch without a PR or merge. Shared theme preference and game palette isolation implemented. Version advanced to 3.4.0-alpha.2. Publishing uses only the pushed branch; main/origin/main and release tags stay unchanged.
+
+- Theme update committed and pushed as 70ab21d. GitHub Pages source switched to codex/mobile-game-lab:/ with HTTPS retained. The exact branch was added to the deployment allowlist while preserving six prior policies. README deployment instructions updated; this follow-up push triggers the selected source build.
