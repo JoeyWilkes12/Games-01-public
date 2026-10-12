@@ -518,7 +518,9 @@ class DiceGame {
         // Toggle debug console
         if (this.dom.toggleDebugBtn) {
             this.dom.toggleDebugBtn.addEventListener('click', () => {
-                this.dom.debugConsole.classList.toggle('collapsed');
+                const collapsed = this.dom.debugConsole.classList.toggle('collapsed');
+                this.dom.toggleDebugBtn.textContent = collapsed ? 'Show logs' : 'Hide logs';
+                this.dom.toggleDebugBtn.setAttribute('aria-expanded', String(!collapsed));
             });
         }
 
@@ -1204,7 +1206,7 @@ class DiceGame {
             warningEl.style.cssText = 'background: #fef3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 0.75rem; margin-bottom: 1rem; color: #856404; font-size: 0.9em;';
         }
         warningEl.innerHTML = `
-            <strong>⚠️ Warning: Impossible Event(s) Detected</strong>
+            <strong>Impossible event detected</strong>
             <ul style="margin: 0.5rem 0 0 1rem; padding: 0;">
                 ${warnings.map(w => `<li>${w}</li>`).join('')}
             </ul>
@@ -1516,19 +1518,19 @@ class DiceGame {
         div.innerHTML = `
             <div class="event-def-header">
                 <span>Event Definition #${index !== undefined ? index + 1 : '?'} (AND Logic)</span>
-                <span class="remove-event-btn" onclick="this.closest('.event-def').remove()">Remove</span>
+                <button type="button" class="remove-event-btn" onclick="this.closest('.event-def').remove()">Remove</button>
             </div>
             <div class="rule-inputs" style="display: flex; gap: 0.5rem; margin-bottom: 0.5rem;">
-                <select class="die-select" style="width: auto;">
+                <select class="die-select" aria-label="Die" style="width: auto;">
                     ${this.getDieOptionsHtml()}
                 </select>
-                <select class="operator-select" style="width: auto;">
+                <select class="operator-select" aria-label="Comparison" style="width: auto;">
                     <option value="==">Equals</option>
                     <option value="!=">Not Equals</option>
                     <option value=">">Greater Than</option>
                     <option value="<">Less Than</option>
                 </select>
-                <input type="number" class="value-input" value="1" min="1" style="width: 60px;">
+                <input type="number" class="value-input" aria-label="Value" value="1" min="1" style="width: 60px;">
                 <button class="secondary-btn" onclick="game.addRuleToDef(this)">+ Rule</button>
             </div>
             <div class="rule-group">
@@ -1551,7 +1553,7 @@ class DiceGame {
         return `
             <div class="rule-item" data-die-index="${rule.dieIndex}" data-operator="${rule.operator}" data-value="${rule.value}">
                 <span>Die ${rule.dieIndex + 1} ${rule.operator} ${rule.value}</span>
-                <span style="font-weight:bold; cursor:pointer;" onclick="this.parentElement.remove()">&times;</span>
+                <button type="button" aria-label="Remove rule" class="remove-event-btn" onclick="this.parentElement.remove()">&times;</button>
             </div>
         `;
     }

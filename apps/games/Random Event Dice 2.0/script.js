@@ -190,7 +190,7 @@ const UI = {
                 rulesHtml += `
                     <div class="rule-item" data-die="${r.dieIndex}" data-op="${r.operator}" data-val="${r.value}">
                         <span>Die ${parseInt(r.dieIndex) + 1} ${r.operator} ${r.value}</span>
-                        <span class="logic-remove" onclick="this.parentElement.remove()">&times;</span>
+                        <button type="button" class="logic-remove" aria-label="Remove rule" onclick="this.parentElement.remove()">&times;</button>
                     </div>`;
             });
         }
@@ -198,17 +198,17 @@ const UI = {
         wrapper.innerHTML = `
             <div class="logic-header">
                 <span>Event Definition (AND Logic)</span>
-                <span class="logic-remove" onclick="this.closest('.logic-item').remove()">Remove Group</span>
+                <button type="button" class="logic-remove" onclick="this.closest('.logic-item').remove()">Remove group</button>
             </div>
             <div style="display:flex; gap:0.5rem; margin-bottom:0.5rem;">
-                <select class="die-sel" style="width:auto;">${dieOptions}</select>
-                <select class="op-sel" style="width:auto;">
+                <select class="die-sel" aria-label="Die" style="width:auto;">${dieOptions}</select>
+                <select class="op-sel" aria-label="Comparison" style="width:auto;">
                     <option value="==">==</option>
                     <option value="!=">!=</option>
                     <option value=">">&gt;</option>
                     <option value="<">&lt;</option>
                 </select>
-                <input type="number" class="val-input" value="1" min="1" style="width:60px;">
+                <input type="number" class="val-input" aria-label="Value" value="1" min="1" style="width:60px;">
                 <button type="button" class="secondary-btn" style="padding:0.25rem 0.5rem;" onclick="UI.addRuleToGroup(this)">+ Add Rule</button>
             </div>
             <div class="rule-group">${rulesHtml}</div>
@@ -228,7 +228,7 @@ const UI = {
         div.dataset.die = dieIdx;
         div.dataset.op = op;
         div.dataset.val = val;
-        div.innerHTML = `<span>Die ${parseInt(dieIdx) + 1} ${op} ${val}</span> <span class="logic-remove" onclick="this.parentElement.remove()">&times;</span>`;
+        div.innerHTML = `<span>Die ${parseInt(dieIdx) + 1} ${op} ${val}</span> <button type="button" class="logic-remove" aria-label="Remove rule" onclick="this.parentElement.remove()">&times;</button>`;
         group.appendChild(div);
     },
 

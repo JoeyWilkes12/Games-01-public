@@ -4,35 +4,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2048 - Brain Gym</title>
+    <title>2048 · Games Lab</title>
+    <link rel="stylesheet" href="../game-foundation.css">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="../confirm-exit.css">
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
 </head>
 
 <body data-theme="classic">
     <div class="game-container">
         <header>
             <div class="header-left">
-                <a href="../../../index.html" class="home-btn" id="home-btn" aria-label="Back to Hub"
-                    onclick="return window.confirmGameExit ? window.confirmGameExit() : true">🏠</a>
-                <h1>2048!</h1>
+                <a href="../../../index.html" class="home-btn lab-home" id="home-btn" aria-label="Back to Hub"
+                    onclick="return window.confirmGameExit ? window.confirmGameExit() : true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 5-7 7 7 7"/><path d="M7 12h14"/></svg><span>Games</span></a>
+                <h1>2048</h1>
             </div>
             <div class="header-right">
-                <a href="../../../definitions.html" class="research-btn">AI, Analytics & Research ➔</a>
-                <button id="settings-btn" class="settings-icon" aria-label="Settings">⚙️</button>
+
+                <button id="settings-btn" class="settings-icon lab-icon" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3" fill="currentColor"/><circle cx="15" cy="17" r="3" fill="currentColor"/></svg></button>
             </div>
         </header>
 
-        <div class="main-content">
+        <p class="lab-intro">Join matching tiles. Make room for the next move.</p>
+
+        <main class="main-content">
             <!-- Stats Panel -->
             <div class="panel stats-panel">
                 <div class="stat-box">
-                    <span class="stat-label">SCORE</span>
+                    <span class="stat-label">Score</span>
                     <strong id="score-value">0</strong>
                 </div>
                 <div class="stat-box">
-                    <span class="stat-label">BEST</span>
+                    <span class="stat-label">Personal best</span>
                     <strong id="best-value">0</strong>
                 </div>
             </div>
@@ -43,34 +45,46 @@
                     <p>You Win!</p>
                     <button id="keep-playing-btn" class="btn-primary">Keep Playing</button>
                 </div>
-                <div id="grid-container" class="grid-container">
+                <div id="grid-container" class="grid-container" role="img" aria-label="2048 game board">
                     <!-- Tiles injected by JS -->
                 </div>
             </div>
+        </main>
+
+        <p class="lab-instructions"><strong>How to play</strong> Swipe the board, use the arrow keys, or tap a direction below. Matching tiles combine when they meet.</p>
+        <div class="direction-controls" aria-label="Move tiles">
+            <button data-direction="ArrowLeft" aria-label="Move left"><svg style="transform:rotate(180deg)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+            <button data-direction="ArrowUp" aria-label="Move up"><svg style="transform:rotate(-90deg)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+            <button data-direction="ArrowDown" aria-label="Move down"><svg style="transform:rotate(90deg)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
+            <button data-direction="ArrowRight" aria-label="Move right"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></button>
         </div>
 
         <div class="controls">
             <!-- New Game Icon -->
-            <button id="new-game-btn" class="btn-icon big-icon" aria-label="New Game">↻</button>
+            <button id="new-game-btn" class="btn-icon big-icon" aria-label="New game"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10a9 9 0 1 1 1 7M3 4v6h6"/></svg><span>New game</span></button>
 
             <div class="hint-group">
-                <button id="hint-btn" class="btn-secondary">💡 Hint</button>
-                <button id="solve-btn" class="btn-highlight">🤖 Play for Me</button>
+                <button id="hint-btn" class="btn-secondary">Get a hint</button>
+                <button id="solve-btn" class="btn-highlight">Play for me</button>
             </div>
         </div>
 
+        <p id="hint-status" class="hint-status hidden" role="status" aria-live="polite"></p>
+
+        <a href="../../../dashboard.html" class="research-btn">AI, analytics &amp; research <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6"/></svg></a>
+
         <!-- Settings Modal -->
-        <div id="settings-modal" class="modal hidden">
+        <div id="settings-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Game settings" tabindex="-1">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2>Settings</h2>
-                    <button id="close-settings" class="close-btn">&times;</button>
+                    <button id="close-settings" class="close-btn" aria-label="Close settings">&times;</button>
                 </div>
 
                 <div class="setting-item">
                     <label for="theme-picker">Theme:</label>
                     <select id="theme-picker">
-                        <option value="classic">Classic Toy</option>
+                        <option value="classic">Classic</option>
                         <option value="dark">Dark Mode</option>
                         <option value="pastel">Pastel Dream</option>
                         <option value="neon">Neon Arcade</option>
@@ -92,9 +106,9 @@
     </div>
 
     <!-- Exit Confirmation Modal -->
-    <div class="confirm-exit-overlay hidden" id="confirm-exit-modal">
+    <div class="confirm-exit-overlay hidden" id="confirm-exit-modal" role="dialog" aria-modal="true" aria-label="Leave game?" tabindex="-1">
         <div class="confirm-exit-modal">
-            <div class="confirm-exit-icon">⚠️</div>
+            <div class="confirm-exit-icon"></div>
             <div class="confirm-exit-title">Leave Game?</div>
             <div class="confirm-exit-message">Your current game progress will be lost. Are you sure you want to return
                 to the Game Hub?</div>
@@ -106,6 +120,7 @@
     </div>
 
     <script src="script.js"></script>
+    <script src="../game-ui.js"></script>
 </body>
 
 </html>

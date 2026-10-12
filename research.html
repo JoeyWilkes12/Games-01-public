@@ -1,122 +1,65 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2048 Research - Game Hub</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="dashboard.css">
-</head>
-
-<body>
-    <header>
-        <div class="nav-container">
-            <div class="nav-left">
-                <a href="index.html" class="back-link">← Back to Hub</a>
-            </div>
-            <div class="nav-center">
-                <h1>2048 Research</h1>
-                <p class="subtitle">Academic references and algorithm details</p>
-            </div>
-            <div class="nav-right">
-                <div class="dropdown">
-                    <button class="dropbtn">Menu ▼</button>
-                    <div class="dropdown-content">
-                        <a href="definitions.html">Definitions</a>
-                        <a href="dashboard.html">Dashboard</a>
-                        <a href="research.html" class="active">Research</a>
-                    </div>
-                </div>
-            </div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <title>2048 research library — Game Hub</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="dashboard.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to research</a>
+    <header class="site-header">
+      <nav class="site-nav wrap" aria-label="Main navigation">
+        <a class="brand" href="index.html"
+          ><span class="brand-mark" aria-hidden="true"
+            ><i></i><i></i><i></i><i></i></span
+          >Game Hub</a
+        >
+        <div class="nav-links">
+          <a href="index.html">Play</a><a href="dashboard.html">2048 lab</a>
         </div>
+      </nav>
     </header>
-
-    <main class="dashboard-container">
-        <!-- Research & References -->
-        <section class="research-section">
-            <div class="section-header">
-                <h2>Algorithm Research & References</h2>
-            </div>
-            <div class="references-list">
-                <div class="reference-item">
-                    <div class="ref-content">
-                        <h3>End-to-End One-Shot Path-Planning Algorithm</h3>
-                        <p class="citation">Bian, T., Xing, Y., & Zolotas, A. (2022). End-to-End One-Shot Path-Planning
-                            Algorithm for an Autonomous Vehicle Based on a Convolutional Neural Network Considering
-                            Traversability Cost. <em>Sensors</em>, 22(24), 9682.</p>
-                        <a href="https://doi.org/10.3390/s22249682" target="_blank" class="ref-link">View Paper</a>
-                    </div>
-                </div>
-
-                <div class="reference-item">
-                    <div class="ref-content">
-                        <h3>Mastering 2048 with Delayed Temporal Coherence Learning</h3>
-                        <p class="citation">Jaśkowski, W. (2016). Mastering 2048 with Delayed Temporal Coherence
-                            Learning, Multi-Stage Weight Promotion, Redundant Encoding and Carousel Shaping.
-                            <em>arXiv</em>.
-                        </p>
-                        <a href="https://doi.org/10.48550/arxiv.1604.05085" target="_blank" class="ref-link">View
-                            Paper</a>
-                    </div>
-                </div>
-
-                <div class="reference-item">
-                    <div class="ref-content">
-                        <h3>Dynamic Simulation Monte-Carlo Tree Search</h3>
-                        <p class="citation">Lan, L.-C., Tsai, M.-Y., Wu, T.-R., Wu, I.-C., & Hsieh, C.-J. (2020).
-                            Learning to Stop: Dynamic Simulation Monte-Carlo Tree Search. <em>arXiv</em>.</p>
-                        <a href="https://doi.org/10.48550/arxiv.2012.07910" target="_blank" class="ref-link">View
-                            Paper</a>
-                    </div>
-                </div>
-
-                <div class="reference-item">
-                    <div class="ref-content">
-                        <h3>BSNN: Bistable Neurons</h3>
-                        <p class="citation">Li, Y., Zeng, Y., & Zhao, D. (2021). BSNN: Towards Faster and Better
-                            Conversion of Artificial Neural Networks to Spiking Neural Networks with Bistable Neurons.
-                            <em>arXiv</em>.
-                        </p>
-                        <a href="https://doi.org/10.48550/arxiv.2105.12917" target="_blank" class="ref-link">View
-                            Paper</a>
-                    </div>
-                </div>
-
-                <div class="reference-item">
-                    <div class="ref-content">
-                        <h3>Minimax and Expectimax Algorithm</h3>
-                        <p class="citation">Munir, R. (n.d.). Minimax and Expectimax Algorithm to Solve 2048.
-                            <em>Informatika - Institut Teknologi Bandung</em>.
-                        </p>
-                        <a href="https://informatika.stei.itb.ac.id/~rinaldi.munir/Stmik/2013-2014-genap/Makalah2014/MakalahIF2211-2014-037.pdf"
-                            target="_blank" class="ref-link">View PDF</a>
-                    </div>
-                </div>
-
-                <div class="reference-item">
-                    <div class="ref-content">
-                        <h3>Investigation into 2048 AI Strategies</h3>
-                        <p class="citation">Rodgers, P., & Levine, J. (2014). An Investigation into 2048 AI Strategies.
-                            <em>IEEE Conference on Computational Intelligence and Games</em>.
-                        </p>
-                        <!-- No link provided in prompt, skipping link -->
-                    </div>
-                </div>
-
-                <div class="reference-item">
-                    <div class="ref-content">
-                        <h3>DeepSearch via Monte Carlo Tree Search</h3>
-                        <p class="citation">Wu, F., Xuan, W., Qi, H., Lu, X., Tu, A., Li, L. E., & Choi, Y. (2025).
-                            DeepSearch: Overcome the Bottleneck of Reinforcement Learning with Verifiable Rewards via
-                            Monte Carlo Tree Search. <em>arXiv</em>.</p>
-                        <a href="https://doi.org/10.48550/arxiv.2509.25454" target="_blank" class="ref-link">View
-                            Paper</a>
-                    </div>
-                </div>
-            </div>
-        </section>
+    <main class="wrap" id="main">
+      <div class="page-heading">
+        <div>
+          <h1>A closer look at 2048.</h1>
+          <p>
+            Research, reading notes, and questions worth bringing back to the
+            board.
+          </p>
+        </div>
+        <a class="btn secondary" href="dashboard.html#research"
+          >Back to the lab</a
+        >
+      </div>
+      <div id="research-library">
+        <p class="library-status">Loading research notes…</p>
+      </div>
+      <noscript
+        ><p>
+          Enable JavaScript to read the annotated library, or
+          <a href="docs/research-notes.md">open the research notes</a>.
+        </p></noscript
+      >
     </main>
-</body>
-
+    <footer class="site-footer">
+      <div class="footer-inner wrap">
+        <span
+          >Game Hub ·
+          <span data-app-version>v3.4.0-alpha.1 · Preview</span></span
+        >
+        <div class="footer-links">
+          <a href="dashboard.html">Results</a
+          ><a href="definitions.html">Definitions</a
+          ><a href="apps/games/2048/index.html">Play 2048</a>
+        </div>
+      </div>
+    </footer>
+    <script src="research-data.js"></script>
+    <script src="research.js"></script>
+    <script src="scripts/version.js"></script>
+  </body>
 </html>

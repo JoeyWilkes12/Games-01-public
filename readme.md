@@ -7,6 +7,18 @@ Welcome to my games repository! I explore logical aspects and algorithmic soluti
 
 ---
 
+## Local redesign preview
+
+The mobile-first redesign is currently **3.4.0-alpha.1**, unreleased. Application display versions come from `version.json`; saved-game/configuration schema versions remain independent. See [changelog](CHANGELOG.md) and [versioning policy](docs/versioning.md).
+
+Run the static app locally from this folder:
+
+```sh
+python3 -m http.server 4173 --bind 127.0.0.1
+```
+
+Open [the hub](http://127.0.0.1:4173/) or [the 2048 lab](http://127.0.0.1:4173/dashboard.html). The lab separates results, inspectable run records and annotated research. [Source audit and PDF extraction instructions](docs/research-notes.md) document the historical observations and local-only research corpus.
+
 ## Game Gallery
 
 ### Game Hub
