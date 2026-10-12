@@ -24,7 +24,7 @@
 <p><strong>Live Demo</strong>: <a href="https://joeywilkes12.github.io/Games-01-public/index.html">Play the Games Here</a></p>
 <hr>
 <h2 id="redesign-preview">Redesign preview</h2>
-<p>The mobile-first redesign is currently <strong>3.4.0-alpha.3</strong>, a public preview published from <code>codex/mobile-game-lab</code>. <code>main</code> remains unchanged. Every HTML page has an Appearance selector with Light, Dark, and live System modes; your choice is shared across pages. Application display versions come from <code>version.json</code>; saved-game/configuration schema versions remain independent. See <a href="changelog.html">changelog</a> and <a href="docs/versioning.html">versioning policy</a>.</p>
+<p>The mobile-first redesign is currently <strong>3.4.0-alpha.3</strong>, a public preview published from <code>codex/mobile-game-lab</code>. <code>main</code> remains unchanged. Every HTML page has a theme icon dropdown with Light, Dark, and live System modes; your choice is shared across pages. Application display versions come from <code>version.json</code>; saved-game/configuration schema versions remain independent. See <a href="changelog.html">changelog</a> and <a href="docs/versioning.html">versioning policy</a>.</p>
 <p>Run the static app locally from this folder:</p>
 <pre tabindex="0" aria-label="Code example"><code class="language-sh">python3 -m http.server 4173 --bind 127.0.0.1
 </code></pre>
@@ -75,7 +75,7 @@
 <li><strong>Source</strong>: The root (<code>/</code>) of <code>codex/mobile-game-lab</code>, published directly as a preview without merging into <code>main</code>.</li>
 <li><strong>Build</strong>: GitHub’s generated Pages workflow serves the static files; <code>.nojekyll</code> bypasses Jekyll processing. Future pushes to this branch trigger publication after the workflow succeeds.</li>
 <li><strong>Scope</strong>: <code>main</code> remains the default branch. Local research PDFs and review screenshots are ignored and are not published.</li>
-<li><strong>Appearance</strong>: Every HTML page supports Light, Dark, and System modes.</li>
+<li><strong>Color theme</strong>: Every HTML page supports Light, Dark, and System modes.</li>
 </ul>
 <h3 id="testing">Testing</h3>
 <p>This project uses <a href="https://playwright.dev/">Playwright</a> for E2E testing and demo recordings.</p>

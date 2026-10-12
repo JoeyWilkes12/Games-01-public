@@ -46,3 +46,12 @@ Seven reading pages passed all 42 Light/Dark combinations at 320, 390, and 1440 
 The QR code was generated using the qr-code-generator skill as an SVG with H error correction and a four-module quiet zone. The actual 128-pixel-wide SVG rendered on the 320-pixel Changelog layout decoded via local macOS Vision in both themes to exactly `https://joeywilkes12.github.io/Games-01-public/changelog.html`. No physical-phone scan was performed. An ordinary Changelog link is provided alongside it.
 
 Hub-to-Changelog, About, README, contents anchors, dynamic research links, and keyboard focus of the table region were checked in the local browser. `scripts/build-docs.py --check` confirms generated HTML matches its Markdown sources. The independent review returned **ship** with no actionable findings.
+
+
+## Theme icon validation — separate design-system branch
+
+On `codex/library-design-system`, all 20 HTML routes passed 80 theme/layout combinations: Light and Dark at 320 and 1440 pixels. Every route has exactly one accessible “Color theme” dropdown, the matching selected-mode SVG, a minimum 44-pixel select hit area, and no horizontal document overflow. Ten behavior assertions passed, covering live System changes, explicit override, navigation persistence, cross-tab synchronization, focus indication, forced-colors fallback, and Bank keyboard handling. Bank now ignores shortcuts originating from form fields and editable content, so Space opens the native selector without rolling; the gameplay shortcut still rolls normally.
+
+Representative hub, lab, Bank, and Changelog screenshots were inspected in both themes at 390 pixels, plus the desktop hub. The known 2048 standalone diagnostic startup warning remains; it is unrelated to the theme control and was also recorded in the original functional checks above. No physical-phone test was performed. An independent code review returned ship after the keyboard fix. Generated documents and Git whitespace checks pass. Screenshots and detailed results are ignored under `output/playwright/theme-icon/`.
+
+No installed skill matches the requested “Library design system” name. The broader replacement system is awaiting its exact name, path, or link. This branch retains the existing design tokens until the intended system is identified. The current Pages source remains `codex/mobile-game-lab`; main and origin/main are unchanged.

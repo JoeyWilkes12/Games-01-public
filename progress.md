@@ -17,3 +17,12 @@ Follow-up on 2026-10-12: User requested Light/Dark/System on every page and expl
 
 Follow-up: User requested all site Markdown hyperlinks open themed HTML, plus an SVG QR code on Changelog/About, then commit/push/redeploy. Added seven static reading pages generated from Markdown, shared responsive docs styling, internal link rewriting, and the QR skill-generated changelog SVG. Preview advances to 3.4.0-alpha.3.
 - Document verification complete: 42 responsive/theme combinations, seven no-JavaScript pages, six navigation/focus assertions, static generated-source parity, and independent link/source review passed. Local macOS Vision decoded the rendered SVG at its mobile display size in both themes. No physical-phone scan claimed. Ready to push the alpha.3 publication commit.
+
+
+## 2026-10-12 — Theme icon and a separate design-system worktree
+
+Created and attached a new managed worktree on `codex/library-design-system`, starting from the published `codex/mobile-game-lab` commit `1f9415dff1e55e4a71ec92df4eeaf8b8c7db61f4`. The user asked for an icon control without the Appearance label and, if available, the Library design system skill throughout the app. No installed skill matches that name after searches of the global skill and plugin directories; clarification is pending before applying a specific replacement system.
+
+The shared theme selector now uses monitor/sun/moon SVGs with a dropdown chevron and an accessible native “Color theme” select. It keeps System/Light/Dark choices, live OS preference updates, persisted preferences, cross-tab synchronization, and the forced-colors native selector. The existing published worktree and Pages source remain available while this new branch is reviewed.
+
+Validation: 80 theme/layout checks across all 20 routes and ten behavior assertions passed. The independent review returned ship. The diagnostic startup warning on the standalone 2048 test page is inherited; screenshots and detailed checks remain ignored. Updated the Unreleased changelog entry, design reference, README, and generated HTML.

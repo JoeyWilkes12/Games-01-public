@@ -9,7 +9,7 @@ Welcome to my games repository! I explore logical aspects and algorithmic soluti
 
 ## Redesign preview
 
-The mobile-first redesign is currently **3.4.0-alpha.3**, a public preview published from `codex/mobile-game-lab`. `main` remains unchanged. Every HTML page has an Appearance selector with Light, Dark, and live System modes; your choice is shared across pages. Application display versions come from `version.json`; saved-game/configuration schema versions remain independent. See [changelog](CHANGELOG.md) and [versioning policy](docs/versioning.md).
+The mobile-first redesign is currently **3.4.0-alpha.3**, a public preview published from `codex/mobile-game-lab`. `main` remains unchanged. Every HTML page has a theme icon dropdown with Light, Dark, and live System modes; your choice is shared across pages. Application display versions come from `version.json`; saved-game/configuration schema versions remain independent. See [changelog](CHANGELOG.md) and [versioning policy](docs/versioning.md).
 
 Run the static app locally from this folder:
 
@@ -78,7 +78,7 @@ This repository is deployed using [GitHub Pages](https://pages.github.com/).
 - **Source**: The root (`/`) of `codex/mobile-game-lab`, published directly as a preview without merging into `main`.
 - **Build**: GitHub’s generated Pages workflow serves the static files; `.nojekyll` bypasses Jekyll processing. Future pushes to this branch trigger publication after the workflow succeeds.
 - **Scope**: `main` remains the default branch. Local research PDFs and review screenshots are ignored and are not published.
-- **Appearance**: Every HTML page supports Light, Dark, and System modes.
+- **Color theme**: Every HTML page supports Light, Dark, and System modes.
 
 ### Testing
 

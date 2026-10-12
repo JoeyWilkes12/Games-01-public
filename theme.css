@@ -45,27 +45,43 @@ html[data-theme="dark"] {
   margin-inline: auto;
 }
 .appearance-control {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  color: var(--muted);
-  font: 600 .8125rem/1.3 "DM Sans", system-ui, sans-serif;
-}
-.appearance-control select {
-  min-height: 44px;
-  min-width: 104px;
-  max-width: 100%;
+  justify-content: center;
+  min-width: 56px;
+  min-height: 46px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 8px 10px;
   background: var(--control-bg);
   color: var(--ink);
+  font: 600 .8125rem/1.3 "DM Sans", system-ui, sans-serif;
+  cursor: pointer;
+}
+.appearance-control:hover { background: var(--surface-soft); }
+.appearance-control select {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  color: var(--ink);
+  background: var(--control-bg);
   font: inherit;
   cursor: pointer;
 }
-.appearance-control select:focus-visible {
+.appearance-control:focus-within {
   outline: 3px solid var(--plum);
   outline-offset: 3px;
+}
+.theme-icon { display: inline-flex; align-items: center; gap: 4px; pointer-events: none; }
+.theme-symbol { width: 20px; height: 20px; }
+.theme-chevron { width: 12px; height: 12px; }
+@media (forced-colors: active) {
+  .appearance-control select { position: static; opacity: 1; min-height: 44px; padding: 8px; }
+  .theme-icon { display: none; }
 }
 .skip-link { background: var(--feature-bg); color: #fff; }
 .lab-entry { background: var(--feature-bg); color: #fff; }

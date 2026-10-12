@@ -13,7 +13,9 @@ See [versioning policy and evidence](docs/versioning.md).
 
 ## Unreleased
 
-Changes not yet published will be listed here.
+### Changed
+
+- Replaced the visible Appearance label with a compact theme icon dropdown on every page. System, Light, and Dark remain available with native keyboard controls and a shared saved preference.
 
 ## [3.4.0-alpha.3] - 2026-10-12
 

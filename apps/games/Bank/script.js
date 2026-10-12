@@ -241,6 +241,7 @@ class BankGame {
 
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
+            if (e.target instanceof Element && (e.target.closest('input, select, textarea') || e.target.isContentEditable)) return;
             if (e.code === 'Space' && !this.roundOver && !this.gameOver) {
                 e.preventDefault();
                 this.roll();
