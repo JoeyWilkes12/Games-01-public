@@ -24,7 +24,7 @@
         .join("-");
       if (prerelease.split(".").some((part) => /^0\d+$/.test(part))) return;
 
-      const preview = metadata.status === "unreleased" ? " · Preview" : "";
+      const preview = ["unreleased", "prerelease"].includes(metadata.status) ? " · Preview" : "";
       document.querySelectorAll("[data-app-version]").forEach((element) => {
         element.textContent = `v${metadata.version}${preview}`;
       });

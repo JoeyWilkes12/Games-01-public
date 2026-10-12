@@ -9,3 +9,6 @@ Original prompt: Verify the Games-01-public Git remote, work in a worktree, redo
 - Fresh code review: all three findings resolved. Fresh design review: ship, both findings resolved. Named skill agent types were unavailable, so fresh agents used the degraded contracts. One detector run recorded deliberate font/grid advisories.
 - See docs/validation.md for evidence and known limitations. No deployment, push, merge, release tag, or main change performed.
 - Ready for local review. Keep the ignored research corpus and screenshot artifacts with this worktree; they are not part of a Git commit.
+
+
+Follow-up on 2026-10-12: User requested Light/Dark/System on every page and explicitly authorized switching GitHub Pages to this worktree branch without a PR or merge. Shared theme preference and game palette isolation implemented. Version advanced to 3.4.0-alpha.2. Publishing uses only the pushed branch; main/origin/main and release tags stay unchanged.

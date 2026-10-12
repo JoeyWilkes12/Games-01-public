@@ -127,11 +127,11 @@
           .filter((r) => r.Algorithm === g.code)
           .map(
             (r, i) =>
-              `<circle cx="${(r.Score / spreadMax) * 600}" cy="${28 + ((i % 5) - 2) * 6}" r="4" fill="#14706b" fill-opacity=".65"><title>Run ${r.Index}: ${fmt(r.Score)} points</title></circle>`,
+              `<circle cx="${(r.Score / spreadMax) * 600}" cy="${28 + ((i % 5) - 2) * 6}" r="4" fill="var(--teal)" fill-opacity=".65"><title>Run ${r.Index}: ${fmt(r.Score)} points</title></circle>`,
           )
           .join("");
         const mean = (g.mean / spreadMax) * 600;
-        return `<div class="distribution-row"><span>${g.name}</span><svg viewBox="0 0 600 56" preserveAspectRatio="none" role="img" aria-label="${g.name}: ${g.n} runs, range ${fmt(g.min)} to ${fmt(g.max)} points, mean ${fmt(g.mean)}"><path d="M0 28H600" stroke="#cadbdc"/>${points}<path d="M${mean} 6v44" stroke="#142f36" stroke-width="3"/></svg></div>`;
+        return `<div class="distribution-row"><span>${g.name}</span><svg viewBox="0 0 600 56" preserveAspectRatio="none" role="img" aria-label="${g.name}: ${g.n} runs, range ${fmt(g.min)} to ${fmt(g.max)} points, mean ${fmt(g.mean)}"><path d="M0 28H600" class="spread-baseline" stroke="var(--line)"/>${points}<path d="M${mean} 6v44" class="spread-mean" stroke="var(--ink)" stroke-width="3"/></svg></div>`;
       })
       .join("");
     $("spread-mid").textContent = fmt(spreadMax / 2);

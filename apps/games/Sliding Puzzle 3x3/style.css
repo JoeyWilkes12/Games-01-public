@@ -1,8 +1,9 @@
 /* A portable color study: target, board, then assistance. */
-:root { --bg-color: #edf4f4; --primary-color: #14706b; --text-color: #142f36; --wood-frame: #cadbdc; --wood-bg: #fff; --tile-red: #ba472c; --tile-blue: #2d6ba4; --tile-green: #14706b; --tile-yellow: #d5ac33; --tile-orange: #d67d2d; --tile-purple: #6c609c; --tile-cyan: #318c9a; --tile-pink: #bc719b; }
-[data-theme="dark"] { --bg-color: #11282e; --text-color: #e8f4f3; --wood-bg: #18383f; --wood-frame: #426269; --lab-muted: #b0cccf; --lab-line: #426269; --lab-paper: #18383f; --lab-ink: #e8f4f3; --lab-soft: #26474e; }
-[data-theme="pastel"] { --bg-color: #f2f0f8; --wood-frame: #d8d1e8; --tile-red: #dfa094; --tile-blue: #86afd0; --tile-green: #85bcb1; --tile-yellow: #e5ce89; --tile-orange: #e2b38a; }
-[data-theme="neon"] { --bg-color: #11282e; --wood-bg: #18383f; --text-color: #effff7; --wood-frame: #426269; --tile-red: #e44a6f; --tile-blue: #32b3d3; --tile-green: #70d78e; --tile-yellow: #ecdd68; --tile-orange: #f29b55; --lab-muted: #b0cccf; --lab-line: #426269; --lab-paper: #18383f; --lab-ink: #effff7; --lab-soft: #26474e; }
+:root { --bg-color: var(--lab-ground); --primary-color: #14706b; --text-color: var(--lab-ink); --wood-frame: var(--lab-line); --wood-bg: var(--lab-paper); --tile-red: #ba472c; --tile-blue: #2d6ba4; --tile-green: #14706b; --tile-yellow: #d5ac33; --tile-orange: #d67d2d; --tile-purple: #6c609c; --tile-cyan: #318c9a; --tile-pink: #bc719b; }
+body[data-theme="dark"] { --tile-red: #923820; --tile-blue: #245480; --tile-green: #0b514e; --tile-purple: #55487f; }
+body[data-theme="pastel"] { --tile-red: #dfa094; --tile-blue: #86afd0; --tile-green: #85bcb1; --tile-yellow: #e5ce89; --tile-orange: #e2b38a; --tile-purple: #b4a8d4; --tile-cyan: #94c7cc; --tile-pink: #d7a7c2; }
+body[data-theme="neon"] { --tile-red: #e44a6f; --tile-blue: #32b3d3; --tile-green: #70d78e; --tile-yellow: #ecdd68; --tile-orange: #f29b55; --tile-purple: #b4a8f2; --tile-cyan: #6bd8dc; --tile-pink: #ef8fc0; }
+
 body { min-height: 100dvh; background: var(--bg-color); color: var(--text-color); padding: clamp(12px, 3vw, 32px); }
 .game-container { max-width: 580px; width: 100%; margin: 0 auto; padding: clamp(14px, 4vw, 28px); background: var(--wood-bg); border: 1px solid var(--wood-frame); border-radius: 20px; }
 header { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
@@ -20,7 +21,7 @@ button.tile { cursor: pointer; transition: transform .15s ease-out; }
 button.tile:hover { transform: scale(.96); }
 .tile.empty { background: transparent; }
 .mode-advanced .main-grid .tile { font: 700 clamp(1.5rem, 7vw, 2.5rem) "Space Grotesk", sans-serif; }
-.mode-advanced .main-grid .color-yellow, .mode-advanced .main-grid .color-orange, [data-theme="pastel"] .tile { color: #142f36; }
+.mode-advanced .main-grid .color-yellow, .mode-advanced .main-grid .color-orange, body[data-theme="pastel"] .tile, body[data-theme="neon"] .tile { color: #142f36; }
 .mini-grid .tile { min-height: 0; }
 .color-red { background: var(--tile-red); } .color-blue { background: var(--tile-blue); } .color-green { background: var(--tile-green); } .color-yellow { background: var(--tile-yellow); } .color-orange { background: var(--tile-orange); } .color-purple { background: var(--tile-purple); } .color-cyan { background: var(--tile-cyan); } .color-pink { background: var(--tile-pink); }
 .tile.hint-suggested { outline: 4px solid var(--lab-ink); outline-offset: -6px; }

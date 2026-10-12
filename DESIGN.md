@@ -129,7 +129,7 @@ components:
 
 Game Hub presents play and algorithmic investigation as things to handle and inspect. A cool daylight ground supports white working surfaces, dark blue-green text, geometric headings, and deliberate teal actions. The visible mechanisms—numbered tiles, colored puzzle pieces, dice, score bars, and source rows—provide the character.
 
-The interface is calm around the activity and expressive within it. The hub uses a rotated tile board and small game illustrations; playable routes put their boards or dice ahead of assistance and settings; the lab and reading pages use precise controls, clear comparisons, and nearby source context. This records the implemented local preview, not a deployment or release claim.
+The interface is calm around the activity and expressive within it. The hub uses a rotated tile board and small game illustrations; playable routes put their boards or dice ahead of assistance and settings; the lab and reading pages use precise controls, clear comparisons, and nearby source context. The same exhibit identity supports daylight and night appearances; appearance defaults to the live system preference.
 
 **Key Characteristics:**
 
@@ -172,6 +172,12 @@ The palette pairs cool structural neutrals with teal actions, clay outcomes, and
 **The Teal Action Rule.** Teal identifies actions and selected analytical controls; clay and plum remain game, feedback, or focus colors.
 
 **The Scope-Before-Color Rule.** Comparisons carry board labels, values, and source context. A colored winner row or bar is accompanied by text, never the only explanation of the result.
+
+### Page appearance
+
+`theme.css` owns shared semantic colors and `theme.js` applies them before page paint. Light uses the daylight colors above. Dark uses ground `#101f25`, paper `#192e35`, ink `#e8f2f2`, muted `#b0c6ca`, teal `#70c7bb`, link teal `#91d8cf`, pale teal `#233f43`, clay `#f2a17e`, plum `#c2b0ef`, and divider `#405c63`. Secondary surfaces use `#263d44`. Primary actions retain `#14706b` with white labels in both modes. Charts use the same semantic tokens as their legends.
+
+A native Appearance selector offers System, Light, and Dark after every page header. System is the initial value and reacts immediately to operating-system changes. Explicit choices persist across routes and tabs; storage-unavailable contexts still allow a choice for the current page. The preference is independent of each game's board palette, labeled accordingly in settings.
 
 Game colors are a local vocabulary. The 2048 board progresses from pale cells through teal, clay, and plum to ink; Color Match has eight distinct tile hues. Both games retain selectable dark, pastel, and neon themes. Those opt-in palettes do not redefine the hub or research pages.
 

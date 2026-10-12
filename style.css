@@ -191,14 +191,14 @@ svg {
   font-weight: 600;
   line-height: 1.35;
   text-decoration: none;
-  background: var(--teal);
-  color: var(--paper);
+  background: var(--action-bg);
+  color: #fff;
   transition:
     background 0.18s ease,
     transform 0.18s ease;
 }
 .btn:hover {
-  background: var(--teal-dark);
+  background: var(--action-hover);
   transform: translateY(-1px);
 }
 .btn.secondary {
@@ -482,7 +482,7 @@ summary {
   aspect-ratio: 1;
   flex: none;
   border-radius: 20px;
-  background: var(--teal);
+  background: var(--action-bg);
   color: #fff;
   display: flex;
   align-items: center;
@@ -707,7 +707,7 @@ summary {
     transform 0.18s ease;
 }
 .number-tile:hover {
-  background: var(--teal-dark);
+  background: var(--action-hover);
   transform: rotate(3deg);
 }
 .external-icon {

@@ -20,7 +20,7 @@ Static HTML, CSS, and JavaScript, with no application build step. Existing playa
 
 ## Capabilities and Constraints
 
-Preserve playable game behavior, data, local configuration/import/export workflows, and existing routes. Redesign the frontend freely with responsive layouts and mobile priority. Work in an isolated Git worktree. Do not change deployment, main, or origin/main. This is a local review build, not a release.
+Preserve playable game behavior, data, local configuration/import/export workflows, and existing routes. Redesign the frontend freely with responsive layouts and mobile priority. Work in an isolated Git worktree. Preserve main and origin/main. The user authorized publishing the worktree branch directly to GitHub Pages on 2026-10-12. Every HTML page supports Light, Dark, and live System appearance with a shared saved preference.
 
 ## Evidence on Hand
 

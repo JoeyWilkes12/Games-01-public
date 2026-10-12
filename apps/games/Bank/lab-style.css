@@ -1,12 +1,12 @@
 /* Bank: round and roll decisions first, then the table's scores and probabilities. */
-:root { --bg-primary: #edf4f4; --bg-secondary: #fff; --bg-tertiary: #e3eeee; --text-primary: #142f36; --text-secondary: #4d676d; --accent-gold: #a44222; --accent-green: #14706b; --accent-green-light: #0b514e; --accent-red: #a44222; --accent-blue: #14706b; --border-color: #cadbdc; --shadow: 0 16px 48px rgb(20 47 54 / .16); --shadow-glow: none; }
+:root { --bg-primary: var(--lab-ground); --bg-secondary: var(--lab-paper); --bg-tertiary: var(--lab-soft); --text-primary: var(--lab-ink); --text-secondary: var(--lab-muted); --accent-gold: var(--lab-clay); --accent-green: var(--lab-teal-dark); --accent-green-light: var(--lab-teal-dark); --accent-red: var(--game-warning-ink); --accent-blue: var(--lab-teal-dark); --border-color: var(--lab-line); --shadow: 0 16px 48px rgb(20 47 54 / .16); --shadow-glow: none; }
 body { display: block; min-height: 100dvh; padding: clamp(12px, 3vw, 32px); background: var(--bg-primary); color: var(--text-primary); font-family: "DM Sans", sans-serif; }
 .game-container { max-width: 1040px; margin: 0 auto; display: grid; grid-template-columns: minmax(0, 1fr) 320px; grid-template-rows: auto auto 1fr; gap: 24px; }
 .game-container > header { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-start; text-align: left; padding: 0; gap: 12px 20px; }
-.home-button.lab-home { position: static; padding: 10px; border-radius: 10px; background: #fff; box-shadow: none; z-index: auto; transform: none; }
-header h1 { font-family: "Space Grotesk", sans-serif; font-size: clamp(2rem, 5vw, 3rem); color: #142f36; background: none; -webkit-text-fill-color: currentColor; text-shadow: none; margin: 0; letter-spacing: -.04em; }
+.home-button.lab-home { position: static; padding: 10px; border-radius: 10px; background: var(--lab-paper); box-shadow: none; z-index: auto; transform: none; }
+header h1 { font-family: "Space Grotesk", sans-serif; font-size: clamp(2rem, 5vw, 3rem); color: var(--lab-ink); background: none; -webkit-text-fill-color: currentColor; text-shadow: none; margin: 0; letter-spacing: -.04em; }
 header .subtitle { flex-basis: 100%; font-size: .9375rem; line-height: 1.6; color: var(--text-secondary); }
-.main-content { grid-column: 1; grid-row: 2 / span 2; padding: clamp(16px, 4vw, 28px); gap: 18px; border: 1px solid var(--border-color); border-radius: 20px; background: #fff; }
+.main-content { grid-column: 1; grid-row: 2 / span 2; padding: clamp(16px, 4vw, 28px); gap: 18px; border: 1px solid var(--border-color); border-radius: 20px; background: var(--lab-paper); }
 .round-info { width: 100%; justify-content: center; padding: 10px 12px; border: 0; background: var(--bg-tertiary); font-size: .9375rem; border-radius: 8px; }
 .round-number { font-size: 1.125rem; color: var(--text-primary); }
 .roll-count { margin-left: auto; font-size: .875rem; }
@@ -17,7 +17,7 @@ header .subtitle { flex-basis: 100%; font-size: .9375rem; line-height: 1.6; colo
 .bank-sublabel { font-size: .8125rem; }
 .dice-area { gap: 12px; width: 100%; }
 .dice-container { gap: 16px; }
-.die { width: clamp(72px, 20vw, 88px); height: clamp(72px, 20vw, 88px); border: 1px solid var(--border-color); background: #f5f9f8; color: var(--text-primary); border-radius: 14px; box-shadow: 0 4px 12px rgb(20 47 54 / .07); font-family: "Space Grotesk", sans-serif; font-size: 2.25rem; }
+.die { width: clamp(72px, 20vw, 88px); height: clamp(72px, 20vw, 88px); border: 1px solid var(--border-color); background: var(--lab-control); color: var(--text-primary); border-radius: 14px; box-shadow: 0 4px 12px rgb(20 47 54 / .07); font-family: "Space Grotesk", sans-serif; font-size: 2.25rem; }
 .die.seven { background: #a44222; color: #fff; }
 .die.doubles { background: #14706b; color: #fff; }
 .last-roll-info { text-align: center; font-size: .875rem; }
@@ -27,13 +27,13 @@ header .subtitle { flex-basis: 100%; font-size: .9375rem; line-height: 1.6; colo
 .btn, .btn-small, .byod-btn { min-height: 48px; border-radius: 8px; font: 600 .9375rem "DM Sans", sans-serif; padding: 12px 16px; justify-content: center; box-shadow: none; }
 .btn-roll, .btn-bank, .btn-new-game { background: #14706b; color: #fff; box-shadow: none; }
 .btn-roll:hover:not(:disabled), .btn-bank:hover:not(:disabled), .btn-new-game:hover { background: #0b514e; transform: none; box-shadow: none; }
-.btn-undo, .btn-add-player, .btn-small, .byod-btn { background: #e3eeee; color: #142f36; border: 1px solid var(--border-color); }
-.btn-undo:hover:not(:disabled) { background: #cadbdc; color: #142f36; transform: none; }
+.btn-undo, .btn-add-player, .btn-small, .byod-btn { background: var(--lab-soft); color: var(--lab-ink); border: 1px solid var(--border-color); }
+.btn-undo:hover:not(:disabled) { background: var(--lab-line); color: var(--lab-ink); transform: none; }
 .btn-bank.highlight { animation: none; }
-.btn-icon { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; color: #142f36; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; }
+.btn-icon { min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; color: var(--lab-ink); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; }
 .banking-info { margin: -6px 0 0; }
 .banking-info .info-text { padding: 0; background: none; font-size: .8125rem; line-height: 1.6; }
-.bank-action-group { display: block; width: 100%; padding: 12px; border-radius: 10px; background: #f5f9f8; }
+.bank-action-group { display: block; width: 100%; padding: 12px; border-radius: 10px; background: var(--lab-control); }
 .bank-action-group.disabled { opacity: .65; }
 .bank-panel-summary { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; min-height: 44px; font-size: .875rem; }
 .bank-panel-actions { gap: 6px; }
@@ -42,49 +42,49 @@ header .subtitle { flex-basis: 100%; font-size: .9375rem; line-height: 1.6; colo
 .bank-player-options { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
 .bank-player-checkbox { min-height: 44px; padding: 8px; font-size: .875rem; }
 .bank-player-checkbox input { width: 20px; height: 20px; }
-.bank-player-checkbox input:checked+span { color: #0b514e; }
+.bank-player-checkbox input:checked+span { color: var(--lab-teal-dark); }
 .bank-action-group .btn-bank { width: 100%; }
 .players-panel { grid-column: 2; grid-row: 2; order: 0; max-height: none; overflow: visible; padding: 20px; border-radius: 16px; }
 .panel-header h2 { font-size: 1.25rem; }
 .compact-scoreboard { background: none; border: 0; padding: 0; border-radius: 0; }
-.compact-rank { background: #e3eeee; color: #4d676d; padding: 4px 8px; font-size: .75rem; }
+.compact-rank { background: var(--lab-soft); color: var(--lab-muted); padding: 4px 8px; font-size: .75rem; }
 .compact-player-name { gap: 8px; flex-wrap: wrap; }
-.compact-player-name span:first-child { color: #142f36; }
-.compact-score { font-family: "IBM Plex Mono", monospace; font-size: 2.5rem; color: #142f36; padding: 8px 0; }
+.compact-player-name span:first-child { color: var(--lab-ink); }
+.compact-score { font-family: "IBM Plex Mono", monospace; font-size: 2.5rem; color: var(--lab-ink); padding: 8px 0; }
 .compact-metric { font-size: .875rem; padding: 10px 0; }
-.metric-value, .player-score { font-family: "IBM Plex Mono", monospace; color: #142f36; }
+.metric-value, .player-score { font-family: "IBM Plex Mono", monospace; color: var(--lab-ink); }
 .full-scoreboard-details { background: none; border-radius: 0; }
 .full-scoreboard-details summary { padding: 12px 0; font-size: .9375rem; }
 .full-scoreboard-details summary::before { display: none; }
 .player-card { padding: 10px 12px; border-radius: 8px; }
 .player-card.current { border-color: #14706b; box-shadow: none; }
-.player-card.banked { opacity: 1; background: #edf4f4; }
+.player-card.banked { opacity: 1; background: var(--lab-ground); }
 .player-name { overflow-wrap: anywhere; }
 .probability-cheatsheet { position: static; grid-column: 2; grid-row: 3; max-width: none; width: 100%; align-self: start; padding: 12px 20px; border-radius: 16px; box-shadow: none; z-index: auto; }
 .probability-cheatsheet summary { font-size: .9375rem; min-height: 44px; display: flex; align-items: center; }
-.survival-display { background: #e3eeee; }
-.survival-value { color: #0b514e; font-family: "IBM Plex Mono", monospace; }
+.survival-display { background: var(--lab-soft); }
+.survival-value { color: var(--lab-teal-dark); font-family: "IBM Plex Mono", monospace; }
 .prob-table { font-family: "IBM Plex Mono", monospace; font-size: .8125rem; }
-.prob-table .highlight-seven { background: #f7e6df; color: #85381f; }
+.prob-table .highlight-seven { background: var(--game-warning-bg); color: var(--game-warning-ink); }
 .settings-panel { width: min(460px, calc(100vw - 32px)); max-width: none; max-height: calc(100dvh - 32px); padding: 24px; border-radius: 16px; }
 .settings-header h3 { font-size: 1.5rem; }
-.setting-group label { font-size: .875rem; color: #142f36; }
-.setting-group input[type="text"], .setting-group select { background: #fff; color: #142f36; padding: 12px; min-height: 44px; font-size: 1rem; }
+.setting-group label { font-size: .875rem; color: var(--lab-ink); }
+.setting-group input[type="text"], .setting-group select { background: var(--lab-paper); color: var(--lab-ink); padding: 12px; min-height: 44px; font-size: 1rem; }
 .player-config-item { gap: 8px; }
 .player-config-item input { min-width: 0; }
-.player-config-item .btn-remove { width: auto; height: 44px; min-width: 68px; color: #a44222; font-size: .8125rem; }
-.setting-hint { color: #4d676d; font-size: .8125rem; line-height: 1.5; }
+.player-config-item .btn-remove { width: auto; height: 44px; min-width: 68px; color: var(--game-warning-ink); font-size: .8125rem; }
+.setting-hint { color: var(--lab-muted); font-size: .8125rem; line-height: 1.5; }
 .toggle-label { min-height: 44px; }
-.modal-content { background: #fff; border-radius: 16px; padding: 24px; width: min(560px, calc(100vw - 32px)); }
-.modal-content h2 { color: #142f36; font-size: 1.75rem; }
-.winner-name { color: #0b514e; }
-.alert-message { background: #f7e6df; border: 1px solid #d29f8c; padding: 12px; border-radius: 8px; }
-.alert-text { color: #85381f; font-size: 1rem; }
+.modal-content { background: var(--lab-paper); border-radius: 16px; padding: 24px; width: min(560px, calc(100vw - 32px)); }
+.modal-content h2 { color: var(--lab-ink); font-size: 1.75rem; }
+.winner-name { color: var(--lab-teal-dark); }
+.alert-message { background: var(--game-warning-bg); border: 1px solid var(--game-warning-line); padding: 12px; border-radius: 8px; }
+.alert-text { color: var(--game-warning-ink); font-size: 1rem; }
 .alert-icon { display: none; }
-.byod-panel { background: #edf4f4; border: 1px solid var(--border-color); width: 100%; border-radius: 10px; }
+.byod-panel { background: var(--lab-ground); border: 1px solid var(--border-color); width: 100%; border-radius: 10px; }
 .byod-buttons { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
-.byod-btn { padding: 10px 8px; background: #fff; }
-.byod-seven { background: #f7e6df; color: #85381f; border-color: #d29f8c; }
+.byod-btn { padding: 10px 8px; background: var(--lab-paper); }
+.byod-seven { background: var(--game-warning-bg); color: var(--game-warning-ink); border-color: var(--game-warning-line); }
 .byod-doubles { background: #14706b; color: #fff; grid-column: span 2; }
 @media (max-width: 760px) {
  .game-container { grid-template-columns: minmax(0, 1fr); gap: 16px; max-width: 540px; }
@@ -94,4 +94,16 @@ header .subtitle { flex-basis: 100%; font-size: .9375rem; line-height: 1.6; colo
  .action-buttons .btn { width: auto; }
  .action-buttons .btn-undo { padding-inline: 14px; }
  .bank-player-options { grid-template-columns: 1fr; }
+}
+
+/* An appearance row spans the play and scoreboard columns. */
+.game-container > .appearance-bar { grid-row: 2; margin: 0; }
+.main-content { grid-row: 3 / span 2; }
+.players-panel { grid-row: 3; }
+.probability-cheatsheet { grid-row: 4; }
+.banking-info .info-text { color: var(--lab-teal-dark); }
+@media (max-width: 760px) {
+ .main-content { grid-row: 3; }
+ .players-panel { grid-row: 4; }
+ .probability-cheatsheet { grid-row: 5; }
 }

@@ -1,15 +1,16 @@
 /* Cognitive-science play surface: the board leads; assistance and research follow. */
 :root {
-    --bg-color: #edf4f4; --primary-color: #14706b; --text-color: #142f36;
-    --wood-bg: #fff; --wood-frame: #cadbdc; --grid-bg: #cadbdc; --tile-empty: #e3eeee;
+    --bg-color: var(--lab-ground); --primary-color: #14706b; --text-color: var(--lab-ink);
+    --wood-bg: var(--lab-paper); --wood-frame: var(--lab-line); --grid-bg: var(--lab-line); --tile-empty: var(--lab-soft);
     --text-tile-dark: #142f36; --text-tile-light: #fff;
     --tile-2: #f5f9f8; --tile-4: #d9eee9; --tile-8: #14706b; --tile-16: #0b514e;
     --tile-32: #a44222; --tile-64: #c4532d; --tile-128: #6c609c; --tile-256: #55487f;
     --tile-512: #433565; --tile-1024: #2f3f60; --tile-2048: #142f36;
 }
-[data-theme="dark"] { --bg-color: #11282e; --text-color: #e8f4f3; --wood-bg: #18383f; --wood-frame: #426269; --grid-bg: #34555c; --tile-empty: #26474e; --primary-color: #8cd8c9; --lab-muted: #b0cccf; --lab-line: #426269; --lab-paper: #18383f; --lab-ink: #e8f4f3; --lab-soft: #26474e; --lab-teal-dark: #8cd8c9; }
-[data-theme="pastel"] { --bg-color: #f2f0f8; --wood-bg: #fff; --grid-bg: #d8d1e8; --tile-empty: #eae6f2; --tile-2: #faf7fc; --tile-4: #e4dff1; --tile-8: #6c609c; --tile-16: #55487f; }
-[data-theme="neon"] { --bg-color: #102a2d; --wood-bg: #18383f; --text-color: #f1fff7; --grid-bg: #345f62; --tile-empty: #24494d; --tile-8: #086954; --tile-16: #006374; --tile-32: #a13654; --tile-64: #a44222; --lab-paper: #18383f; --lab-ink: #f1fff7; --lab-muted: #b0d4d2; --lab-line: #426269; --lab-soft: #26474e; --lab-teal-dark: #91ead2; }
+body[data-theme="dark"] { --tile-2: #34555c; --tile-4: #426269; --text-tile-dark: #e8f4f3; }
+body[data-theme="pastel"] { --tile-2: #faf7fc; --tile-4: #e4dff1; --tile-8: #6c609c; --tile-16: #55487f; }
+body[data-theme="neon"] { --tile-8: #086954; --tile-16: #006374; --tile-32: #a13654; --tile-64: #a44222; }
+
 body { background: var(--bg-color); color: var(--text-color); min-height: 100dvh; padding: clamp(12px, 3vw, 32px); }
 .game-container { width: 100%; max-width: 540px; margin: 0 auto; background: var(--wood-bg); padding: clamp(16px, 4vw, 28px); border: 1px solid var(--wood-frame); border-radius: 20px; }
 header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }

@@ -13,10 +13,16 @@ See [versioning policy and evidence](docs/versioning.md).
 
 ## Unreleased
 
-Target preview: **3.4.0-alpha.1**. This is development work, not a released version.
+Changes not yet published will be listed here.
+
+## [3.4.0-alpha.2] - 2026-10-12
+
+Public preview published directly from `codex/mobile-game-lab` to GitHub Pages;
+`main` remains unchanged. This prerelease includes the initial redesign work.
 
 ### Added
 
+- A shared Light, Dark, and System appearance selector on every HTML page, with saved preference and live system updates.
 - A mobile-first 2048 lab with board-specific score comparisons, mean/median controls, individual run distributions, searchable run logs and filtered CSV export.
 - An annotated research library with six page-linked findings from three direct 2048 studies, plus reproducible local PDF text/image extraction.
 - Shared self-hosted typography, accessible navigation and touch controls across the hub and playable games.
@@ -140,3 +146,5 @@ The available history begins at root commit `86c1414`. Earlier development and r
 [v2.0.1]: https://github.com/JoeyWilkes12/Games-01-public/compare/17798e4e8dfe762a8dd565be828f17724c0981d6...02c5c1d3054a64936dc5fa0a4b2d75d2606799f1
 [v2.0.0]: https://github.com/JoeyWilkes12/Games-01-public/compare/86c141417b00543cfff4b113759f910662795bb6...17798e4e8dfe762a8dd565be828f17724c0981d6
 [Initial available snapshot]: https://github.com/JoeyWilkes12/Games-01-public/commit/86c141417b00543cfff4b113759f910662795bb6
+
+[3.4.0-alpha.2]: https://github.com/JoeyWilkes12/Games-01-public/compare/a533fbaf36cf29525472c873aa0faf70aea915ee...codex/mobile-game-lab
