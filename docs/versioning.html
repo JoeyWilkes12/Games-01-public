@@ -1,0 +1,147 @@
+<!doctype html>
+<!-- Generated from docs/versioning.md by scripts/build-docs.py. Edit the Markdown source. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script src="../theme.js"></script>
+  <meta name="description" content="How versions are chosen, what stays compatible, and what the history can establish.">
+  <title>Application versioning — Game Hub</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../docs.css">
+  <link rel="stylesheet" href="../theme.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><nav class="site-nav wrap" aria-label="Main navigation"><a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Game Hub</a><div class="nav-links"><a href="../index.html">Play</a><a href="../dashboard.html">2048 lab</a></div></nav></header>
+  <main class="wrap" id="main">
+    <div class="doc-heading"><h1 id="application-versioning">Application versioning</h1><p>How versions are chosen, what stays compatible, and what the history can establish.</p></div>
+
+    <details class="doc-contents"><summary>On this page</summary><nav aria-label="On this page"><a href="#what-the-version-covers">What the version covers</a><a href="#displaying-the-version">Displaying the version</a><a href="#maintaining-the-changelog">Maintaining the changelog</a><a href="#reconstruction-evidence">Reconstruction evidence</a></nav></details>
+    <div class="doc-layout"><article class="doc-content" aria-label="Application versioning"><p>The application uses <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning 2.0.0</a>
+and a curated <a href="https://keepachangelog.com/en/1.1.0/">Keep a Changelog 1.1.0</a>
+changelog. <code>version.json</code> is the source of truth for the application version.</p>
+<p>The current worktree is <strong>3.4.0-alpha.3</strong>, a public prerelease preview.
+It is published directly from <code>codex/mobile-game-lab</code>; <code>main</code> remains unchanged. The intended
+stable version is <strong>3.4.0</strong> because the work adds and reorganizes user-facing
+features while preserving saved-game configuration compatibility. A visual
+redesign alone does not require a major version.</p>
+<h2 id="what-the-version-covers">What the version covers</h2>
+<p>The application's compatibility contract includes saved configuration formats,
+exported data formats, game rules, supported navigation URLs, and documented
+JavaScript integrations. Styling, navigation organization, and dashboard layout
+can evolve within that contract.</p>
+<ul>
+<li>Increment <strong>PATCH</strong> for compatible bug fixes and small presentation corrections.</li>
+<li>Increment <strong>MINOR</strong> for compatible new features, substantial interface improvements, or newly supported data.</li>
+<li>Increment <strong>MAJOR</strong> for incompatible changes to the contract, such as removing a supported configuration format or changing an exported data schema without backward compatibility.</li>
+<li>Use prereleases such as <code>3.4.0-alpha.1</code>, <code>3.4.0-beta.1</code>, and <code>3.4.0-rc.1</code> while the work is being validated. Increment the suffix when sharing a new preview.</li>
+</ul>
+<p>Configuration <code>version</code> fields inside Bank, 2048, and Random Event Dice exports
+identify their own schema. They are independent of the application release and
+must not be rewritten to match the app version. Random Event Dice's existing
+<code>2.0</code> and <code>2.1</code> schemas are an example.</p>
+<p>The root npm package originally identified the Playwright test harness as
+<code>games-01-playwright@1.0.0</code>. That historical package version does not establish an
+application release. If the package becomes the application's build manifest,
+synchronize it and its lockfile with <code>version.json</code>; until then, the shared JSON
+manifest identifies the app.</p>
+<h2 id="displaying-the-version">Displaying the version</h2>
+<p>The shared <code>scripts/version.js</code> loader reads <code>version.json</code> relative to its own
+URL and updates elements with the <code>data-app-version</code> attribute. Use a readable
+fallback so the page still identifies the preview if the manifest cannot load:</p>
+<pre tabindex="0" aria-label="Code example"><code class="language-html">&lt;span data-app-version&gt;v3.4.0-alpha.3 · Preview&lt;/span&gt;
+&lt;script src=&quot;scripts/version.js&quot; defer&gt;&lt;/script&gt;
+</code></pre>
+<p>Nested game pages can load the same script using their relative path, for
+example <code>../../../scripts/version.js</code>. Do not keep separate game footer version
+constants. The manifest records <code>status: &quot;unreleased&quot;</code> for local-only work and
+<code>status: &quot;prerelease&quot;</code> for a published alpha, beta, or release candidate. Both
+carry the Preview label.</p>
+<h2 id="maintaining-the-changelog">Maintaining the changelog</h2>
+<p>Write short descriptions of meaningful user-facing behavior in <code>CHANGELOG.md</code>
+under <code>Unreleased</code>. Use only applicable categories: Added, Changed, Deprecated,
+Removed, Fixed, and Security. Keep entries newest first and retain historical
+labels rather than quietly rewriting old release identities.</p>
+<p>A release preparation should select its final SemVer, replace the <code>Unreleased</code>
+entries with a dated section, update the manifest and any synchronized package
+metadata, and verify the UI display and compatibility. Use the real release date,
+not a planned date. A release tag should reference the approved release commit;
+compare links should use real tags after those tags exist.</p>
+<p>This policy does not authorize merging, publishing, deploying, or creating tags.
+Those actions require the project's separate authorization and release workflow.</p>
+<h2 id="reconstruction-evidence">Reconstruction evidence</h2>
+<p>Reconstructed on <strong>2026-10-12</strong> from the local repository. The inspected <code>main</code>
+lineage has <strong>46 commits</strong>, is not shallow, and starts at imported root commit
+<code>86c141417b00543cfff4b113759f910662795bb6</code> on 2026-01-06. <code>git tag --list</code>
+returned no tags. Complete local ancestry does not prove a complete record of the
+project's earlier development or deployment history.</p>
+<div class="doc-table-wrap" tabindex="0" role="region" aria-label="Reconstruction evidence — table 1"><table>
+<thead>
+<tr>
+<th>Recorded label</th>
+<th>Evidence</th>
+<th>Changelog boundary</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No version label</td>
+<td>Root commit <code>86c1414</code></td>
+<td><code>86c1414</code></td>
+<td>Earliest available snapshot; earlier releases are unknown.</td>
+</tr>
+<tr>
+<td><code>v2.0.0</code></td>
+<td>Footer introduced at <code>17798e4</code></td>
+<td><code>17798e4</code></td>
+<td>Historical development milestone.</td>
+</tr>
+<tr>
+<td><code>v2.0.1</code></td>
+<td>Footer changed at <code>02c5c1d</code></td>
+<td><code>02c5c1d</code></td>
+<td>Intermediate branch milestone; no separate main merge or tag.</td>
+</tr>
+<tr>
+<td><code>v3.1.1</code></td>
+<td>Footer changed at <code>7bd6649</code>; PR #2 merged at <code>2472ad2</code></td>
+<td><code>2472ad2</code></td>
+<td>Consolidated Bank and dice development.</td>
+</tr>
+<tr>
+<td><code>v3.1.2</code></td>
+<td>Footer changed at <code>718d721</code>; PR #3 merged at <code>2716ad2</code></td>
+<td><code>2716ad2</code></td>
+<td>Bank interface improvements.</td>
+</tr>
+<tr>
+<td><code>v3.03.00</code></td>
+<td>Footer changed at <code>f086ffe</code>; PR #4 merged at <code>a533fba</code> with title <code>V3.3.0 bank byod, undo functionality</code></td>
+<td><code>a533fba</code></td>
+<td>Original UI label retained in the changelog; the merged PR establishes intended <code>3.3.0</code> numbering.</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>v3.03.00</code> is not valid SemVer because numeric components contain leading zeros.
+The preview uses <code>3.4.0-alpha.3</code>, continuing the <strong>intended 3.3.0 sequence</strong> from
+PR #4. Historical versions are not retagged or retroactively certified as SemVer.
+No standalone 3.0.0, 3.1.0, or 3.2.x release is invented to fill numbering gaps.</p>
+<p>The remote-tracking branch <code>origin/v3.4.0</code> was inspected. It contains four
+unmerged specification/dialogue commits beyond <code>f086ffe</code>, ending at <code>b1d996c</code> on
+2026-01-12, and supplies no tag or merged-release evidence. Its name does not
+establish a completed 3.4.0 release. Likewise, unmerged algorithm and React
+migration branches are excluded from the changelog for <code>main</code>.</p>
+<p>Dates in historical changelog headings are commit dates for footer milestones
+and merge dates for merged milestones, recorded in the original Git metadata.
+No production deployment log or GitHub published-release record was used.
+Compare links use full commit IDs whose ancestry was checked locally. They
+identify code changes, not proof of publication.</p>
+<p class="doc-origin"><a href="#main">Back to top</a></p></article><aside class="doc-sidebar"><h2>Project pages</h2><nav aria-label="Project documents"><a href="../about.html">About Game Hub</a><a href="../changelog.html">Changelog</a><a href="../readme.html">Project guide / README</a><a href="versioning.html" aria-current="page">Application versioning</a><a href="research-notes.html">2048 research and data notes</a><a href="../research/README.html">Local PDF extraction guide</a><a href="../tests.html">Testing guide</a></nav></aside></div>
+  </main>
+  <footer class="site-footer"><div class="footer-inner wrap"><span>Game Hub · <span data-app-version>v3.4.0-alpha.3 · Preview</span></span><div class="footer-links"><a href="../about.html">About</a><a href="../changelog.html">Changelog</a><a href="../dashboard.html">2048 lab</a></div></div></footer>
+  <script src="../scripts/version.js"></script>
+</body>
+</html>

@@ -214,6 +214,12 @@ The 2048 and Color Match play frames are capped at 540 and 580 pixels respective
 
 The lab's phone run log becomes a stacked row layout with the run identifier, strategy, score, and recorded note visible. The board-comparison table wraps its labels and values. These are source-preserving layout changes, not permission to drop data from exports or the underlying records.
 
+### Document pages
+
+`docs.css` extends the same reading frame for About, Changelog, README, versioning, research notes, PDF extraction, and testing. Desktop reading pairs a 75-character article with a narrow related-page column; below 900 pixels the navigation follows the article. A collapsed “On this page” control provides heading links. Tables and code scroll within their own bounded, keyboard-focusable regions on phones. The content is static HTML and remains readable without JavaScript.
+
+About and Changelog share one SVG QR asset opening the live changelog. Its black modules, white background, and full quiet zone remain unchanged across appearances. A descriptive image label and adjacent ordinary link provide alternatives to scanning.
+
 ## Elevation & Depth
 
 Most panels and controls are flat: white fill, a thin cool border, and spacing establish hierarchy. Depth is reserved for tangible exhibit pieces and transient overlays. The hub board uses a soft ambient shadow and a small rotation; dice use a shallow shadow; selected board controls have a subtle separation shadow. Dialogs use an ink-tinted scrim and soft elevation. This is not a globally shadowless build.

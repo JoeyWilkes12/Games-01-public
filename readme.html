@@ -1,0 +1,122 @@
+<!doctype html>
+<!-- Generated from readme.md by scripts/build-docs.py. Edit the Markdown source. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script src="theme.js"></script>
+  <meta name="description" content="Local setup, game details, and the public preview workflow.">
+  <title>Project guide / README — Game Hub</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="docs.css">
+  <link rel="stylesheet" href="theme.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><nav class="site-nav wrap" aria-label="Main navigation"><a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Game Hub</a><div class="nav-links"><a href="index.html">Play</a><a href="dashboard.html">2048 lab</a></div></nav></header>
+  <main class="wrap" id="main">
+    <div class="doc-heading"><h1 id="overview">Project guide / README</h1><p>Local setup, game details, and the public preview workflow.</p></div>
+
+    <details class="doc-contents"><summary>On this page</summary><nav aria-label="On this page"><a href="#welcome">Welcome</a><a href="#redesign-preview">Redesign preview</a><a href="#reading-pages">Reading pages</a><a href="#game-gallery-earlier-interface-screenshots">Game Gallery — earlier interface screenshots</a><a href="#playable-games">Playable Games</a><a href="#coming-soon-in-development">Coming Soon / In Development</a><a href="#development-deployment">Development &amp; Deployment</a><a href="#acknowledgements-ai-investment">Acknowledgements &amp; AI Investment</a></nav></details>
+    <div class="doc-layout"><article class="doc-content" aria-label="Project guide / README"><h2 id="welcome">Welcome</h2>
+<p>Welcome to my games repository! I explore logical aspects and algorithmic solutions to various puzzles and strategy games.</p>
+<p><strong>Live Demo</strong>: <a href="https://joeywilkes12.github.io/Games-01-public/index.html">Play the Games Here</a></p>
+<hr>
+<h2 id="redesign-preview">Redesign preview</h2>
+<p>The mobile-first redesign is currently <strong>3.4.0-alpha.3</strong>, a public preview published from <code>codex/mobile-game-lab</code>. <code>main</code> remains unchanged. Every HTML page has an Appearance selector with Light, Dark, and live System modes; your choice is shared across pages. Application display versions come from <code>version.json</code>; saved-game/configuration schema versions remain independent. See <a href="changelog.html">changelog</a> and <a href="docs/versioning.html">versioning policy</a>.</p>
+<p>Run the static app locally from this folder:</p>
+<pre tabindex="0" aria-label="Code example"><code class="language-sh">python3 -m http.server 4173 --bind 127.0.0.1
+</code></pre>
+<p>Open <a href="http://127.0.0.1:4173/">the hub</a> or <a href="http://127.0.0.1:4173/dashboard.html">the 2048 lab</a>. The lab separates results, inspectable run records and annotated research. <a href="docs/research-notes.html">Source audit and PDF extraction instructions</a> document the historical observations and local-only research corpus.</p>
+<h2 id="reading-pages">Reading pages</h2>
+<p><a href="about.html">About Game Hub</a> introduces the project. The <a href="changelog.html">Changelog</a>, this README, versioning, research notes, PDF extraction, and testing guide have themed HTML editions linked from the site. They are pre-rendered and work without JavaScript; appearance preferences use the shared selector.</p>
+<p>To refresh the committed HTML after editing a public Markdown source, use Python 3.10 or newer:</p>
+<pre tabindex="0" aria-label="Code example"><code class="language-sh">python3 -m venv /tmp/game-hub-docs
+/tmp/game-hub-docs/bin/python -m pip install -r scripts/requirements-docs.txt
+/tmp/game-hub-docs/bin/python scripts/build-docs.py
+/tmp/game-hub-docs/bin/python scripts/build-docs.py --check
+</code></pre>
+<p>The generator rejects unresolved local links and rewrites document links to HTML. Edit the Markdown sources, then regenerate and commit their HTML editions together. The reusable <code>assets/qr/changelog.svg</code> encodes the live changelog URL, retains a four-module quiet zone, and stays black on white in both appearances.</p>
+<h2 id="game-gallery-earlier-interface-screenshots">Game Gallery — earlier interface screenshots</h2>
+<h3 id="game-hub">Game Hub</h3>
+<p><img src="screenshots/hub.png" alt="Game Hub" loading="lazy"></p>
+<h3 id="random-event-dice">Random Event Dice</h3>
+<p><img src="screenshots/random_event_dice.png" alt="Random Event Dice" loading="lazy"></p>
+<h3 id="2048">2048</h3>
+<p><img src="screenshots/2048.png" alt="2048 Game" loading="lazy"></p>
+<h3 id="sliding-puzzle-3x3">Sliding Puzzle 3x3</h3>
+<p><img src="screenshots/sliding_puzzle.png" alt="Sliding Puzzle" loading="lazy"></p>
+<h3 id="bank">Bank</h3>
+<p><img src="screenshots/bank.png" alt="Bank Game" loading="lazy"></p>
+<hr>
+<h2 id="playable-games">Playable Games</h2>
+<ul>
+<li><a href="apps/games/Random%20Event%20Dice/index.html">Random Event Dice (v2.0)</a></li>
+<li><a href="apps/games/2048/index.html">2048</a></li>
+<li><a href="apps/games/Sliding%20Puzzle%203x3/index.html">Sliding Puzzle 3x3</a></li>
+<li><a href="apps/games/Bank/index.html">Bank</a></li>
+</ul>
+<h2 id="coming-soon-in-development">Coming Soon / In Development</h2>
+<ul>
+<li><a href="#acquire-coming-soon">Acquire</a></li>
+<li><a href="#mastermind-coming-soon">Mastermind</a></li>
+<li><a href="#queens-coming-soon">Queens</a></li>
+<li><a href="#wordle-coming-soon">Wordle</a></li>
+<li><a href="#risk-coming-soon">Risk</a></li>
+</ul>
+<h2 id="development-deployment">Development &amp; Deployment</h2>
+<h3 id="virtual-environment-reproducibility">Virtual Environment &amp; Reproducibility</h3>
+<p>This codebase consists largely of static web applications (HTML/CSS/JS) that do not require complex backend runtimes or build steps for the final user. Tests and local development servers differ slightly by game (some use Node.js for testing), but the core games are designed to be &quot;unzipped and played&quot; in any modern browser.</p>
+<p>Reproducibility is ensured through semantic versioning of game logic and deterministic seeds in games like Random Event Dice and 2048, allowing users to replay specific scenarios.</p>
+<h3 id="deployment-github-pages">Deployment (GitHub Pages)</h3>
+<p>This repository is deployed using <a href="https://pages.github.com/">GitHub Pages</a>.</p>
+<ul>
+<li><strong>Source</strong>: The root (<code>/</code>) of <code>codex/mobile-game-lab</code>, published directly as a preview without merging into <code>main</code>.</li>
+<li><strong>Build</strong>: GitHub’s generated Pages workflow serves the static files; <code>.nojekyll</code> bypasses Jekyll processing. Future pushes to this branch trigger publication after the workflow succeeds.</li>
+<li><strong>Scope</strong>: <code>main</code> remains the default branch. Local research PDFs and review screenshots are ignored and are not published.</li>
+<li><strong>Appearance</strong>: Every HTML page supports Light, Dark, and System modes.</li>
+</ul>
+<h3 id="testing">Testing</h3>
+<p>This project uses <a href="https://playwright.dev/">Playwright</a> for E2E testing and demo recordings.</p>
+<p><strong>Quick Start:</strong></p>
+<pre tabindex="0" aria-label="Code example"><code class="language-bash">./run-all-tests.sh
+</code></pre>
+<p><strong>Available Commands:</strong></p>
+<ul>
+<li><code>npx playwright test --project=tests</code> - Run all unit/seeded tests</li>
+<li><code>npx playwright test --project=demo</code> - Run demo recording (creates video)</li>
+<li><code>npx playwright show-report</code> - View interactive test report</li>
+</ul>
+<p>See <a href="tests.html">tests.md</a> for complete test documentation.</p>
+<h2 id="acknowledgements-ai-investment">Acknowledgements &amp; AI Investment</h2>
+<p>This project was developed with significant assistance from advanced AI tools, representing a financial investment in state-of-the-art technology to explore the future of coding.
+Options:</p>
+<ul>
+<li><code>--demo</code>: Run full demo recording.</li>
+<li><code>--split</code>: Run split parallel demos.</li>
+<li><code>--headed</code>: Run in visible browser.</li>
+<li><code>--speed=2.0</code>: Run at 2x speed.</li>
+</ul>
+<h3 id="2048-1">2048</h3>
+<p>A single-player sliding block puzzle using numbered tiles. Features an Expectimax AI solver, multiple themes, and seeded randomness for reproducible runs.</p>
+<h3 id="sliding-puzzle-3x3-1">Sliding Puzzle 3x3</h3>
+<p>A classic sliding tile puzzle where the player must rearrange scrambled tiles into a specific order.</p>
+<h3 id="bank-1">Bank</h3>
+<p>A multiplayer dice game based on rules from <a href="https://www.thunderhivegames.com/">ThunderHive Games</a>. Players take turns rolling dice to accumulate points in a shared &quot;bank&quot;, then strategically decide when to claim those points. Rolling a 7 ends the round and loses unbanked points (except the first 3 rolls which are protected). Doubles double the bank!</p>
+<h3 id="acquire-coming-soon">Acquire (Coming Soon)</h3>
+<p>A strategic board game involving the placement of tiles to form and expand corporations. Players buy stock in active chains and earn bonuses when chains merge.</p>
+<h3 id="mastermind-coming-soon">Mastermind (Coming Soon)</h3>
+<p>A logic-based code-breaking game where the player guesses a secret color pattern.</p>
+<h3 id="queens-coming-soon">Queens (Coming Soon)</h3>
+<p>A classic constraint satisfaction puzzle requiring the placement of N queens on an NxN chessboard so that no two queens threaten each other.</p>
+<h3 id="wordle-coming-soon">Wordle (Coming Soon)</h3>
+<p>A word-guessing game relying on information theory and entropy to maximize information gain with each guess.</p>
+<h3 id="risk-coming-soon">Risk (Coming Soon)</h3>
+<p>A complex board game of global domination involving territory control, combat, and alliances.</p>
+<p class="doc-origin"><a href="#main">Back to top</a></p></article><aside class="doc-sidebar"><h2>Project pages</h2><nav aria-label="Project documents"><a href="about.html">About Game Hub</a><a href="changelog.html">Changelog</a><a href="readme.html" aria-current="page">Project guide / README</a><a href="docs/versioning.html">Application versioning</a><a href="docs/research-notes.html">2048 research and data notes</a><a href="research/README.html">Local PDF extraction guide</a><a href="tests.html">Testing guide</a></nav></aside></div>
+  </main>
+  <footer class="site-footer"><div class="footer-inner wrap"><span>Game Hub · <span data-app-version>v3.4.0-alpha.3 · Preview</span></span><div class="footer-links"><a href="about.html">About</a><a href="changelog.html">Changelog</a><a href="dashboard.html">2048 lab</a></div></div></footer>
+  <script src="scripts/version.js"></script>
+</body>
+</html>

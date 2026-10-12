@@ -4,7 +4,7 @@ The application uses [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.
 and a curated [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/)
 changelog. `version.json` is the source of truth for the application version.
 
-The current worktree is **3.4.0-alpha.2**, a public prerelease preview.
+The current worktree is **3.4.0-alpha.3**, a public prerelease preview.
 It is published directly from `codex/mobile-game-lab`; `main` remains unchanged. The intended
 stable version is **3.4.0** because the work adds and reorganizes user-facing
 features while preserving saved-game configuration compatibility. A visual
@@ -40,7 +40,7 @@ URL and updates elements with the `data-app-version` attribute. Use a readable
 fallback so the page still identifies the preview if the manifest cannot load:
 
 ```html
-<span data-app-version>v3.4.0-alpha.2 · Preview</span>
+<span data-app-version>v3.4.0-alpha.3 · Preview</span>
 <script src="scripts/version.js" defer></script>
 ```
 
@@ -84,7 +84,7 @@ project's earlier development or deployment history.
 | `v3.03.00` | Footer changed at `f086ffe`; PR #4 merged at `a533fba` with title `V3.3.0 bank byod, undo functionality` | `a533fba` | Original UI label retained in the changelog; the merged PR establishes intended `3.3.0` numbering. |
 
 `v3.03.00` is not valid SemVer because numeric components contain leading zeros.
-The preview uses `3.4.0-alpha.2`, continuing the **intended 3.3.0 sequence** from
+The preview uses `3.4.0-alpha.3`, continuing the **intended 3.3.0 sequence** from
 PR #4. Historical versions are not retagged or retroactively certified as SemVer.
 No standalone 3.0.0, 3.1.0, or 3.2.x release is invented to fill numbering gaps.
 

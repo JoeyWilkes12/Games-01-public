@@ -1,0 +1,173 @@
+<!doctype html>
+<!-- Generated from docs/research-notes.md by scripts/build-docs.py. Edit the Markdown source. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script src="../theme.js"></script>
+  <meta name="description" content="Inspect the recorded observations, data limitations, and supporting literature.">
+  <title>2048 research and data notes — Game Hub</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../docs.css">
+  <link rel="stylesheet" href="../theme.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><nav class="site-nav wrap" aria-label="Main navigation"><a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Game Hub</a><div class="nav-links"><a href="../index.html">Play</a><a href="../dashboard.html">2048 lab</a></div></nav></header>
+  <main class="wrap" id="main">
+    <div class="doc-heading"><h1 id="2048-research-and-data-notes">2048 research and data notes</h1><p>Inspect the recorded observations, data limitations, and supporting literature.</p></div>
+
+    <details class="doc-contents"><summary>On this page</summary><nav aria-label="On this page"><a href="#what-the-records-measure">What the records measure</a><a href="#descriptive-results">Descriptive results</a><a href="#data-quality-findings">Data-quality findings</a><a href="#what-the-literature-adds">What the literature adds</a><a href="#local-pdf-corpus-and-reproduction">Local PDF corpus and reproduction</a></nav></details>
+    <div class="doc-layout"><article class="doc-content" aria-label="2048 research and data notes"><p>Reviewed 2026-10-12. The dashboard combines <strong>historical score observations</strong> with <strong>separate literature commentary</strong>. Research results are not additional benchmark observations.</p>
+<h2 id="what-the-records-measure">What the records measure</h2>
+<p>The controlling source is <a href="../2048%20Robots.xlsx"><code>2048 Robots.xlsx</code></a>, worksheet <code>Record</code>, cells <code>A2:F149</code>: 148 manually recorded observations. All 148 exported JSON records match the workbook's first five fields. No additional complete observations were found below row 149. The worksheet includes formatted/formula rows beyond this range, which are not extra games.</p>
+<div class="doc-table-wrap" tabindex="0" role="region" aria-label="What the records measure — table 1"><table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Meaning and limit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Index</td>
+<td>Unique record number, 1-148. It is not a timestamp or a paired experimental seed.</td>
+</tr>
+<tr>
+<td>Algorithm</td>
+<td>A source label: <code>Mc</code>, <code>E</code>, <code>Igs</code>, or <code>Rl</code>. It does not document the solver's implementation or settings.</td>
+</tr>
+<tr>
+<td>Grid Area</td>
+<td>Number of cells: 16 = 4×4; 25 = 5×5.</td>
+</tr>
+<tr>
+<td>Score</td>
+<td>The recorded game score. It does not identify the maximum tile or a win.</td>
+</tr>
+<tr>
+<td>Full Name</td>
+<td>Incomplete lookup output; use the <code>Legend</code> sheet's name/code pairs for display labels.</td>
+</tr>
+<tr>
+<td>Notes</td>
+<td>Optional manual annotation, populated for 10 of 148 rows. An empty note cannot establish failure to reach a tile.</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>generatedAt = 2026-01-01T21:40:45.182383</code> is the <strong>export timestamp</strong>, with no timezone supplied. Notes mention December 2021 for several groups of runs; the overall observation period is undocumented. The workbook's <code>Notes</code> sheet links to a separate <a href="https://appadvice.com/app/2048-3x3-4x4-5x5-ai/1518647699">iOS game with AI</a>, and to several solver resources. These links provide context; they do not prove which implementation or version produced each record. Do not label this dataset as a benchmark of the current browser app.</p>
+<h2 id="descriptive-results">Descriptive results</h2>
+<p>These values are recomputed from the original numeric <code>Score</code> cells. The mean is the sum divided by the number of observations; the median is the middle of the sorted scores (averaging the central two for an even count). Numbers below are rounded for display only.</p>
+<div class="doc-table-wrap" tabindex="0" role="region" aria-label="Descriptive results — table 2"><table>
+<thead>
+<tr>
+<th>Board</th>
+<th>Algorithm</th>
+<th style="text-align:right">Observations</th>
+<th style="text-align:right">Mean score</th>
+<th style="text-align:right">Median score</th>
+<th style="text-align:right">Lowest / highest recorded score</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4×4</td>
+<td>Monte Carlo</td>
+<td style="text-align:right">20</td>
+<td style="text-align:right">13,052.20</td>
+<td style="text-align:right">14,174</td>
+<td style="text-align:right">5,320 / 27,128</td>
+</tr>
+<tr>
+<td>4×4</td>
+<td>Expectimax Tree</td>
+<td style="text-align:right">20</td>
+<td style="text-align:right">11,604.05</td>
+<td style="text-align:right">11,306</td>
+<td style="text-align:right">4,692 / 25,500</td>
+</tr>
+<tr>
+<td>4×4</td>
+<td>IDDFS Graph Search</td>
+<td style="text-align:right">20</td>
+<td style="text-align:right">11,240.80</td>
+<td style="text-align:right">11,950</td>
+<td style="text-align:right">3,240 / 27,092</td>
+</tr>
+<tr>
+<td>4×4</td>
+<td>Reinforcement Learning</td>
+<td style="text-align:right">20</td>
+<td style="text-align:right">9,295.40</td>
+<td style="text-align:right">7,436</td>
+<td style="text-align:right">3,380 / 16,104</td>
+</tr>
+<tr>
+<td>5×5</td>
+<td>Monte Carlo</td>
+<td style="text-align:right">17</td>
+<td style="text-align:right">71,152.00</td>
+<td style="text-align:right">70,640</td>
+<td style="text-align:right">36,492 / 168,764</td>
+</tr>
+<tr>
+<td>5×5</td>
+<td>Expectimax Tree</td>
+<td style="text-align:right">17</td>
+<td style="text-align:right">82,904.47</td>
+<td style="text-align:right">79,012</td>
+<td style="text-align:right">32,596 / 173,788</td>
+</tr>
+<tr>
+<td>5×5</td>
+<td>IDDFS Graph Search</td>
+<td style="text-align:right">17</td>
+<td style="text-align:right">120,758.82</td>
+<td style="text-align:right">130,852</td>
+<td style="text-align:right">36,800 / 177,500</td>
+</tr>
+<tr>
+<td>5×5</td>
+<td>Reinforcement Learning</td>
+<td style="text-align:right">17</td>
+<td style="text-align:right">72,380.24</td>
+<td style="text-align:right">79,864</td>
+<td style="text-align:right">16,440 / 130,656</td>
+</tr>
+</tbody>
+</table></div>
+<p>The defensible reading is narrow: <strong>Monte Carlo has the largest observed average on 4×4; IDDFS Graph Search has the largest on 5×5.</strong> The older <code>algorithmic_performance_explanations_2048.md</code> claimed Expectimax led 4×4, which this dataset does not support. Scores vary substantially within every cohort, and the 4×4 mean/median order differs for Expectimax and IDDFS. Show the individual observations and sample sizes alongside summaries.</p>
+<p>Comparisons across board sizes mix different tasks. More cells can change survival, branching and score scale, but the records cannot establish <em>why</em> the ranking changes. No shared seeds, trial protocol, search depth, rollout count, training budget, runtime, move count, hardware or complete tile outcomes are recorded. Do not infer statistical significance, win rates, efficiency, training quality or causal explanations from these summaries.</p>
+<h2 id="data-quality-findings">Data-quality findings</h2>
+<ul>
+<li><code>Full Name</code> contains 106 blanks, 13 <code>#N/A</code> entries, and the number <code>2</code> in the first record. This is display metadata damage; all 148 algorithm codes, grid areas and scores are present.</li>
+<li>The old extractor treated the first <code>Legend</code> pair as headers, losing Monte Carlo and shifting the mapping. The source pairs are Monte Carlo/Mc, Expectimax Tree/E, IDDFS Graph Search/Igs, Reinforcement Learning/Rl.</li>
+<li>Record 146 (Expectimax, 4×4) has score <strong>11,525</strong>. Standard 2048 merges contribute multiples of four, so this may be a transcription error or a variant's scoring rule. Preserve the source value and flag it for verification. Excluding that single observation would not change the 4×4 mean ranking; exclusion is not an authorized correction.</li>
+<li>Record 111 records an interrupted/accidental-home-button episode. Preserve the annotation; the source does not supply enough detail to reconstruct an alternate result.</li>
+<li>There are no duplicated record identifiers, and all scores are positive finite numbers. This does not establish independent sampling or controlled conditions.</li>
+</ul>
+<p>Source workbook SHA-256: <code>025e741e2b7821da361a908cf98b6808f4fedb242c95be54fcd21dfc93899004</code>.</p>
+<h2 id="what-the-literature-adds">What the literature adds</h2>
+<p>The dashboard's <a href="../research-data.js">research data</a> contains concise findings with one-based PDF page links. The three direct studies concern standard 4×4 2048; none validates the observed 5×5 ranking.</p>
+<ul>
+<li><strong>Rodgers and Levine (2014)</strong>: pages 1-2 compare MCTS and ADLS and discuss time, depth and evaluation functions. Their separate mean-score and large-tile outcomes motivate inspecting distributions. The paper does not identify the workbook's <code>Mc</code> or <code>Igs</code> implementation. <a href="https://www.cse.unr.edu/~sushil/pubs/newestPapers/aux/paper_106.pdf">Paper</a>.</li>
+<li><strong>Ahmad Zaky (2014)</strong>: pages 2-5 explain chance-weighted expectimax, heuristics and depth/speed tradeoffs. This is a course paper, not a universal performance guarantee. The app formerly attributed it to Rinaldi Munir, whose name appears in the hosting path; page 1 names Zaky. The PDF's embedded title is an unrelated template title. <a href="https://informatika.stei.itb.ac.id/~rinaldi.munir/Stmik/2013-2014-genap/Makalah2014/MakalahIF2211-2014-037.pdf">Paper</a>.</li>
+<li><strong>Jaśkowski (2016), version 3</strong>: pages 10-11 combine learned evaluation with expectimax and report evaluation budgets. This provides a concrete counterexample to an inherent learning-versus-search hierarchy. It does not establish the training quality of the historical <code>Rl</code> agent. <a href="https://arxiv.org/pdf/1604.05085v3">Paper</a>.</li>
+</ul>
+<p>The former research page also listed autonomous-vehicle path planning (<a href="https://doi.org/10.3390/s22249682">Bian et al.</a>), Go/NoGo search budgeting (<a href="https://arxiv.org/abs/2012.07910">Lan et al.</a>), image-classification network conversion (<a href="https://arxiv.org/abs/2105.12917">Li et al.</a>), and language-model mathematical reasoning (<a href="https://arxiv.org/abs/2509.25454">Wu et al.</a>). These remain in <code>excludedReferences</code> as background, with explicit scope notes. Their reported metrics are not evidence for this 2048 dataset.</p>
+<h2 id="local-pdf-corpus-and-reproduction">Local PDF corpus and reproduction</h2>
+<p>No relevant PDF was found in the three accessible project roots. The three directly relevant public papers already referenced by the app were retrieved from arXiv or university hosts. Only public URLs were requested; repository content was not sent to another service.</p>
+<p><a href="../research/sources.json"><code>research/sources.json</code></a> records authorship, pinned version where available, URL, fingerprint, reuse status and relevant pages. <a href="../research/coverage.json"><code>research/coverage.json</code></a> records successful extraction of <strong>20 pages, 17 embedded raster images and six rendered page previews</strong>. Every page has extractable text. Relevant results pages were visually checked against extraction.</p>
+<p>Run from the repository root with Python, <code>pypdf</code>, Pillow and either Poppler (<code>pdftoppm</code>) or <code>pypdfium2</code> installed:</p>
+<pre tabindex="0" aria-label="Code example"><code class="language-sh">python3 scripts/ingest-research.py --fetch
+</code></pre>
+<p>For offline repetition, retain the ignored corpus and run without <code>--fetch</code>. To ingest already downloaded PDFs, use <code>--source-dir /path/to/pdfs</code>; the filenames and expected hashes are in <code>sources.json</code>. Changed source bytes cause an error, requiring review before the fingerprint is updated.</p>
+<p>Each <code>research/local/&lt;source-id&gt;/</code> folder contains the original PDF, <code>full-text.txt</code>, per-page text, <code>pages.json</code> mapping text/images to PDF pages, embedded raster extracts and selected rendered previews. Page numbers are PDF indices, not inferred printed labels. Embedded raster extraction does not capture vector plots; rendered previews do. Text order, equations, tables and ligatures may need manual checking. No OCR or automatic chart digitization was performed.</p>
+<p>Full PDFs, extracted text and figures remain <strong>local and Git-ignored</strong> because general redistribution rights were not established: Jaśkowski's arXiv license grants arXiv distribution rights, Rodgers/Levine is ©IEEE, and Zaky supplies no explicit reuse license. Public artifacts contain original concise commentary and source metadata. The ingestion script never uploads source contents.</p>
+<p class="doc-origin"><a href="#main">Back to top</a></p></article><aside class="doc-sidebar"><h2>Project pages</h2><nav aria-label="Project documents"><a href="../about.html">About Game Hub</a><a href="../changelog.html">Changelog</a><a href="../readme.html">Project guide / README</a><a href="versioning.html">Application versioning</a><a href="research-notes.html" aria-current="page">2048 research and data notes</a><a href="../research/README.html">Local PDF extraction guide</a><a href="../tests.html">Testing guide</a></nav></aside></div>
+  </main>
+  <footer class="site-footer"><div class="footer-inner wrap"><span>Game Hub · <span data-app-version>v3.4.0-alpha.3 · Preview</span></span><div class="footer-links"><a href="../about.html">About</a><a href="../changelog.html">Changelog</a><a href="../dashboard.html">2048 lab</a></div></div></footer>
+  <script src="../scripts/version.js"></script>
+</body>
+</html>

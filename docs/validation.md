@@ -1,6 +1,6 @@
 # Redesign validation
 
-Reviewed locally on 2026-10-12, on branch `codex/mobile-game-lab`. The app is a **3.4.0-alpha.2** prerelease preview. Main and origin/main remain at `a533fba`.
+Reviewed locally on 2026-10-12, on branch `codex/mobile-game-lab`. The app is a **3.4.0-alpha.3** prerelease preview. Main and origin/main remain at `a533fba`.
 
 ## Functional checks
 
@@ -37,3 +37,12 @@ Local screenshots and browser check records are in ignored `output/playwright/`.
 The nine public application pages passed all 54 Light/Dark combinations at 320, 390, and 1440 pixels, with no document overflow and 44-pixel appearance controls. The four diagnostic HTML routes also expose both modes. All 15 appearance behavior assertions passed. Browser checks cover live System updates, explicit overrides, route persistence, cross-tab storage synchronization, invalid preferences, and blocked storage. Game palettes remain independent of page appearance. Screenshots were inspected in both appearances. An independent review checked the theme behavior and colors and returned **ship**, with no remaining actionable findings.
 
 Production is published from the pushed `codex/mobile-game-lab` branch using GitHub’s existing Pages workflow. The existing environment branch policies are preserved, with this branch added explicitly. Local ignored PDF extracts and review artifacts are excluded from the pushed branch.
+
+
+## HTML reading pages and QR validation
+
+Seven reading pages passed all 42 Light/Dark combinations at 320, 390, and 1440 pixels with no horizontal document overflow or JavaScript errors. All seven retain article text and working links with JavaScript disabled. The independent review confirmed source-content preservation, one primary heading per page, unique section IDs, resolving local document links/fragments, image alternatives, shared appearance/version assets, and no raw Markdown destinations in site HTML or JavaScript.
+
+The QR code was generated using the qr-code-generator skill as an SVG with H error correction and a four-module quiet zone. The actual 128-pixel-wide SVG rendered on the 320-pixel Changelog layout decoded via local macOS Vision in both themes to exactly `https://joeywilkes12.github.io/Games-01-public/changelog.html`. No physical-phone scan was performed. An ordinary Changelog link is provided alongside it.
+
+Hub-to-Changelog, About, README, contents anchors, dynamic research links, and keyboard focus of the table region were checked in the local browser. `scripts/build-docs.py --check` confirms generated HTML matches its Markdown sources. The independent review returned **ship** with no actionable findings.

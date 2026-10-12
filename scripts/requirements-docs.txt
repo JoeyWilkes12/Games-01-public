@@ -1,0 +1,2 @@
+# Python 3.10 or newer
+markdown-it-py==4.0.0

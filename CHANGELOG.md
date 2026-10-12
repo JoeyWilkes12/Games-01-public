@@ -15,6 +15,19 @@ See [versioning policy and evidence](docs/versioning.md).
 
 Changes not yet published will be listed here.
 
+## [3.4.0-alpha.3] - 2026-10-12
+
+### Added
+
+- Themed HTML editions of the Changelog, README, versioning policy, research notes, PDF extraction guide, and testing guide, readable without JavaScript.
+- An About page and a reusable SVG QR code opening the live changelog.
+- Reproducible document generation with validation of local links.
+
+### Fixed
+
+- Site navigation now opens HTML document pages instead of raw Markdown files.
+- README links to playable games resolve to their entry pages; planned games link to their descriptions.
+
 ## [3.4.0-alpha.2] - 2026-10-12
 
 Public preview published directly from `codex/mobile-game-lab` to GitHub Pages;
@@ -147,4 +160,6 @@ The available history begins at root commit `86c1414`. Earlier development and r
 [v2.0.0]: https://github.com/JoeyWilkes12/Games-01-public/compare/86c141417b00543cfff4b113759f910662795bb6...17798e4e8dfe762a8dd565be828f17724c0981d6
 [Initial available snapshot]: https://github.com/JoeyWilkes12/Games-01-public/commit/86c141417b00543cfff4b113759f910662795bb6
 
-[3.4.0-alpha.2]: https://github.com/JoeyWilkes12/Games-01-public/compare/a533fbaf36cf29525472c873aa0faf70aea915ee...codex/mobile-game-lab
+[3.4.0-alpha.2]: https://github.com/JoeyWilkes12/Games-01-public/compare/a533fbaf36cf29525472c873aa0faf70aea915ee...dc49801da9b97033abdc4b9f50ea9ab976df2e42
+
+[3.4.0-alpha.3]: https://github.com/JoeyWilkes12/Games-01-public/compare/dc49801da9b97033abdc4b9f50ea9ab976df2e42...codex/mobile-game-lab
