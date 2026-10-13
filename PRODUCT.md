@@ -32,6 +32,7 @@ Preserve playable game behavior, data, local configuration/import/export workflo
 - Start analysis with a clear question, then show comparisons and inspectable evidence.
 - Keep source limitations visible beside conclusions.
 - Retain a lightweight static application.
+- Adopt the Agent Skills Resource Library visual system across the app: navy/paper/mint/coral, Georgia editorial headings, compact sans controls, square surfaces, and semantic light/dark roles. The original library DESIGN.md v0.3 and implemented CSS are the visual authority; the proposed global skill wrapper is absent.
 
 ## Open Decisions
 

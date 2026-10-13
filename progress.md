@@ -26,3 +26,13 @@ Created and attached a new managed worktree on `codex/library-design-system`, st
 The shared theme selector now uses monitor/sun/moon SVGs with a dropdown chevron and an accessible native “Color theme” select. It keeps System/Light/Dark choices, live OS preference updates, persisted preferences, cross-tab synchronization, and the forced-colors native selector. The existing published worktree and Pages source remain available while this new branch is reviewed.
 
 Validation: 80 theme/layout checks across all 20 routes and ten behavior assertions passed. The independent review returned ship. The diagnostic startup warning on the standalone 2048 test page is inherited; screenshots and detailed checks remain ignored. Updated the Unreleased changelog entry, design reference, README, and generated HTML.
+
+
+## Library system adoption — 3.4.0-alpha.4 worktree preview
+
+The user authorized temporary access to “Share design system across projects” (`01a131f2-c692-7741-9901-918d858d9c73`). That thread proposed a global library-design-system skill but explicitly changed no files; the requested SKILL.md is absent. The first-party reference exists in the Agent Skills Resource Library repository at commit `3eaa5ae64e405fd0d8ecb5be3cce279b813fc645`: DESIGN.md v0.3 and app/globals.css. Those sources supplied the pinned navy/paper/mint/coral visual language, Georgia/system-sans typography, semantic dark roles, square surfaces, source/context strips, and responsive reading layouts. No global skill or other repository was modified.
+
+Parallel implementation covered shared tokens/navigation/hub, lab/research/reference pages, all game CSS, and generated document surfaces. Optional board palettes remain independent. The first browser pass passed 120 theme/layout combinations across all 20 HTML routes at 320, 390, and 1440 pixels; only the inherited standalone 2048 test-page initialization warning appeared. Code review found two contrast issues in the dice timer and Bank feedback, now corrected. The app version is an unreleased 3.4.0-alpha.4 preview; the existing Pages source remains codex/mobile-game-lab.
+
+
+Final Library verification: all 120 responsive/theme combinations and 41 behavior assertions passed, including eight tile-palette/mode contrast checks. Static verification resolved 431 local links/assets and three intentional dashboard hash routes. The code reviewer rechecked both contrast repairs and returned ship. Final captures wait for incumbent color transitions before judging Bank and Dice 2. DESIGN.md and its sidecar now record the actual Library source and implemented semantic tokens. The design reviewer confirmed all three findings resolved and returned ship. The branch is ready to commit and push; Pages and main remain unchanged.

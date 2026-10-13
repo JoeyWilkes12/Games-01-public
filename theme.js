@@ -42,7 +42,9 @@
     bar.className = "appearance-bar";
     bar.innerHTML = '<label class="appearance-control" for="appearance-select"><select id="appearance-select" aria-label="Color theme"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select><span class="theme-icon" aria-hidden="true"><svg class="theme-symbol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></svg><svg class="theme-chevron" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 4.5 3 3 3-3"/></svg></span></label>';
     const header = document.querySelector("header");
-    if (header) header.after(bar);
+    const navigation = header?.querySelector(".site-nav");
+    if (navigation) navigation.append(bar);
+    else if (header) header.after(bar);
     else document.body.prepend(bar);
     apply();
     bar.querySelector("select").addEventListener("change", event => {

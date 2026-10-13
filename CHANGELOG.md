@@ -15,6 +15,8 @@ See [versioning policy and evidence](docs/versioning.md).
 
 ### Changed
 
+- Adopted the Agent Skills Resource Library visual system throughout the hub, 2048 lab, games, reference pages, and generated documents: navy/paper/mint/coral, editorial serif headings, semantic light/dark surfaces, and square controls.
+- Added responsive evidence/context strips, a desktop reading rail, and compact phone navigation while preserving gameplay, recorded results, source commentary, and the changelog QR.
 - Replaced the visible Appearance label with a compact theme icon dropdown on every page. System, Light, and Dark remain available with native keyboard controls and a shared saved preference.
 
 ## [3.4.0-alpha.3] - 2026-10-12

@@ -12,19 +12,19 @@
   <link rel="stylesheet" href="docs.css">
   <link rel="stylesheet" href="theme.css">
 </head>
-<body>
+<body class="doc-page">
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header"><nav class="site-nav wrap" aria-label="Main navigation"><a class="brand" href="index.html"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Game Hub</a><div class="nav-links"><a href="index.html">Play</a><a href="dashboard.html">2048 lab</a></div></nav></header>
-  <main class="wrap" id="main">
+  <main class="wrap doc-shell" id="main">
     <div class="doc-heading"><h1 id="overview">Project guide / README</h1><p>Local setup, game details, and the public preview workflow.</p></div>
+    <section class="doc-source" aria-label="Document details"><dl><div><dt>Document</dt><dd>Developer guide</dd></div><div><dt>Application version</dt><dd>v3.4.0-alpha.4</dd></div></dl></section>
 
-    <details class="doc-contents"><summary>On this page</summary><nav aria-label="On this page"><a href="#welcome">Welcome</a><a href="#redesign-preview">Redesign preview</a><a href="#reading-pages">Reading pages</a><a href="#game-gallery-earlier-interface-screenshots">Game Gallery — earlier interface screenshots</a><a href="#playable-games">Playable Games</a><a href="#coming-soon-in-development">Coming Soon / In Development</a><a href="#development-deployment">Development &amp; Deployment</a><a href="#acknowledgements-ai-investment">Acknowledgements &amp; AI Investment</a></nav></details>
-    <div class="doc-layout"><article class="doc-content" aria-label="Project guide / README"><h2 id="welcome">Welcome</h2>
+    <div class="doc-layout"><aside class="doc-rail"><nav class="doc-contents-desktop" aria-label="On this page"><h2>On this page</h2><a href="#welcome">Welcome</a><a href="#redesign-preview">Redesign preview</a><a href="#reading-pages">Reading pages</a><a href="#game-gallery-earlier-interface-screenshots">Game Gallery — earlier interface screenshots</a><a href="#playable-games">Playable Games</a><a href="#coming-soon-in-development">Coming Soon / In Development</a><a href="#development-deployment">Development &amp; Deployment</a><a href="#acknowledgements-ai-investment">Acknowledgements &amp; AI Investment</a></nav></aside><div class="doc-reading"><details class="doc-contents"><summary>On this page</summary><nav aria-label="On this page"><a href="#welcome">Welcome</a><a href="#redesign-preview">Redesign preview</a><a href="#reading-pages">Reading pages</a><a href="#game-gallery-earlier-interface-screenshots">Game Gallery — earlier interface screenshots</a><a href="#playable-games">Playable Games</a><a href="#coming-soon-in-development">Coming Soon / In Development</a><a href="#development-deployment">Development &amp; Deployment</a><a href="#acknowledgements-ai-investment">Acknowledgements &amp; AI Investment</a></nav></details><article class="doc-content" aria-label="Project guide / README"><h2 id="welcome">Welcome</h2>
 <p>Welcome to my games repository! I explore logical aspects and algorithmic solutions to various puzzles and strategy games.</p>
 <p><strong>Live Demo</strong>: <a href="https://joeywilkes12.github.io/Games-01-public/index.html">Play the Games Here</a></p>
 <hr>
 <h2 id="redesign-preview">Redesign preview</h2>
-<p>The mobile-first redesign is currently <strong>3.4.0-alpha.3</strong>, a public preview published from <code>codex/mobile-game-lab</code>. <code>main</code> remains unchanged. Every HTML page has a theme icon dropdown with Light, Dark, and live System modes; your choice is shared across pages. Application display versions come from <code>version.json</code>; saved-game/configuration schema versions remain independent. See <a href="changelog.html">changelog</a> and <a href="docs/versioning.html">versioning policy</a>.</p>
+<p>This worktree previews <strong>3.4.0-alpha.4</strong> on <code>codex/library-design-system</code>, applying the Agent Skills Resource Library design language throughout the app. The currently published Pages preview remains <strong>3.4.0-alpha.3</strong> on <code>codex/mobile-game-lab</code>. <code>main</code> remains unchanged. Every HTML page has an icon dropdown with Light, Dark, and live System modes; your choice is shared across pages. Application display versions come from <code>version.json</code>; saved-game/configuration schema versions remain independent. See <a href="changelog.html">changelog</a> and <a href="docs/versioning.html">versioning policy</a>.</p>
 <p>Run the static app locally from this folder:</p>
 <pre tabindex="0" aria-label="Code example"><code class="language-sh">python3 -m http.server 4173 --bind 127.0.0.1
 </code></pre>
@@ -114,9 +114,9 @@ Options:</p>
 <p>A word-guessing game relying on information theory and entropy to maximize information gain with each guess.</p>
 <h3 id="risk-coming-soon">Risk (Coming Soon)</h3>
 <p>A complex board game of global domination involving territory control, combat, and alliances.</p>
-<p class="doc-origin"><a href="#main">Back to top</a></p></article><aside class="doc-sidebar"><h2>Project pages</h2><nav aria-label="Project documents"><a href="about.html">About Game Hub</a><a href="changelog.html">Changelog</a><a href="readme.html" aria-current="page">Project guide / README</a><a href="docs/versioning.html">Application versioning</a><a href="docs/research-notes.html">2048 research and data notes</a><a href="research/README.html">Local PDF extraction guide</a><a href="tests.html">Testing guide</a></nav></aside></div>
+<p class="doc-origin"><a href="#main">Back to top</a></p></article><aside class="doc-sidebar"><h2>Project pages</h2><nav aria-label="Project documents"><a href="about.html">About Game Hub</a><a href="changelog.html">Changelog</a><a href="readme.html" aria-current="page">Project guide / README</a><a href="docs/versioning.html">Application versioning</a><a href="docs/research-notes.html">2048 research and data notes</a><a href="research/README.html">Local PDF extraction guide</a><a href="tests.html">Testing guide</a></nav></aside></div></div>
   </main>
-  <footer class="site-footer"><div class="footer-inner wrap"><span>Game Hub · <span data-app-version>v3.4.0-alpha.3 · Preview</span></span><div class="footer-links"><a href="about.html">About</a><a href="changelog.html">Changelog</a><a href="dashboard.html">2048 lab</a></div></div></footer>
+  <footer class="site-footer"><div class="footer-inner wrap"><span>Game Hub · <span data-app-version>v3.4.0-alpha.4 · Preview</span></span><div class="footer-links"><a href="about.html">About</a><a href="changelog.html">Changelog</a><a href="dashboard.html">2048 lab</a></div></div></footer>
   <script src="scripts/version.js"></script>
 </body>
 </html>

@@ -24,6 +24,15 @@ PAGES = [
     ("research/README.md", "research/README.html", "Local PDF extraction guide", "Reproduce the research corpus while keeping complete sources local."),
     ("tests.md", "tests.html", "Testing guide", "Run reproducible checks and record demonstrations of the games."),
 ]
+FAMILIES = {
+    "about.html": "Project overview",
+    "changelog.html": "Release history",
+    "readme.html": "Developer guide",
+    "docs/versioning.html": "Version reference",
+    "docs/research-notes.html": "Research and data reference",
+    "research/README.html": "Research workflow",
+    "tests.html": "Testing workflow",
+}
 OUTPUTS = {(ROOT / source).resolve(): ROOT / output for source, output, *_ in PAGES}
 MD = MarkdownIt("js-default", {"html": False})
 
@@ -96,7 +105,9 @@ def render_page(source, output, title, description, version):
     body = body.replace("<pre>", '<pre tabindex="0" aria-label="Code example">')
     root = lambda path: relative(ROOT / path, output)
     sidebar = "".join(f'<a href="{root(other)}"'+(' aria-current="page"' if other == output else '')+f'>{esc(label)}</a>' for _, other, label, _ in PAGES)
-    toc = '<details class="doc-contents"><summary>On this page</summary><nav aria-label="On this page">'+"".join(f'<a href="#{esc(anchor)}">{esc(label)}</a>' for anchor, label in contents)+'</nav></details>' if contents else ''
+    toc_links = "".join(f'<a href="#{esc(anchor)}">{esc(label)}</a>' for anchor, label in contents)
+    toc = '<details class="doc-contents"><summary>On this page</summary><nav aria-label="On this page">'+toc_links+'</nav></details>' if contents else ''
+    desktop_toc = '<aside class="doc-rail"><nav class="doc-contents-desktop" aria-label="On this page"><h2>On this page</h2>'+toc_links+'</nav></aside>' if contents else '<div class="doc-rail" aria-hidden="true"></div>'
     share = ''
     if output in ['about.html', 'changelog.html']:
         share = f'<section class="doc-share" aria-labelledby="share-title"><div><h2 id="share-title">Share the changelog</h2><p>Scan to open the latest updates on another device.</p><a class="text-link" href="{root("changelog.html")}">Open the changelog</a></div><a href="{root("changelog.html")}" aria-label="Open the changelog"><img src="{root("assets/qr/changelog.svg")}" width="176" height="176" alt="QR code linking to the live Game Hub changelog"></a></section>'
@@ -114,14 +125,14 @@ def render_page(source, output, title, description, version):
   <link rel="stylesheet" href="{root('docs.css')}">
   <link rel="stylesheet" href="{root('theme.css')}">
 </head>
-<body>
+<body class="doc-page">
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header"><nav class="site-nav wrap" aria-label="Main navigation"><a class="brand" href="{root('index.html')}"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Game Hub</a><div class="nav-links"><a href="{root('index.html')}">Play</a><a href="{root('dashboard.html')}">2048 lab</a></div></nav></header>
-  <main class="wrap" id="main">
+  <main class="wrap doc-shell" id="main">
     <div class="doc-heading"><h1 id="{esc(page_id)}">{esc(title)}</h1><p>{esc(description)}</p></div>
+    <section class="doc-source" aria-label="Document details"><dl><div><dt>Document</dt><dd>{esc(FAMILIES[output])}</dd></div><div><dt>Application version</dt><dd>v{esc(version)}</dd></div></dl></section>
     {share}
-    {toc}
-    <div class="doc-layout"><article class="doc-content" aria-label="{esc(title)}">{body}<p class="doc-origin"><a href="#main">Back to top</a></p></article><aside class="doc-sidebar"><h2>Project pages</h2><nav aria-label="Project documents">{sidebar}</nav></aside></div>
+    <div class="doc-layout">{desktop_toc}<div class="doc-reading">{toc}<article class="doc-content" aria-label="{esc(title)}">{body}<p class="doc-origin"><a href="#main">Back to top</a></p></article><aside class="doc-sidebar"><h2>Project pages</h2><nav aria-label="Project documents">{sidebar}</nav></aside></div></div>
   </main>
   <footer class="site-footer"><div class="footer-inner wrap"><span>Game Hub · <span data-app-version>v{esc(version)} · Preview</span></span><div class="footer-links"><a href="{root('about.html')}">About</a><a href="{root('changelog.html')}">Changelog</a><a href="{root('dashboard.html')}">2048 lab</a></div></div></footer>
   <script src="{root('scripts/version.js')}"></script>

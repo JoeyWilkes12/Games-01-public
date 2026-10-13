@@ -9,7 +9,7 @@ Welcome to my games repository! I explore logical aspects and algorithmic soluti
 
 ## Redesign preview
 
-The mobile-first redesign is currently **3.4.0-alpha.3**, a public preview published from `codex/mobile-game-lab`. `main` remains unchanged. Every HTML page has a theme icon dropdown with Light, Dark, and live System modes; your choice is shared across pages. Application display versions come from `version.json`; saved-game/configuration schema versions remain independent. See [changelog](CHANGELOG.md) and [versioning policy](docs/versioning.md).
+This worktree previews **3.4.0-alpha.4** on `codex/library-design-system`, applying the Agent Skills Resource Library design language throughout the app. The currently published Pages preview remains **3.4.0-alpha.3** on `codex/mobile-game-lab`. `main` remains unchanged. Every HTML page has an icon dropdown with Light, Dark, and live System modes; your choice is shared across pages. Application display versions come from `version.json`; saved-game/configuration schema versions remain independent. See [changelog](CHANGELOG.md) and [versioning policy](docs/versioning.md).
 
 Run the static app locally from this folder:
 
