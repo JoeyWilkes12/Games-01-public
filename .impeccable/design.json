@@ -1,404 +1,537 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-12T16:36:16.825Z",
-  "title": "Design System: Game Hub",
+  "generatedAt": "2026-10-13T00:16:24.192Z",
+  "title": "Design System: Game Hub — Library",
   "extensions": {
     "colorMeta": {
-      "teal": {
+      "navy-950": {
         "role": "primary",
-        "displayName": "Exhibit Teal",
+        "displayName": "Navy 950",
         "tonalRamp": [
-          "oklch(15.00% 0.0803 189.19)",
-          "oklch(26.43% 0.0803 189.19)",
-          "oklch(37.86% 0.0803 189.19)",
-          "oklch(49.29% 0.0803 189.19)",
-          "oklch(60.71% 0.0803 189.19)",
-          "oklch(72.14% 0.0803 189.19)",
-          "oklch(83.57% 0.0803 189.19)",
-          "oklch(95.00% 0.0803 189.19)"
+          "oklch(15.00% 0.0539 254.46)",
+          "oklch(26.43% 0.0539 254.46)",
+          "oklch(37.86% 0.0539 254.46)",
+          "oklch(49.29% 0.0539 254.46)",
+          "oklch(60.71% 0.0539 254.46)",
+          "oklch(72.14% 0.0539 254.46)",
+          "oklch(83.57% 0.0539 254.46)",
+          "oklch(95.00% 0.0539 254.46)"
         ]
       },
-      "teal-dark": {
+      "navy-800": {
         "role": "primary",
-        "displayName": "Deep Teal",
+        "displayName": "Navy 800",
         "tonalRamp": [
-          "oklch(15.00% 0.0641 190.35)",
-          "oklch(26.43% 0.0641 190.35)",
-          "oklch(37.86% 0.0641 190.35)",
-          "oklch(49.29% 0.0641 190.35)",
-          "oklch(60.71% 0.0641 190.35)",
-          "oklch(72.14% 0.0641 190.35)",
-          "oklch(83.57% 0.0641 190.35)",
-          "oklch(95.00% 0.0641 190.35)"
+          "oklch(15.00% 0.0625 251.22)",
+          "oklch(26.43% 0.0625 251.22)",
+          "oklch(37.86% 0.0625 251.22)",
+          "oklch(49.29% 0.0625 251.22)",
+          "oklch(60.71% 0.0625 251.22)",
+          "oklch(72.14% 0.0625 251.22)",
+          "oklch(83.57% 0.0625 251.22)",
+          "oklch(95.00% 0.0625 251.22)"
         ]
       },
-      "teal-pale": {
-        "role": "primary",
-        "displayName": "Pale Teal",
+      "paper-100": {
+        "role": "neutral",
+        "displayName": "Paper 100",
         "tonalRamp": [
-          "oklch(15.00% 0.0205 185.47)",
-          "oklch(26.43% 0.0205 185.47)",
-          "oklch(37.86% 0.0205 185.47)",
-          "oklch(49.29% 0.0205 185.47)",
-          "oklch(60.71% 0.0205 185.47)",
-          "oklch(72.14% 0.0205 185.47)",
-          "oklch(83.57% 0.0205 185.47)",
-          "oklch(95.00% 0.0205 185.47)"
+          "oklch(15.00% 0.0131 82.40)",
+          "oklch(26.43% 0.0131 82.40)",
+          "oklch(37.86% 0.0131 82.40)",
+          "oklch(49.29% 0.0131 82.40)",
+          "oklch(60.71% 0.0131 82.40)",
+          "oklch(72.14% 0.0131 82.40)",
+          "oklch(83.57% 0.0131 82.40)",
+          "oklch(95.00% 0.0131 82.40)"
         ]
       },
-      "clay": {
+      "paper-0": {
+        "role": "neutral",
+        "displayName": "Paper 0",
+        "tonalRamp": [
+          "oklch(15.00% 0.0069 88.64)",
+          "oklch(26.43% 0.0069 88.64)",
+          "oklch(37.86% 0.0069 88.64)",
+          "oklch(49.29% 0.0069 88.64)",
+          "oklch(60.71% 0.0069 88.64)",
+          "oklch(72.14% 0.0069 88.64)",
+          "oklch(83.57% 0.0069 88.64)",
+          "oklch(95.00% 0.0069 88.64)"
+        ]
+      },
+      "mint": {
+        "role": "primary",
+        "displayName": "Mint",
+        "tonalRamp": [
+          "oklch(15.00% 0.0677 166.08)",
+          "oklch(26.43% 0.0677 166.08)",
+          "oklch(37.86% 0.0677 166.08)",
+          "oklch(49.29% 0.0677 166.08)",
+          "oklch(60.71% 0.0677 166.08)",
+          "oklch(72.14% 0.0677 166.08)",
+          "oklch(83.57% 0.0677 166.08)",
+          "oklch(95.00% 0.0677 166.08)"
+        ]
+      },
+      "mint-700": {
         "role": "secondary",
-        "displayName": "Fired Clay",
+        "displayName": "Mint 700",
         "tonalRamp": [
-          "oklch(15.00% 0.1540 38.48)",
-          "oklch(26.43% 0.1540 38.48)",
-          "oklch(37.86% 0.1540 38.48)",
-          "oklch(49.29% 0.1540 38.48)",
-          "oklch(60.71% 0.1540 38.48)",
-          "oklch(72.14% 0.1540 38.48)",
-          "oklch(83.57% 0.1540 38.48)",
-          "oklch(95.00% 0.1540 38.48)"
+          "oklch(15.00% 0.0946 168.63)",
+          "oklch(26.43% 0.0946 168.63)",
+          "oklch(37.86% 0.0946 168.63)",
+          "oklch(49.29% 0.0946 168.63)",
+          "oklch(60.71% 0.0946 168.63)",
+          "oklch(72.14% 0.0946 168.63)",
+          "oklch(83.57% 0.0946 168.63)",
+          "oklch(95.00% 0.0946 168.63)"
         ]
       },
-      "clay-deep": {
+      "coral": {
         "role": "secondary",
-        "displayName": "Deep Clay",
+        "displayName": "Coral",
         "tonalRamp": [
-          "oklch(15.00% 0.1375 38.00)",
-          "oklch(26.43% 0.1375 38.00)",
-          "oklch(37.86% 0.1375 38.00)",
-          "oklch(49.29% 0.1375 38.00)",
-          "oklch(60.71% 0.1375 38.00)",
-          "oklch(72.14% 0.1375 38.00)",
-          "oklch(83.57% 0.1375 38.00)",
-          "oklch(95.00% 0.1375 38.00)"
+          "oklch(15.00% 0.1871 30.37)",
+          "oklch(26.43% 0.1871 30.37)",
+          "oklch(37.86% 0.1871 30.37)",
+          "oklch(49.29% 0.1871 30.37)",
+          "oklch(60.71% 0.1871 30.37)",
+          "oklch(72.14% 0.1871 30.37)",
+          "oklch(83.57% 0.1871 30.37)",
+          "oklch(95.00% 0.1871 30.37)"
         ]
       },
-      "plum": {
-        "role": "tertiary",
-        "displayName": "Study Plum",
-        "tonalRamp": [
-          "oklch(15.00% 0.0933 292.06)",
-          "oklch(26.43% 0.0933 292.06)",
-          "oklch(37.86% 0.0933 292.06)",
-          "oklch(49.29% 0.0933 292.06)",
-          "oklch(60.71% 0.0933 292.06)",
-          "oklch(72.14% 0.0933 292.06)",
-          "oklch(83.57% 0.0933 292.06)",
-          "oklch(95.00% 0.0933 292.06)"
-        ]
-      },
-      "ground": {
+      "surface-soft-light": {
         "role": "neutral",
-        "displayName": "Daylight Ground",
+        "displayName": "Surface Soft Light",
         "tonalRamp": [
-          "oklch(15.00% 0.0074 197.03)",
-          "oklch(26.43% 0.0074 197.03)",
-          "oklch(37.86% 0.0074 197.03)",
-          "oklch(49.29% 0.0074 197.03)",
-          "oklch(60.71% 0.0074 197.03)",
-          "oklch(72.14% 0.0074 197.03)",
-          "oklch(83.57% 0.0074 197.03)",
-          "oklch(95.00% 0.0074 197.03)"
+          "oklch(15.00% 0.0173 84.59)",
+          "oklch(26.43% 0.0173 84.59)",
+          "oklch(37.86% 0.0173 84.59)",
+          "oklch(49.29% 0.0173 84.59)",
+          "oklch(60.71% 0.0173 84.59)",
+          "oklch(72.14% 0.0173 84.59)",
+          "oklch(83.57% 0.0173 84.59)",
+          "oklch(95.00% 0.0173 84.59)"
         ]
       },
-      "paper": {
+      "surface-page-dark": {
         "role": "neutral",
-        "displayName": "White Paper",
+        "displayName": "Surface Page Dark",
         "tonalRamp": [
-          "oklch(15.00% 0.0000 0.00)",
-          "oklch(26.43% 0.0000 0.00)",
-          "oklch(37.86% 0.0000 0.00)",
-          "oklch(49.29% 0.0000 0.00)",
-          "oklch(60.71% 0.0000 0.00)",
-          "oklch(72.14% 0.0000 0.00)",
-          "oklch(83.57% 0.0000 0.00)",
-          "oklch(95.00% 0.0000 0.00)"
+          "oklch(15.00% 0.0362 246.53)",
+          "oklch(26.43% 0.0362 246.53)",
+          "oklch(37.86% 0.0362 246.53)",
+          "oklch(49.29% 0.0362 246.53)",
+          "oklch(60.71% 0.0362 246.53)",
+          "oklch(72.14% 0.0362 246.53)",
+          "oklch(83.57% 0.0362 246.53)",
+          "oklch(95.00% 0.0362 246.53)"
         ]
       },
-      "ink": {
+      "surface-raised-dark": {
         "role": "neutral",
-        "displayName": "Blue-Green Ink",
+        "displayName": "Surface Raised Dark",
         "tonalRamp": [
-          "oklch(15.00% 0.0352 216.83)",
-          "oklch(26.43% 0.0352 216.83)",
-          "oklch(37.86% 0.0352 216.83)",
-          "oklch(49.29% 0.0352 216.83)",
-          "oklch(60.71% 0.0352 216.83)",
-          "oklch(72.14% 0.0352 216.83)",
-          "oklch(83.57% 0.0352 216.83)",
-          "oklch(95.00% 0.0352 216.83)"
+          "oklch(15.00% 0.0467 244.93)",
+          "oklch(26.43% 0.0467 244.93)",
+          "oklch(37.86% 0.0467 244.93)",
+          "oklch(49.29% 0.0467 244.93)",
+          "oklch(60.71% 0.0467 244.93)",
+          "oklch(72.14% 0.0467 244.93)",
+          "oklch(83.57% 0.0467 244.93)",
+          "oklch(95.00% 0.0467 244.93)"
         ]
       },
-      "muted": {
+      "surface-soft-dark": {
         "role": "neutral",
-        "displayName": "Slate Caption",
+        "displayName": "Surface Soft Dark",
         "tonalRamp": [
-          "oklch(15.00% 0.0321 213.44)",
-          "oklch(26.43% 0.0321 213.44)",
-          "oklch(37.86% 0.0321 213.44)",
-          "oklch(49.29% 0.0321 213.44)",
-          "oklch(60.71% 0.0321 213.44)",
-          "oklch(72.14% 0.0321 213.44)",
-          "oklch(83.57% 0.0321 213.44)",
-          "oklch(95.00% 0.0321 213.44)"
+          "oklch(15.00% 0.0534 246.50)",
+          "oklch(26.43% 0.0534 246.50)",
+          "oklch(37.86% 0.0534 246.50)",
+          "oklch(49.29% 0.0534 246.50)",
+          "oklch(60.71% 0.0534 246.50)",
+          "oklch(72.14% 0.0534 246.50)",
+          "oklch(83.57% 0.0534 246.50)",
+          "oklch(95.00% 0.0534 246.50)"
         ]
       },
-      "line": {
+      "text-secondary-light": {
         "role": "neutral",
-        "displayName": "Cool Divider",
+        "displayName": "Text Secondary Light",
         "tonalRamp": [
-          "oklch(15.00% 0.0183 201.09)",
-          "oklch(26.43% 0.0183 201.09)",
-          "oklch(37.86% 0.0183 201.09)",
-          "oklch(49.29% 0.0183 201.09)",
-          "oklch(60.71% 0.0183 201.09)",
-          "oklch(72.14% 0.0183 201.09)",
-          "oklch(83.57% 0.0183 201.09)",
-          "oklch(95.00% 0.0183 201.09)"
+          "oklch(15.00% 0.0302 246.74)",
+          "oklch(26.43% 0.0302 246.74)",
+          "oklch(37.86% 0.0302 246.74)",
+          "oklch(49.29% 0.0302 246.74)",
+          "oklch(60.71% 0.0302 246.74)",
+          "oklch(72.14% 0.0302 246.74)",
+          "oklch(83.57% 0.0302 246.74)",
+          "oklch(95.00% 0.0302 246.74)"
         ]
       },
-      "soft": {
+      "text-primary-dark": {
         "role": "neutral",
-        "displayName": "Soft Cell",
+        "displayName": "Text Primary Dark",
         "tonalRamp": [
-          "oklch(15.00% 0.0117 196.96)",
-          "oklch(26.43% 0.0117 196.96)",
-          "oklch(37.86% 0.0117 196.96)",
-          "oklch(49.29% 0.0117 196.96)",
-          "oklch(60.71% 0.0117 196.96)",
-          "oklch(72.14% 0.0117 196.96)",
-          "oklch(83.57% 0.0117 196.96)",
-          "oklch(95.00% 0.0117 196.96)"
+          "oklch(15.00% 0.0085 225.08)",
+          "oklch(26.43% 0.0085 225.08)",
+          "oklch(37.86% 0.0085 225.08)",
+          "oklch(49.29% 0.0085 225.08)",
+          "oklch(60.71% 0.0085 225.08)",
+          "oklch(72.14% 0.0085 225.08)",
+          "oklch(83.57% 0.0085 225.08)",
+          "oklch(95.00% 0.0085 225.08)"
+        ]
+      },
+      "text-secondary-dark": {
+        "role": "neutral",
+        "displayName": "Text Secondary Dark",
+        "tonalRamp": [
+          "oklch(15.00% 0.0209 238.73)",
+          "oklch(26.43% 0.0209 238.73)",
+          "oklch(37.86% 0.0209 238.73)",
+          "oklch(49.29% 0.0209 238.73)",
+          "oklch(60.71% 0.0209 238.73)",
+          "oklch(72.14% 0.0209 238.73)",
+          "oklch(83.57% 0.0209 238.73)",
+          "oklch(95.00% 0.0209 238.73)"
+        ]
+      },
+      "text-accent-dark": {
+        "role": "secondary",
+        "displayName": "Text Accent Dark",
+        "tonalRamp": [
+          "oklch(15.00% 0.0746 168.67)",
+          "oklch(26.43% 0.0746 168.67)",
+          "oklch(37.86% 0.0746 168.67)",
+          "oklch(49.29% 0.0746 168.67)",
+          "oklch(60.71% 0.0746 168.67)",
+          "oklch(72.14% 0.0746 168.67)",
+          "oklch(83.57% 0.0746 168.67)",
+          "oklch(95.00% 0.0746 168.67)"
+        ]
+      },
+      "text-inverse-muted": {
+        "role": "neutral",
+        "displayName": "Text Inverse Muted",
+        "tonalRamp": [
+          "oklch(15.00% 0.0238 240.11)",
+          "oklch(26.43% 0.0238 240.11)",
+          "oklch(37.86% 0.0238 240.11)",
+          "oklch(49.29% 0.0238 240.11)",
+          "oklch(60.71% 0.0238 240.11)",
+          "oklch(72.14% 0.0238 240.11)",
+          "oklch(83.57% 0.0238 240.11)",
+          "oklch(95.00% 0.0238 240.11)"
+        ]
+      },
+      "link-evidence-light": {
+        "role": "secondary",
+        "displayName": "Link Evidence Light",
+        "tonalRamp": [
+          "oklch(15.00% 0.0742 179.32)",
+          "oklch(26.43% 0.0742 179.32)",
+          "oklch(37.86% 0.0742 179.32)",
+          "oklch(49.29% 0.0742 179.32)",
+          "oklch(60.71% 0.0742 179.32)",
+          "oklch(72.14% 0.0742 179.32)",
+          "oklch(83.57% 0.0742 179.32)",
+          "oklch(95.00% 0.0742 179.32)"
+        ]
+      },
+      "focus-light": {
+        "role": "secondary",
+        "displayName": "Focus Light",
+        "tonalRamp": [
+          "oklch(15.00% 0.1691 30.35)",
+          "oklch(26.43% 0.1691 30.35)",
+          "oklch(37.86% 0.1691 30.35)",
+          "oklch(49.29% 0.1691 30.35)",
+          "oklch(60.71% 0.1691 30.35)",
+          "oklch(72.14% 0.1691 30.35)",
+          "oklch(83.57% 0.1691 30.35)",
+          "oklch(95.00% 0.1691 30.35)"
+        ]
+      },
+      "border-subtle-light": {
+        "role": "neutral",
+        "displayName": "Border Subtle Light",
+        "tonalRamp": [
+          "oklch(15.00% 0.0539 254.46)",
+          "oklch(26.43% 0.0539 254.46)",
+          "oklch(37.86% 0.0539 254.46)",
+          "oklch(49.29% 0.0539 254.46)",
+          "oklch(60.71% 0.0539 254.46)",
+          "oklch(72.14% 0.0539 254.46)",
+          "oklch(83.57% 0.0539 254.46)",
+          "oklch(95.00% 0.0539 254.46)"
+        ]
+      },
+      "border-subtle-dark": {
+        "role": "neutral",
+        "displayName": "Border Subtle Dark",
+        "tonalRamp": [
+          "oklch(15.00% 0.0221 239.45)",
+          "oklch(26.43% 0.0221 239.45)",
+          "oklch(37.86% 0.0221 239.45)",
+          "oklch(49.29% 0.0221 239.45)",
+          "oklch(60.71% 0.0221 239.45)",
+          "oklch(72.14% 0.0221 239.45)",
+          "oklch(83.57% 0.0221 239.45)",
+          "oklch(95.00% 0.0221 239.45)"
+        ]
+      },
+      "accent-soft-light": {
+        "role": "neutral",
+        "displayName": "Accent Soft Light",
+        "tonalRamp": [
+          "oklch(15.00% 0.0215 143.22)",
+          "oklch(26.43% 0.0215 143.22)",
+          "oklch(37.86% 0.0215 143.22)",
+          "oklch(49.29% 0.0215 143.22)",
+          "oklch(60.71% 0.0215 143.22)",
+          "oklch(72.14% 0.0215 143.22)",
+          "oklch(83.57% 0.0215 143.22)",
+          "oklch(95.00% 0.0215 143.22)"
+        ]
+      },
+      "accent-soft-dark": {
+        "role": "neutral",
+        "displayName": "Accent Soft Dark",
+        "tonalRamp": [
+          "oklch(15.00% 0.0452 186.22)",
+          "oklch(26.43% 0.0452 186.22)",
+          "oklch(37.86% 0.0452 186.22)",
+          "oklch(49.29% 0.0452 186.22)",
+          "oklch(60.71% 0.0452 186.22)",
+          "oklch(72.14% 0.0452 186.22)",
+          "oklch(83.57% 0.0452 186.22)",
+          "oklch(95.00% 0.0452 186.22)"
         ]
       }
     },
     "typographyMeta": {
       "display": {
-        "displayName": "Display",
-        "purpose": "Fluid root-page headings; compact game headings use local scales."
+        "displayName": "Page display",
+        "purpose": "Shared Georgia page titles; heroes have documented local scale adjustments."
       },
       "headline": {
-        "displayName": "Headline",
-        "purpose": "Section headings in the hub and reading pages."
+        "displayName": "Section heading",
+        "purpose": "Shared Georgia section headings."
       },
       "title": {
-        "displayName": "Title",
-        "purpose": "Game cards and small panel headings."
+        "displayName": "Compact title",
+        "purpose": "Card and compact section headings."
       },
       "body": {
-        "displayName": "Body",
-        "purpose": "Instructions, commentary, and reading text."
+        "displayName": "Interface body",
+        "purpose": "Sans copy, controls, summaries, and tables."
+      },
+      "reading": {
+        "displayName": "Long reading",
+        "purpose": "Quiet long-form copy at 70ch maximum measure."
       },
       "label": {
-        "displayName": "Label",
-        "purpose": "Sentence-case controls and game labels."
+        "displayName": "Utility label",
+        "purpose": "Adjacent control labels and concise metadata."
       },
       "data": {
-        "displayName": "Data",
-        "purpose": "Scores, source codes, chart values, and numeric table cells."
-      },
-      "game-metric": {
-        "displayName": "Game metric",
-        "purpose": "Larger scores in the compact 2048 play frame."
+        "displayName": "Recorded values",
+        "purpose": "Monospace records, scores, filenames, code, and chart values."
       }
     },
     "shadows": [
       {
-        "name": "exhibit-board",
-        "value": "0 16px 30px #173c3c19",
-        "purpose": "The hub miniature board."
+        "name": "promoted-feature",
+        "value": "0 16px 40px rgb(7 27 51 / .08)",
+        "purpose": "Overlapping hub featured game."
       },
       {
-        "name": "die",
-        "value": "0 4px 12px rgb(20 47 54 / .07)",
-        "purpose": "Resting dice in Bank and Event Dice."
+        "name": "illustrative-board",
+        "value": "0 16px 30px rgb(7 27 51 / .18)",
+        "purpose": "Tilted decorative board."
       },
       {
-        "name": "board-selection",
-        "value": "0 2px 4px #173c3c0a",
-        "purpose": "The selected lab board option."
-      },
-      {
-        "name": "dialog",
-        "value": "0 16px 48px rgb(20 47 54 / .16)",
-        "purpose": "Shared game modal content; legacy exit-dialog rules differ."
+        "name": "modal-layer",
+        "value": "0 16px 48px rgb(7 27 51 / .16)",
+        "purpose": "Elevated game dialogs."
       }
     ],
     "motion": [
       {
-        "name": "root-action",
-        "value": "background 0.18s ease, transform 0.18s ease",
-        "purpose": "Root buttons and the linked 2048 tile."
+        "name": "action-state",
+        "value": "background .18s ease, transform .18s ease",
+        "purpose": "Shared button and number-tile hover; reduced motion disables transitions."
       },
       {
-        "name": "hub-game-illustration",
-        "value": "transform 0.2s ease",
-        "purpose": "The hub game visual moves upward on hover."
-      },
-      {
-        "name": "puzzle-tile",
-        "value": "transform 0.15s ease-out",
-        "purpose": "Color Match tiles scale slightly on hover."
-      },
-      {
-        "name": "reduced-motion",
-        "value": "prefers-reduced-motion: reduce",
-        "purpose": "Root transitions and animations are removed; shared game durations are reduced to .01ms and smooth scrolling is disabled."
+        "name": "game-entry-hover",
+        "value": "transform .2s ease",
+        "purpose": "Small lift on hub game visuals; reduced motion disables transitions."
       }
     ],
     "breakpoints": [
       {
-        "name": "lab-intermediate",
-        "value": "900px"
+        "name": "reading-rail-collapse",
+        "value": "1179px"
       },
       {
-        "name": "hub-and-wide-games",
+        "name": "reading-and-hub-stack",
+        "value": "780px"
+      },
+      {
+        "name": "dice-route-stack",
         "value": "760px"
       },
       {
-        "name": "lab-and-research-phone",
-        "value": "680px"
+        "name": "compact-navigation-and-controls",
+        "value": "540px"
       },
       {
-        "name": "root-small-phone",
+        "name": "narrow-reading",
         "value": "360px"
-      },
-      {
-        "name": "game-small-phone",
-        "value": "359px"
       }
     ]
   },
   "components": [
     {
-      "name": "Primary button",
+      "name": "Primary action",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "The shared hub and lab action.",
-      "html": "<a class=\"ds-primary\" href=\"apps/games/2048/index.html\">Play 2048<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M5 12h14m-6-6 6 6-6 6\"/></svg></a>",
-      "css": ".ds-primary{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;border:1px solid transparent;border-radius:9px;padding:11px 20px;font-family:var(--body,\"DM Sans\",sans-serif);font-weight:600;line-height:1.35;text-decoration:none;background:var(--teal,#14706b);color:var(--paper,#fff);transition:background .18s ease,transform .18s ease}.ds-primary svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.ds-primary:hover{background:var(--teal-dark,#0b514e);transform:translateY(-1px)}.ds-primary:focus-visible{outline:3px solid var(--clay,#c4532d);outline-offset:4px;}@media(prefers-reduced-motion:reduce){[class^=\"ds-\"]{transition:none!important;animation:none!important;}}"
+      "description": "Navy primary action on a working surface.",
+      "html": "<button class=\"ds-primary\" type=\"button\">Play 2048</button>",
+      "css": ".ds-primary{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;border:1px solid transparent;border-radius:0;padding:11px 20px;background:var(--action-bg,#071b33);color:var(--action-text,#fffdf8);font:600 1rem/1.35 var(--body,Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif);text-decoration:none;cursor:pointer;transition:background .18s ease,transform .18s ease}.ds-primary:hover{background:var(--action-hover,#16324f);transform:translateY(-1px)}.ds-primary:disabled{opacity:.5;cursor:default}.ds-primary:focus-visible{outline:3px solid var(--focus-ring,#bd3b2b);outline-offset:4px;}@media(prefers-reduced-motion:reduce){.ds-primary{transition:none}.ds-primary:hover{transform:none}}"
     },
     {
-      "name": "Game primary button",
-      "kind": "button",
-      "refersTo": "button-game-primary",
-      "description": "A steady action for rolls and play assistance.",
-      "html": "<button class=\"ds-game-primary\" type=\"button\">Roll dice</button>",
-      "css": ".ds-game-primary{min-height:48px;padding:12px 16px;border:1px solid #14706b;border-radius:8px;background:var(--lab-teal,#14706b);color:#fff;font:600 .9375rem \"DM Sans\",sans-serif;cursor:pointer}.ds-game-primary:hover{background:var(--lab-teal-dark,#0b514e)}.ds-game-primary:focus-visible{outline:3px solid var(--lab-plum,#6c609c);outline-offset:3px}.ds-game-primary:disabled{opacity:.5;cursor:not-allowed}"
-    },
-    {
-      "name": "Secondary button",
+      "name": "Secondary action",
       "kind": "button",
       "refersTo": "button-secondary",
-      "description": "An outlined companion action on root pages.",
-      "html": "<a class=\"ds-secondary\" href=\"definitions.html\">How to read the results</a>",
-      "css": ".ds-secondary{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:11px 20px;border:1px solid var(--line,#cadbdc);border-radius:9px;background:transparent;color:var(--ink,#142f36);font-family:var(--body,\"DM Sans\",sans-serif);font-weight:600;line-height:1.35;text-decoration:none;transition:background .18s ease,transform .18s ease}.ds-secondary:hover{background:var(--teal-pale,#d8ebe8);border-color:var(--teal,#14706b);transform:translateY(-1px)}.ds-secondary:focus-visible{outline:3px solid var(--clay,#c4532d);outline-offset:4px;}@media(prefers-reduced-motion:reduce){[class^=\"ds-\"]{transition:none!important;animation:none!important;}}"
+      "description": "Square outlined secondary action.",
+      "html": "<button class=\"ds-secondary\" type=\"button\">Explore the AI</button>",
+      "css": ".ds-secondary{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;border:1px solid transparent;border-radius:0;padding:11px 20px;background:transparent;color:var(--text-primary,#071b33);font:600 1rem/1.35 var(--body,Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif);text-decoration:none;cursor:pointer;transition:background .18s ease,transform .18s ease}.ds-secondary:hover{background:var(--accent-soft,#e2eee1);transform:translateY(-1px)}.ds-secondary:disabled{opacity:.5;cursor:default}.ds-secondary:focus-visible{outline:3px solid var(--focus-ring,#bd3b2b);outline-offset:4px;}@media(prefers-reduced-motion:reduce){.ds-secondary{transition:none}.ds-secondary:hover{transform:none}}.ds-secondary{border-color:var(--border-subtle,rgb(7 27 51 / .16))}.ds-secondary:hover{border-color:var(--text-accent,#1c795e)}"
+    },
+    {
+      "name": "Inverse action",
+      "kind": "button",
+      "refersTo": "button-inverse",
+      "description": "Mint call to action on the inverse entrance.",
+      "html": "<div class=\"ds-inverse-surface\"><button class=\"ds-inverse\" type=\"button\">Open the 2048 lab</button></div>",
+      "css": ".ds-inverse{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;border:1px solid transparent;border-radius:0;padding:11px 20px;background:var(--mint,#aee7ce);color:var(--navy-950,#071b33);font:600 1rem/1.35 var(--body,Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif);text-decoration:none;cursor:pointer;transition:background .18s ease,transform .18s ease}.ds-inverse:hover{background:var(--paper-0,#fffdf8);transform:translateY(-1px)}.ds-inverse:disabled{opacity:.5;cursor:default}.ds-inverse:focus-visible{outline:3px solid var(--focus-ring,#bd3b2b);outline-offset:4px;}@media(prefers-reduced-motion:reduce){.ds-inverse{transition:none}.ds-inverse:hover{transform:none}}.ds-inverse-surface{background:var(--surface-inverse,#071b33);padding:24px}"
     },
     {
       "name": "Labeled field",
       "kind": "input",
-      "refersTo": "field",
-      "description": "A compact field from the run-log toolbar.",
-      "html": "<label class=\"ds-field\" for=\"ds-run-search\">Search runs<input id=\"ds-run-search\" type=\"search\" placeholder=\"Strategy, score, or note\"></label>",
-      "css": ".ds-field{display:flex;flex-direction:column;gap:6px;font-family:var(--body,\"DM Sans\",sans-serif);font-size:.84rem;font-weight:600;color:var(--ink,#142f36)}.ds-field input{min-height:44px;min-width:0;width:100%;border:1px solid #adc4c5;border-radius:7px;background:var(--paper,#fff);color:var(--ink,#142f36);padding:9px 12px;font:400 1rem \"DM Sans\",sans-serif}.ds-field input:focus-visible{outline:3px solid var(--clay,#c4532d);outline-offset:4px;}"
+      "refersTo": "input",
+      "description": "Native, square, touch-sized field with adjacent label.",
+      "html": "<label class=\"ds-field\">Find a run<input type=\"search\" placeholder=\"Search recorded notes\"></label>",
+      "css": ".ds-field{display:flex;flex-direction:column;gap:8px;color:var(--text-primary,#071b33);font:700 .8rem var(--body,Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif)}.ds-field input{min-height:44px;min-width:0;border:1px solid var(--border-control,color-mix(in srgb,var(--text-primary,#071b33) 48%,var(--surface-raised,#fffdf8)));border-radius:0;background:var(--surface-raised,#fffdf8);color:var(--text-primary,#071b33);padding:10px 12px;font:400 .9rem var(--body,Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif)}.ds-field input::placeholder{color:var(--text-secondary,#3f4e5c);opacity:1}.ds-field input:focus-visible{outline:3px solid var(--focus-ring,#bd3b2b);outline-offset:4px;}"
     },
     {
-      "name": "Root navigation",
+      "name": "Main navigation",
       "kind": "nav",
       "refersTo": "navigation-current",
-      "description": "Two visible destinations with a filled current state.",
-      "html": "<nav class=\"ds-nav\" aria-label=\"Main navigation\"><a href=\"index.html\">Play</a><a href=\"dashboard.html\" aria-current=\"page\">2048 lab</a></nav>",
-      "css": ".ds-nav{display:flex;align-items:center;gap:8px;font-family:var(--body,\"DM Sans\",sans-serif);}.ds-nav a{display:flex;align-items:center;min-height:44px;padding:9px 16px;border-radius:8px;text-decoration:none;font-weight:600;color:var(--muted,#4d676d)}.ds-nav a:hover{background:var(--teal-pale,#d8ebe8);color:var(--ink,#142f36)}.ds-nav a[aria-current]{background:var(--ink,#142f36);color:var(--paper,#fff)}.ds-nav a:focus-visible{outline:3px solid var(--clay,#c4532d);outline-offset:4px;}@media(max-width:760px){.ds-nav{gap:2px}.ds-nav a{padding:9px 10px;font-size:.9rem}}"
+      "description": "Inverse masthead with persistent labeled destinations.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Main navigation\"><a class=\"ds-brand\" href=\"index.html\">Game Hub</a><div class=\"ds-nav-links\"><a href=\"index.html\" aria-current=\"page\">Play</a><a href=\"dashboard.html\">2048 lab</a></div></nav>",
+      "css": ".ds-nav{display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px;min-height:80px;padding:12px 24px;background:var(--surface-inverse,#071b33);font-family:var(--body,Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif)}.ds-brand{font-size:1.15rem;font-weight:750;color:var(--text-inverse,#fffdf8);text-decoration:none}.ds-nav-links{display:flex;gap:8px}.ds-nav-links a{display:flex;align-items:center;min-height:44px;padding:9px 16px;color:var(--text-inverse-muted,#cfdfeb);font-weight:700;text-decoration:none}.ds-nav-links a:hover{background:var(--navy-800,#16324f);color:var(--text-inverse,#fffdf8)}.ds-nav-links a[aria-current]{background:var(--mint,#aee7ce);color:var(--navy-950,#071b33)}.ds-nav a:focus-visible{outline:3px solid var(--focus-ring,#bd3b2b);outline-offset:4px}@media(max-width:540px){.ds-nav{grid-template-columns:1fr;gap:8px}.ds-nav-links{grid-row:2}}"
     },
     {
-      "name": "Research source tag",
+      "name": "Appearance selector",
+      "kind": "input",
+      "refersTo": "appearance",
+      "description": "Native System, Light, and Dark select behind a circular SVG affordance; preview has no theme script.",
+      "html": "<label class=\"ds-appearance\"><select aria-label=\"Color theme\"><option>System</option><option>Light</option><option>Dark</option></select><span class=\"ds-theme-icon\" aria-hidden=\"true\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"4\" width=\"18\" height=\"13\" rx=\"2\"/><path d=\"M8 21h8M12 17v4\"/></svg><svg class=\"ds-chevron\" viewBox=\"0 0 12 12\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"><path d=\"m3 4.5 3 3 3-3\"/></svg></span></label>",
+      "css": ".ds-appearance{position:relative;display:inline-flex;align-items:center;justify-content:center;width:48px;min-width:48px;min-height:48px;border:1px solid var(--border-control,color-mix(in srgb,var(--text-primary,#071b33) 48%,var(--surface-raised,#fffdf8)));border-radius:50%;background:var(--surface-raised,#fffdf8);color:var(--text-primary,#071b33);font:600 .8125rem/1.3 var(--body,Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif);cursor:pointer}.ds-appearance:hover{background:var(--surface-soft,#eee8dc)}.ds-appearance select{position:absolute;inset:0;z-index:1;width:100%;height:100%;margin:0;opacity:0;color:var(--text-primary,#071b33);background:var(--surface-raised,#fffdf8);font:inherit;cursor:pointer}.ds-appearance:focus-within{outline:3px solid var(--focus-ring,#bd3b2b);outline-offset:3px}.ds-theme-icon{display:inline-flex;align-items:center;gap:4px;pointer-events:none}.ds-theme-icon svg{width:18px;height:18px}.ds-theme-icon .ds-chevron{width:10px;height:10px}@media(forced-colors:active){.ds-appearance select{position:static;opacity:1;min-height:44px;padding:8px}.ds-theme-icon{display:none}}"
+    },
+    {
+      "name": "Source tag",
       "kind": "chip",
       "refersTo": "source-tag",
-      "description": "A static classification label above a research title.",
-      "html": "<span class=\"ds-source-tag\">Direct 2048 study</span>",
-      "css": ".ds-source-tag{display:inline-block;font-family:var(--body,\"DM Sans\",sans-serif);font-size:.75rem;line-height:1.6;color:var(--teal-dark,#0b514e);background:var(--teal-pale,#d8ebe8);padding:3px 8px;border-radius:4px;margin-bottom:12px}"
+      "description": "Quiet underlined evidence label, without a trust score.",
+      "html": "<span class=\"ds-source-tag\">Research paper</span>",
+      "css": ".ds-source-tag{display:inline-block;font:700 .7rem var(--body,Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif);color:var(--text-accent,#1c795e);border-bottom:1px solid var(--text-accent,#1c795e);padding-bottom:4px;margin-bottom:16px}"
     },
     {
-      "name": "Comparison surface",
+      "name": "Source receipt",
+      "kind": "custom",
+      "refersTo": "evidence-receipt",
+      "description": "Source and limitation context overlapping the editorial entrance.",
+      "html": "<section class=\"ds-receipt\"><dl><div><dt>Source</dt><dd><code>dashboard_data.json</code></dd></div><div><dt>Scope</dt><dd>Recorded observations; source limitations apply.</dd></div></dl></section>",
+      "css": ".ds-receipt{position:relative;padding:24px 32px;background:var(--surface-raised,#fffdf8);border:1px solid var(--border-subtle,rgb(7 27 51 / .16));border-top:3px solid var(--text-accent,#1c795e);font-family:var(--body,Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif)}.ds-receipt dl{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:24px 32px;margin:0}.ds-receipt dt{margin-bottom:8px;color:var(--text-accent,#1c795e);font-size:.72rem;font-weight:800;letter-spacing:.06em;line-height:1.35;text-transform:uppercase}.ds-receipt dd{margin:0;color:var(--text-secondary,#3f4e5c);font-size:.85rem;line-height:1.55;overflow-wrap:anywhere}.ds-receipt code{font:.82rem var(--data,ui-monospace,SFMono-Regular,Consolas,monospace)}@media(max-width:780px){.ds-receipt{padding:24px}.ds-receipt dl{grid-template-columns:minmax(0,1fr);gap:20px}}"
+    },
+    {
+      "name": "Comparison panel",
       "kind": "card",
-      "refersTo": "comparison-surface",
-      "description": "The lab panel framing labeled score comparisons.",
-      "html": "<section class=\"ds-comparison\"><h2>Score by strategy</h2><p>4 × 4 board · 20 runs per strategy</p></section>",
-      "css": ".ds-comparison{background:var(--paper,#fff);color:var(--ink,#142f36);border:1px solid var(--line,#cadbdc);border-radius:16px;padding:28px;font-family:var(--body,\"DM Sans\",sans-serif);}.ds-comparison h2{margin:0;font-family:var(--display,\"Space Grotesk\",sans-serif);font-size:clamp(1.55rem,3vw,2.1rem);font-weight:600;letter-spacing:-.035em;line-height:1.15}.ds-comparison p{margin:8px 0 0;color:var(--muted,#4d676d);font-size:.9rem;line-height:1.6}@media(max-width:680px){.ds-comparison{padding:22px}.ds-comparison h2{font-size:1.4rem}}"
+      "refersTo": "comparison",
+      "description": "Flat evidence container with editorial heading.",
+      "html": "<section class=\"ds-comparison\"><h2>Compare recorded scores</h2><p>Inspect results within one board before comparing strategies.</p></section>",
+      "css": ".ds-comparison{padding:32px;background:var(--surface-raised,#fffdf8);color:var(--text-primary,#071b33);border:1px solid var(--border-subtle,rgb(7 27 51 / .16));font-family:var(--body,Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif)}.ds-comparison h2{margin:0;font:600 clamp(1.65rem,2.5vw,2rem)/1.15 var(--display,Georgia,\"Times New Roman\",serif);letter-spacing:-.035em}.ds-comparison p{margin:8px 0 0;color:var(--text-secondary,#3f4e5c);font-size:.85rem;line-height:1.6}@media(max-width:540px){.ds-comparison{padding:24px 20px}}"
     },
     {
-      "name": "Board selector",
+      "name": "Board selection",
       "kind": "custom",
       "refersTo": "board-option-selected",
-      "description": "The lab’s segmented choice keeps board scope explicit.",
-      "html": "<div class=\"ds-board-control\" role=\"group\" aria-label=\"Board size\"><button type=\"button\" aria-pressed=\"true\">4 × 4 <span>80 runs</span></button><button type=\"button\" aria-pressed=\"false\">5 × 5 <span>68 runs</span></button></div>",
-      "css": ".ds-board-control{display:flex;gap:7px;background:#dce9e8;padding:5px;border-radius:12px;font-family:var(--body,\"DM Sans\",sans-serif);}.ds-board-control button{min-height:48px;padding:10px 20px;background:transparent;color:var(--muted,#4d676d);border:1px solid transparent;border-radius:8px;font:600 1rem \"DM Sans\",sans-serif;cursor:pointer}.ds-board-control button[aria-pressed=\"true\"]{background:var(--paper,#fff);color:var(--ink,#142f36);border-color:#b9cece;box-shadow:0 2px 4px #173c3c0a}.ds-board-control button span{font:400 .76rem \"IBM Plex Mono\",monospace;margin-left:8px}.ds-board-control button:focus-visible{outline:3px solid var(--clay,#c4532d);outline-offset:4px;}@media(max-width:680px){.ds-board-control{width:100%}.ds-board-control button{flex:1;padding:9px 12px}}"
-    },
-    {
-      "name": "Linked 2048 tile",
-      "kind": "custom",
-      "refersTo": "number-tile",
-      "description": "The lab signature links the investigation back to play.",
-      "html": "<a class=\"ds-number-tile\" href=\"apps/games/2048/index.html\" aria-label=\"Play 2048\">2048</a>",
-      "css": ".ds-number-tile{display:flex;align-items:center;justify-content:center;width:112px;aspect-ratio:1;border-radius:20px;background:var(--teal,#14706b);color:#fff;font:600 2rem \"Space Grotesk\",sans-serif;text-decoration:none;transform:rotate(7deg);transition:background .18s ease,transform .18s ease}.ds-number-tile:hover{background:var(--teal-dark,#0b514e);transform:rotate(3deg)}.ds-number-tile:focus-visible{outline:3px solid var(--clay,#c4532d);outline-offset:4px;}@media(max-width:760px){.ds-number-tile{width:72px;font-size:1.3rem;border-radius:14px}}@media(max-width:360px){.ds-number-tile{display:none}}@media(prefers-reduced-motion:reduce){[class^=\"ds-\"]{transition:none!important;animation:none!important;}}"
-    },
-    {
-      "name": "Resting die",
-      "kind": "custom",
-      "refersTo": "die",
-      "description": "The rounded square used for live dice results.",
-      "html": "<div class=\"ds-die\" aria-label=\"Die value 4\">4</div>",
-      "css": ".ds-die{display:flex;align-items:center;justify-content:center;width:88px;height:88px;border:1px solid var(--lab-line,#cadbdc);background:#f5f9f8;color:var(--lab-ink,#142f36);border-radius:14px;font:600 2.25rem \"Space Grotesk\",sans-serif;box-shadow:0 4px 12px rgb(20 47 54 / .07)}"
+      "description": "Explicit board scope with a native pressed state.",
+      "html": "<div class=\"ds-board\" role=\"group\" aria-label=\"Board size\"><button type=\"button\" aria-pressed=\"true\">4 × 4</button><button type=\"button\" aria-pressed=\"false\">5 × 5</button></div>",
+      "css": ".ds-board{display:flex;padding:4px;background:var(--surface-soft,#eee8dc);border:1px solid var(--border-subtle,rgb(7 27 51 / .16));font-family:var(--body,Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif)}.ds-board button{min-height:48px;padding:10px 16px;background:transparent;color:var(--text-secondary,#3f4e5c);border:1px solid transparent;border-radius:0;font:700 1rem var(--body,Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif);cursor:pointer}.ds-board button[aria-pressed=\"true\"]{background:var(--surface-inverse,#071b33);color:var(--text-inverse,#fffdf8);border-color:var(--border-control,color-mix(in srgb,var(--text-primary,#071b33) 48%,var(--surface-raised,#fffdf8)))}.ds-board button:not([aria-pressed=\"true\"]):hover{border-color:var(--border-subtle,rgb(7 27 51 / .16))}.ds-board button:focus-visible{outline:3px solid var(--focus-ring,#bd3b2b);outline-offset:4px;}@media(max-width:540px){.ds-board{width:100%}.ds-board button{flex:1;min-height:60px;padding:8px}}"
     }
   ],
   "narrative": {
-    "northStar": "The Daylight Puzzle Exhibit",
-    "overview": "Game Hub presents play and algorithmic investigation as things to handle and inspect. A cool daylight ground supports white working surfaces, dark blue-green text, geometric headings, and deliberate teal actions. The visible mechanisms—numbered tiles, colored puzzle pieces, dice, score bars, and source rows—provide the character.\n\nThe interface is calm around the activity and expressive within it. The hub uses a rotated tile board and small game illustrations; playable routes put their boards or dice ahead of assistance and settings; the lab and reading pages use precise controls, clear comparisons, and nearby source context. This records the implemented local preview, not a deployment or release claim.",
+    "northStar": "The Playable Field Guide",
+    "overview": "Game Hub pairs the Library's editorial field-guide character with visible game mechanisms. Navy mastheads and Georgia headings establish the entrance; paper surfaces, mint accents, square geometry, and compact sans controls make play and evidence easy to inspect. A hero and overlapping source or context receipt carry the expressive moment on reading and analysis pages. The working content that follows stays quiet.\n\nThe visual authority is the first-party Agent Skills Resource Library `DESIGN.md` v0.3 and `app/globals.css`, pinned to commit `3eaa5ae64e405fd0d8ecb5be3cce279b813fc645`. This record extracts the implementation in `theme.css`, `style.css`, `docs.css`, `dashboard.css`, `apps/games/game-foundation.css`, and game overrides. The requested `library-design-system/SKILL.md` wrapper was absent; no global skill was installed or modified. Library-specific trust ratings, guide governance, and content schemas remain optional source patterns. This snapshot is the unreleased `3.4.0-alpha.4` preview on `codex/library-design-system`.",
     "keyCharacteristics": [
-      "Flat daylight surfaces with restrained borders.",
-      "Geometric display type, readable prose, and distinct numeric typography.",
-      "Puzzle and dice geometry as the visual signature.",
-      "Phone layouts that keep play, controls, and evidence readable in sequence.",
-      "Source context and limitations visible beside analysis."
+      "Navy editorial entrances followed by paper working surfaces.",
+      "Georgia hierarchy, compact sans interaction, and system-monospace evidence.",
+      "Square surfaces with circular icon controls and small board-specific exceptions.",
+      "Source context, limitations, and recorded notes close to findings.",
+      "Responsive stacking, native scrolling, and shared Light, Dark, and System appearance."
     ],
     "rules": [
       {
-        "name": "The Teal Action Rule",
-        "body": "Teal identifies actions and selected analytical controls; clay and plum remain game, feedback, or focus colors.",
+        "name": "The Semantic Surface Rule",
+        "body": "Choose colors through the page, raised, soft, inverse, text, action, and focus roles so Light, Dark, and System share one component vocabulary.",
         "section": "colors"
       },
       {
         "name": "The Scope-Before-Color Rule",
-        "body": "Comparisons carry board labels, values, and source context. A colored winner row or bar is accompanied by text, never the only explanation of the result.",
+        "body": "Pair chart marks, selected controls, caution states, and highlighted results with labels or values; keep board scope and source limitations visible.",
         "section": "colors"
       },
       {
-        "name": "The Number-and-Explanation Rule",
-        "body": "Use IBM Plex Mono for inspectable values and DM Sans for their explanation; use Space Grotesk for the playable tile or die itself.",
+        "name": "The Evidence Type Rule",
+        "body": "Use monospace for inspectable records and sans for their explanation; preserve the separate typography of the playable mechanism.",
         "section": "typography"
       },
       {
         "name": "The Quiet Surface Rule",
-        "body": "Keep reading, comparison, settings, and analytics panels flat. Reserve lift for the puzzle exhibit, dice, and modal layers already present in the build.",
+        "body": "Let rules and surface tones organize reading and working content; reserve lift for the promoted feature, illustrative board, and modal layers implemented here.",
         "section": "elevation"
+      },
+      {
+        "name": "The Square-and-Circle Rule",
+        "body": "Use square geometry for reading and action surfaces, circles for icon-only controls, and the micro radius only where the existing play or inline treatment calls for it.",
+        "section": "shapes"
       }
     ],
     "dos": [
-      "**Do** start from the daylight ground, white surfaces, ink text, and teal action roles recorded above.",
-      "**Do** preserve compact, square play geometry and put assistance after the primary activity.",
-      "**Do** keep numeric evidence aligned, labeled, and connected to its board and source.",
-      "**Do** place source limits beside findings and retain citations and original recorded notes.",
-      "**Do** keep responsive layouts readable by stacking, wrapping, and reducing padding before compressing the activity.",
-      "**Do** preserve visible focus, accessible icon names, touch-sized controls, and reduced-motion behavior."
+      "**Do** build from semantic surface, text, action, border, and focus roles in `theme.css`.",
+      "**Do** keep the navy entrance expressive and the reading or evidence surface quiet.",
+      "**Do** use Georgia headings, sans controls, and monospace recorded values in their established roles.",
+      "**Do** preserve source context, caveats, recorded notes, and nearby evidence links.",
+      "**Do** keep visible focus, accessible SVG icon names, native controls, and touch targets at least (44px).",
+      "**Do** stack and wrap on small screens while preserving native scrolling for wide evidence.",
+      "**Do** preserve the QR image's white backing and existing quiet zone in both themes.",
+      "**Do** keep page appearance separate from board palettes and respect reduced-motion preferences."
     ],
     "donts": [
-      "**Don't** turn clay or plum into competing global primary-action colors.",
-      "**Don't** add elevated card treatment to every reading, settings, or analytics surface.",
-      "**Don't** treat a local game theme or tile palette as the root website's palette.",
-      "**Don't** use color alone to explain a selected result, chart value, or game outcome.",
-      "**Don't** present imported observations as controlled benchmarks or invent missing time, move, win-rate, or maximum-tile metrics.",
-      "**Don't** replace the self-hosted type hierarchy with a generic display face or use glyph characters as the reusable interface icon system."
+      "**Don't** use compatibility token names to restore the earlier teal/clay/plum palette.",
+      "**Don't** apply rounded cards, pills, or decorative elevation to every working surface.",
+      "**Don't** use color alone for selection, chart results, warnings, or game outcomes.",
+      "**Don't** shrink tables, code, or citations at the expense of legibility.",
+      "**Don't** invent missing performance metrics or present imported observations as controlled benchmarks.",
+      "**Don't** treat Library-specific trust ratings or governance metadata as required Game Hub components.",
+      "**Don't** introduce page-specific light/dark colors when an existing semantic role serves the same purpose."
     ]
   }
 }

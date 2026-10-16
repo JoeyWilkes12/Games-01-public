@@ -12,8 +12,8 @@
     <title>2048 lab — Game Hub</title>
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="dashboard.css" />
-      <link rel="stylesheet" href="theme.css">
-</head>
+    <link rel="stylesheet" href="theme.css" />
+  </head>
   <body>
     <a class="skip-link" href="#main">Skip to analysis</a>
     <header class="site-header">
@@ -30,7 +30,7 @@
       </nav>
     </header>
     <main class="wrap lab-layout" id="main">
-      <div class="page-heading">
+      <div class="page-heading page-intro">
         <div>
           <h1>What makes a better 2048 player?</h1>
           <p>
@@ -45,7 +45,7 @@
           >2048</a
         >
       </div>
-      <div class="lab-toolbar">
+      <div class="lab-toolbar evidence-receipt">
         <div class="board-control" role="group" aria-label="Board size">
           <button type="button" data-board="16" aria-pressed="true">
             4 × 4 <span>80 runs</span></button
@@ -180,7 +180,7 @@
           </div>
           <details class="evidence-note">
             <summary>Read the score ranges as a table</summary>
-            <div id="range-table"></div>
+            <div id="range-table" tabindex="0" role="region" aria-label="Score ranges by strategy"></div>
           </details>
         </section>
         <section class="lab-section">
@@ -292,7 +292,7 @@
           </button>
         </div>
         <p id="run-summary" class="table-info" role="status"></p>
-        <div class="table-wrap" id="runs-table-wrap">
+        <div class="table-wrap" id="runs-table-wrap" tabindex="0" role="region" aria-label="Recorded 2048 runs">
           <table class="run-table">
             <caption>
               Original run IDs, scores in points, and unedited notes. No note
@@ -355,7 +355,7 @@
       <div class="footer-inner wrap">
         <span
           >2048 lab ·
-          <span data-app-version>v3.4.0-alpha.5 · Preview</span></span
+          <span data-app-version>v3.4.0-alpha.6 · Preview</span></span
         >
         <div class="footer-links">
           <a href="about.html">About</a>

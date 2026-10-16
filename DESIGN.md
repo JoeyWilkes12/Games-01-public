@@ -1,305 +1,314 @@
 ---
-name: Game Hub
-description: A daylight puzzle exhibit for play and inspectable evidence.
+name: Game Hub — Library design system
+description: Editorial field-guide foundations for play, recorded evidence, and quiet reading.
 colors:
-  teal: "#14706b"
-  teal-dark: "#0b514e"
-  teal-pale: "#d8ebe8"
-  clay: "#c4532d"
-  clay-deep: "#a44222"
-  plum: "#6c609c"
-  ground: "#edf4f4"
-  paper: "#fff"
-  ink: "#142f36"
-  muted: "#4d676d"
-  line: "#cadbdc"
-  soft: "#e3eeee"
+  navy-950: "#071b33"
+  navy-800: "#16324f"
+  paper-100: "#f6f1e8"
+  paper-0: "#fffdf8"
+  mint: "#aee7ce"
+  mint-700: "#1c795e"
+  coral: "#ff6954"
+  surface-soft-light: "#eee8dc"
+  surface-page-dark: "#061624"
+  surface-raised-dark: "#0e2639"
+  surface-soft-dark: "#153047"
+  text-secondary-light: "#3f4e5c"
+  text-primary-dark: "#edf4f7"
+  text-secondary-dark: "#b7c5cf"
+  text-accent-dark: "#9edfc6"
+  text-inverse-muted: "#cfdfeb"
+  link-evidence-light: "#075a4e"
+  focus-light: "#bd3b2b"
+  border-subtle-light: "rgb(7 27 51 / .16)"
+  border-subtle-dark: "rgb(211 226 237 / .18)"
+  accent-soft-light: "#e2eee1"
+  accent-soft-dark: "#143c38"
 typography:
   display:
-    fontFamily: "Space Grotesk, sans-serif"
-    fontSize: "clamp(2.15rem, 5vw, 4.25rem)"
-    fontWeight: 600
+    fontFamily: 'Georgia, "Times New Roman", serif'
+    fontSize: "clamp(2.6rem, 5.8vw, 5.4rem)"
+    fontWeight: 400
     lineHeight: 1.15
     letterSpacing: "-0.035em"
   headline:
-    fontFamily: "Space Grotesk, sans-serif"
-    fontSize: "clamp(1.55rem, 3vw, 2.1rem)"
+    fontFamily: 'Georgia, "Times New Roman", serif'
+    fontSize: "clamp(1.8rem, 3.6vw, 3rem)"
     fontWeight: 600
     lineHeight: 1.15
     letterSpacing: "-0.035em"
   title:
-    fontFamily: "Space Grotesk, sans-serif"
+    fontFamily: 'Georgia, "Times New Roman", serif'
     fontSize: "1.25rem"
     fontWeight: 600
     lineHeight: 1.15
     letterSpacing: "-0.035em"
   body:
-    fontFamily: "DM Sans, sans-serif"
+    fontFamily: 'Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
     fontSize: "16px"
     fontWeight: 400
     lineHeight: 1.6
-  label:
-    fontFamily: "DM Sans, sans-serif"
-    fontSize: "0.875rem"
-    fontWeight: 600
-  data:
-    fontFamily: "IBM Plex Mono, monospace"
-    fontSize: "0.85rem"
-  game-metric:
-    fontFamily: "IBM Plex Mono, monospace"
-    fontSize: "1.5rem"
+  reading:
+    fontFamily: 'Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+    fontSize: "1.04rem"
     fontWeight: 400
+    lineHeight: 1.8
+  label:
+    fontFamily: 'Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
+    fontSize: ".8rem"
+    fontWeight: 700
+  data:
+    fontFamily: "ui-monospace, SFMono-Regular, Consolas, monospace"
+    fontSize: "1rem"
+    fontWeight: 600
 rounded:
-  tile: "6px"
-  control: "8px"
-  hub-button: "9px"
-  compact: "10px"
-  board: "12px"
-  die: "14px"
-  surface: "16px"
-  play: "20px"
+  square: "0"
+  micro: "2px"
+  circle: "50%"
 spacing:
-  xs: "8px"
-  sm: "12px"
+  xs: "4px"
+  sm: "8px"
+  compact: "12px"
   md: "16px"
-  panel: "20px"
+  control: "20px"
   lg: "24px"
-  roomy: "28px"
-  section: "32px"
-  wide: "40px"
+  xl: "32px"
+  section: "40px"
+  large: "48px"
+  reading-section: "56px"
+  hero: "64px"
 components:
   button-primary:
-    backgroundColor: "{colors.teal}"
-    textColor: "{colors.paper}"
-    rounded: "{rounded.hub-button}"
+    backgroundColor: "{colors.navy-950}"
+    textColor: "{colors.paper-0}"
+    rounded: "{rounded.square}"
     padding: "11px 20px"
   button-primary-hover:
-    backgroundColor: "{colors.teal-dark}"
-  button-game-primary:
-    backgroundColor: "{colors.teal}"
-    textColor: "{colors.paper}"
-    rounded: "{rounded.control}"
-    padding: "12px 16px"
+    backgroundColor: "{colors.navy-800}"
   button-secondary:
     backgroundColor: "transparent"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.hub-button}"
+    textColor: "{colors.navy-950}"
+    rounded: "{rounded.square}"
     padding: "11px 20px"
-  field:
-    backgroundColor: "{colors.paper}"
-    textColor: "{colors.ink}"
-    padding: "9px 12px"
+  button-inverse:
+    backgroundColor: "{colors.mint}"
+    textColor: "{colors.navy-950}"
+    rounded: "{rounded.square}"
+    padding: "11px 20px"
+  input:
+    backgroundColor: "{colors.paper-0}"
+    textColor: "{colors.navy-950}"
+    rounded: "{rounded.square}"
+    padding: "10px 12px"
+  appearance:
+    backgroundColor: "{colors.paper-0}"
+    textColor: "{colors.navy-950}"
+    rounded: "{rounded.circle}"
+    size: "48px"
   navigation-current:
-    backgroundColor: "{colors.ink}"
-    textColor: "{colors.paper}"
-    rounded: "{rounded.control}"
+    backgroundColor: "{colors.mint}"
+    textColor: "{colors.navy-950}"
+    rounded: "{rounded.square}"
     padding: "9px 16px"
-  source-tag:
-    backgroundColor: "{colors.teal-pale}"
-    textColor: "{colors.teal-dark}"
-    padding: "3px 8px"
-  comparison-surface:
-    backgroundColor: "{colors.paper}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.surface}"
-    padding: "28px"
+  evidence-receipt:
+    backgroundColor: "{colors.paper-0}"
+    textColor: "{colors.text-secondary-light}"
+    rounded: "{rounded.square}"
+    padding: "24px 32px"
+  comparison:
+    backgroundColor: "{colors.paper-0}"
+    textColor: "{colors.navy-950}"
+    rounded: "{rounded.square}"
+    padding: "32px"
   board-option-selected:
-    backgroundColor: "{colors.paper}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.control}"
-    padding: "10px 20px"
-  number-tile:
-    backgroundColor: "{colors.teal}"
-    textColor: "{colors.paper}"
-    rounded: "{rounded.play}"
-    width: "112px"
-  die:
-    backgroundColor: "#f5f9f8"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.die}"
-    width: "88px"
-    height: "88px"
+    backgroundColor: "{colors.navy-950}"
+    textColor: "{colors.paper-0}"
+    rounded: "{rounded.square}"
+    padding: "10px 16px"
+  source-tag:
+    textColor: "{colors.mint-700}"
+    rounded: "{rounded.square}"
+    padding: "0 0 4px"
 ---
 
-# Design System: Game Hub
+# Design System: Game Hub — Library
 
 ## Overview
 
-**Creative North Star: "The Daylight Puzzle Exhibit"**
+**Creative North Star: "The Playable Field Guide"**
 
-Game Hub presents play and algorithmic investigation as things to handle and inspect. A cool daylight ground supports white working surfaces, dark blue-green text, geometric headings, and deliberate teal actions. The visible mechanisms—numbered tiles, colored puzzle pieces, dice, score bars, and source rows—provide the character.
+Game Hub pairs the Library's editorial field-guide character with visible game mechanisms. Navy mastheads and Georgia headings establish the entrance; paper surfaces, mint accents, square geometry, and compact sans controls make play and evidence easy to inspect. A hero and overlapping source or context receipt carry the expressive moment on reading and analysis pages. The working content that follows stays quiet.
 
-The interface is calm around the activity and expressive within it. The hub uses a rotated tile board and small game illustrations; playable routes put their boards or dice ahead of assistance and settings; the lab and reading pages use precise controls, clear comparisons, and nearby source context. The same exhibit identity supports daylight and night appearances; appearance defaults to the live system preference.
+The visual authority is the first-party Agent Skills Resource Library `DESIGN.md` v0.3 and `app/globals.css`, pinned to commit `3eaa5ae64e405fd0d8ecb5be3cce279b813fc645`. This record extracts the implementation in `theme.css`, `style.css`, `docs.css`, `dashboard.css`, `apps/games/game-foundation.css`, and game overrides. At the initial adoption on 2026-10-12, the requested `library-design-system/SKILL.md` wrapper was absent. This follow-up consults the now-installed Library design-system reference; no global skill was modified. Library-specific trust ratings, guide governance, and content schemas remain optional source patterns. This snapshot is the unreleased `3.4.0-alpha.6` preview on `codex/library-after-dice`.
 
 **Key Characteristics:**
 
-- Flat daylight surfaces with restrained borders.
-- Geometric display type, readable prose, and distinct numeric typography.
-- Puzzle and dice geometry as the visual signature.
-- Phone layouts that keep play, controls, and evidence readable in sequence.
-- Source context and limitations visible beside analysis.
+- Navy editorial entrances followed by paper working surfaces.
+- Georgia hierarchy, compact sans interaction, and system-monospace evidence.
+- Square surfaces with circular icon controls and small board-specific exceptions.
+- Source context, limitations, and recorded notes close to findings.
+- Responsive stacking, native scrolling, and shared Light, Dark, and System appearance.
 
 ## Colors
 
-The palette pairs cool structural neutrals with teal actions, clay outcomes, and supplementary plum.
+Deep navy and warm paper establish the structure; mint supports interaction and evidence, while coral marks focus and caution.
 
 ### Primary
 
-- **Exhibit Teal** (`teal`): primary actions, selected lab tabs, chart bars, and some game tiles.
-- **Deep Teal** (`teal-dark`): action hover states, text links, selected-tab text, and stronger chart emphasis.
-- **Pale Teal** (`teal-pale`): informational notes, research source tags, secondary-action hover, and the hub board stage.
+- **Deep Navy** (`navy-950`): inverse mastheads, heroes, code surfaces, and primary actions.
+- **Secondary Navy** (`navy-800`): action hover and inverse navigation hover.
+- **Soft Mint** (`mint`): selected navigation, inverse calls to action, and the featured puzzle stage.
 
 ### Secondary
 
-- **Fired Clay** (`clay`): the hub's small brand accent, selected tile values, and root-page keyboard focus.
-- **Deep Clay** (`clay-deep`): dice-event feedback and higher-contrast clay game tiles. Outcome feedback also uses a pale clay fill locally.
-
-### Tertiary
-
-- **Study Plum** (`plum`): supplementary game color and the shared playable-game focus outline. It is not a second primary-action color.
+- **Evidence Green** (`mint-700`): light-theme chart marks, evidence links, and source emphasis.
+- **Bright Coral** (`coral`): inverse-surface focus, dark-theme focus, and caution rules. Light working surfaces use the darker `focus-light` variant.
 
 ### Neutral
 
-- **Daylight Ground** (`ground`): the page canvas.
-- **White Paper** (`paper`): controls, cards, game surfaces, and dialogs.
-- **Blue-Green Ink** (`ink`): headings, primary text, current navigation, and the hub's lab-entry panel.
-- **Slate Caption** (`muted`): supporting copy, labels, citations, and explanatory metadata.
-- **Cool Divider** (`line`): panel outlines, board structure, rules, and separators.
-- **Soft Cell** (`soft`): empty play cells, secondary game controls, and quiet in-game feedback.
+- **Warm / Raised Paper** (`paper-100`, `paper-0`): light canvas and contained working surfaces.
+- **Soft Working Surface** (`surface-soft-light`, `surface-soft-dark`): control groups, table headers, and secondary panels.
+- **Night Canvas / Night Surface** (`surface-page-dark`, `surface-raised-dark`): dark canvas and contained surfaces.
+- **Reading / Supporting Ink** (`text-secondary-light`, `text-primary-dark`, `text-secondary-dark`): text adapted to its surface.
+- **Inverse Supporting Text** (`text-inverse-muted`): introductory copy and navigation on navy.
+- **Subtle Rules** (`border-subtle-light`, `border-subtle-dark`): panel edges, dividers, and table rows.
 
-### Named Rules
+### Semantic mapping
 
-**The Teal Action Rule.** Teal identifies actions and selected analytical controls; clay and plum remain game, feedback, or focus colors.
+`theme.css` owns semantic roles. Components use those custom properties; frontmatter names identify their extracted values. Frontmatter component tokens describe the light baseline; the live semantic properties apply the dark variants.
 
-**The Scope-Before-Color Rule.** Comparisons carry board labels, values, and source context. A colored winner row or bar is accompanied by text, never the only explanation of the result.
+| CSS role | Light value token | Dark value token |
+| --- | --- | --- |
+| `--surface-page` | `paper-100` | `surface-page-dark` |
+| `--surface-raised` | `paper-0` | `surface-raised-dark` |
+| `--surface-soft` | `surface-soft-light` | `surface-soft-dark` |
+| `--surface-inverse` | `navy-950` | `navy-950` |
+| `--text-primary` | `navy-950` | `text-primary-dark` |
+| `--text-secondary` | `text-secondary-light` | `text-secondary-dark` |
+| `--text-inverse` | `paper-0` | `paper-0` |
+| `--text-accent` | `mint-700` | `text-accent-dark` |
+| `--link-evidence` | `link-evidence-light` | `text-accent-dark` |
+| `--focus-ring` | `focus-light` | `coral` |
+| `--border-subtle` | `border-subtle-light` | `border-subtle-dark` |
+| `--accent-soft` | `accent-soft-light` | `accent-soft-dark` |
+| `--action-bg` / `--action-hover` | `navy-950` / `navy-800` | `navy-950` / `navy-800` |
+| `--action-text` | `paper-0` | `paper-0` |
 
-### Page appearance
+Control strokes use `--border-control`, a mix of primary text (48%) and the raised surface. The inverse masthead's appearance control uses bright coral focus in both themes.
 
-`theme.css` owns shared semantic colors and `theme.js` applies them before page paint. Light uses the daylight colors above. Dark uses ground `#101f25`, paper `#192e35`, ink `#e8f2f2`, muted `#b0c6ca`, teal `#70c7bb`, link teal `#91d8cf`, pale teal `#233f43`, clay `#f2a17e`, plum `#c2b0ef`, and divider `#405c63`. Secondary surfaces use `#263d44`. Primary actions retain `#14706b` with white labels in both modes. Charts use the same semantic tokens as their legends.
+Compatibility names `--ground`, `--paper`, `--ink`, `--muted`, `--teal`, `--teal-dark`, `--teal-pale`, `--clay`, `--plum`, `--line`, `--control-bg`, and `--feature-bg` alias semantic roles. The game foundation's `--lab-*` names bridge existing game CSS to these roles. Historic names do not restore the earlier teal/clay/plum system.
 
-A native Appearance selector offers System, Light, and Dark after every page header. System is the initial value and reacts immediately to operating-system changes. Explicit choices persist across routes and tabs; storage-unavailable contexts still allow a choice for the current page. The preference is independent of each game's board palette, labeled accordingly in settings.
+**The Semantic Surface Rule.** Choose colors through the page, raised, soft, inverse, text, action, and focus roles so Light, Dark, and System share one component vocabulary.
 
-Game colors are a local vocabulary. The 2048 board progresses from pale cells through teal, clay, and plum to ink; Color Match has eight distinct tile hues. Both games retain selectable dark, pastel, and neon themes. Those opt-in palettes do not redefine the hub or research pages.
+**The Scope-Before-Color Rule.** Pair chart marks, selected controls, caution states, and highlighted results with labels or values; keep board scope and source limitations visible.
 
 ## Typography
 
-**Display Font:** Space Grotesk, with a sans-serif fallback.
+**Display Font:** Georgia with Times New Roman and serif fallback.
+**Body Font:** Inter with UI and platform sans fallbacks.
+**Label/Mono Font:** the body stack for controls and labels; UI monospace, SFMono-Regular, Consolas, and monospace for inspectable values and code.
 
-**Body Font:** DM Sans, with a sans-serif fallback.
-
-**Label/Mono Font:** IBM Plex Mono, with a monospace fallback, for scores, codes, timers, chart values, and tabular numbers.
-
-**Character:** Geometric headings give the exhibit a constructed quality; the body face keeps instructions and research comfortable to read. Monospaced figures distinguish measured values from explanation. Fonts are self-hosted with `font-display: swap`; the supplied weights are DM Sans 400/600/700, Space Grotesk 400/600/700, and IBM Plex Mono 400.
+**Character:** Editorial headings establish a reading rhythm. Sans copy and controls keep working content compact; monospace distinguishes records from explanations. Font stacks express fallbacks, not a guarantee that Inter is loaded on every route.
 
 ### Hierarchy
 
-- **Display:** the frontmatter's fluid heading role is the root-page baseline. Hub headings use short lines; mobile lab page headings use a compact override. Game headings use their own smaller clamps to leave room for play.
-- **Headline:** fluid section headings for the hub and reading pages. Lab findings use tighter local sizes and line lengths.
-- **Title:** card titles and small panel headings. Research-paper titles use a slightly larger reading-oriented treatment.
-- **Body:** the base reading role, with prose capped at 70 characters and definitions at 65 characters where those limits are set.
-- **Label:** sentence-case control and game labels. Small citations, table headings, and source metadata are locally smaller; they do not become decorative headings.
-- **Data:** compact numeric tables, codes, and chart metadata. Numeric columns align right and use tabular figures. Game scores and timers increase size according to their role; tile numerals use Space Grotesk rather than the data face.
+- **Display** (regular, responsive): the regular Georgia page title in frontmatter; hub heroes tighten line-height to (.98), while reading heroes use `clamp(3rem, 5.8vw, 5.4rem)` and tracking (-.055em).
+- **Headline** (semibold, responsive): the shared section scale; reading section headings use weight (500), line-height (1.04), and `clamp(2rem, 3.6vw, 3.2rem)`.
+- **Title** (semibold, compact): compact shared card and section headings; reading subheads enlarge to (1.6rem) with weight (500).
+- **Body** (regular, readable): the shared interface scale. Long reading uses the reading scale, maximum measure (70ch), and (1rem) on small screens.
+- **Label** (bold, compact): compact sans fields and controls; source metadata uses heavier small labels that identify actual fields.
+- **Data** (semibold, tabular): monospace with tabular figures for scores, ranking values, filenames, chart scales, and table numbers. Playable tiles and dice use sans; Bank's central score uses the display serif.
 
-### Named Rules
-
-**The Number-and-Explanation Rule.** Use IBM Plex Mono for inspectable values and DM Sans for their explanation; use Space Grotesk for the playable tile or die itself.
+**The Evidence Type Rule.** Use monospace for inspectable records and sans for their explanation; preserve the separate typography of the playable mechanism.
 
 ## Layout
 
-The hub, lab, definitions, and research share a centered reading frame with a maximum width of 1184 pixels and 32-pixel desktop side gutters. At 760 pixels and below the gutters reduce to 20 pixels, then to 14 pixels at 360 pixels and below. Definitions use a narrower 760-pixel prose column. Repeated gaps and padding follow the frontmatter spacing vocabulary; compact controls have smaller local gaps.
+Shared content centers at a maximum width (1120px) with desktop side gutters (32px). Reading shells widen to (1280px), while prose remains (70ch). Compact wrappers reduce gutters to (20px), then (16px); reading shells have their own narrow-screen adjustments. A (4px) base supports the reused spacing scale. Compact controls use gaps (8–16px), working panels use padding (24–32px), and reading sections use generous space and rules.
 
-Desktop hub composition pairs the featured copy and tile exhibit, then lays out game entries in three columns. The phone layout places the exhibit above its copy and turns the remaining entries into compact illustration-and-text rows. The lab starts with board selection and tabs; comparison and interpretation share columns, while run inspection, spread, and reading follow the selected view. At 680 pixels and below the lab and research columns stack. The lab also has a 900-pixel intermediate layout adjustment.
+The hub's promoted game overlaps the lower edge of its introduction. Lab and document receipts overlap heroes with board/dataset or source/edition context. These information-bearing columns stack on phones.
 
-The 2048 and Color Match play frames are capped at 540 and 580 pixels respectively. Bank and both Event Dice routes use a wider play area with a 320-pixel control or score column; at 760 pixels and below they stack into a phone-width frame. Play areas use fluid page and panel padding. Square boards retain their aspect ratio, equal cells, and visible gaps.
+Below (780px), comparison, research, and feature layouts stack. Below (540px), navigation uses two rows: brand and appearance first, full Play and 2048 lab links second. Hub actions become full-width. Larger dice routes collapse their two-column layouts below (760px), keeping play before secondary settings, scores, analytics, and developer tools.
 
-The lab's phone run log becomes a stacked row layout with the run identifier, strategy, score, and recorded note visible. The board-comparison table wraps its labels and values. These are source-preserving layout changes, not permission to drop data from exports or the underlying records.
-
-### Document pages
-
-`docs.css` extends the same reading frame for About, Changelog, README, versioning, research notes, PDF extraction, and testing. Desktop reading pairs a 75-character article with a narrow related-page column; below 900 pixels the navigation follows the article. A collapsed “On this page” control provides heading links. Tables and code scroll within their own bounded, keyboard-focusable regions on phones. The content is static HTML and remains readable without JavaScript.
-
-About and Changelog share one SVG QR asset opening the live changelog. Its black modules, white background, and full quiet zone remain unchanged across appearances. A descriptive image label and adjacent ordinary link provide alternatives to scanning.
+Reading pages use a sticky contents rail on wide screens and native contents disclosure below (1180px). Long code and wide reference tables retain native horizontal scrolling. Lab comparison tables remain scrollable; run tables become labeled compact rows on phones. Preserve focusable scroll regions and readable columns rather than shrinking evidence to fit.
 
 ## Elevation & Depth
 
-Most panels and controls are flat: white fill, a thin cool border, and spacing establish hierarchy. Depth is reserved for tangible exhibit pieces and transient overlays. The hub board uses a soft ambient shadow and a small rotation; dice use a shallow shadow; selected board controls have a subtle separation shadow. Dialogs use an ink-tinted scrim and soft elevation. This is not a globally shadowless build.
+Hierarchy comes mainly from tonal surfaces, borders, rules, alignment, and overlap. Reading, settings, comparison panels, dice, and ordinary cards stay flat. Limited shadows belong to the promoted hub feature, illustrative board, and modal layers.
 
 ### Shadow Vocabulary
 
-- **Exhibit board** (`0 16px 30px #173c3c19`): the hub's rotated tile-board illustration.
-- **Die** (`0 4px 12px rgb(20 47 54 / .07)`): a resting die in Bank and Event Dice.
-- **Board selection** (`0 2px 4px #173c3c0a`): the active lab board option.
-- **Dialog** (`0 16px 48px rgb(20 47 54 / .16)`): shared modal content; individual legacy dialog rules may still differ.
+- **Promoted feature** (`box-shadow: 0 16px 40px rgb(7 27 51 / .08)`): the overlapping featured game surface.
+- **Illustrative board** (`box-shadow: 0 16px 30px rgb(7 27 51 / .18)`): the tilted decorative board.
+- **Modal layer** (`box-shadow: 0 16px 48px rgb(7 27 51 / .16)`): game dialogs with a themed scrim and bounded scrolling.
 
-### Named Rules
-
-**The Quiet Surface Rule.** Keep reading, comparison, settings, and analytics panels flat. Reserve lift for the puzzle exhibit, dice, and modal layers already present in the build.
-
-Motion is brief and tied to interaction: root buttons change color and lift slightly, hub game illustrations move on hover, the linked 2048 tile reduces its rotation, and Color Match tiles scale slightly on hover. Game actions generally change color without lift. Reduced-motion rules suppress or nearly eliminate animation and transitions and disable smooth scrolling.
+**The Quiet Surface Rule.** Let rules and surface tones organize reading and working content; reserve lift for the promoted feature, illustrative board, and modal layers implemented here.
 
 ## Shapes
 
-The recurring geometry is a softly rounded rectangle. Small play cells have tight corners; controls use the compact control radii; ordinary panels use the surface radius; main play frames use the play radius. Dice have their own rounded-square silhouette. The featured hub container has a larger local corner treatment rather than a new universal radius.
+Reading surfaces, labeled buttons, panels, receipts, and analytical bars are square. Icon-only affordances, the brand mark, and the appearance control use circles. Board tiles, dice, heatmap cells, and inline code may use the small (2px) exception. Rounded dice illustrations retain object geometry without defining the site's cards.
 
-Boards rely on a repeated cell grid, square proportions, and a contrasting frame. The miniature board and linked 2048 tile are intentionally rotated; comparison cards, charts, and prose remain square to the reading axis. Ordinary surfaces use a one-pixel outline. SVG interface icons use simple unfilled strokes with rounded caps and joins; the shared root icon size is 20 pixels.
+**The Square-and-Circle Rule.** Use square geometry for reading and action surfaces, circles for icon-only controls, and the micro radius only where the existing play or inline treatment calls for it.
 
 ## Components
 
 ### Buttons
 
-Clear, compact actions with ample touch area. Root primary actions use teal and white; secondary actions use transparent fill, ink text, and a cool outline. Root buttons are at least 48 pixels tall, use the hub-button radius, and move up one pixel while darkening on hover. Game primary actions also reach 48 pixels, use the control radius, and typically keep their position on hover. Game secondary actions use soft fill with a cool outline.
+Square, compact, and direct. Shared buttons have minimum height (48px), padding (11px 20px), and semibold sans labels. Primary actions use action roles; hover deepens navy and may lift (1px). Secondary actions use transparent fill, a visible stroke, and soft-accent hover. Inverse calls to action use mint/navy. Inverse secondary actions use light text and switch to mint on hover. Game overrides often keep hover movement static.
 
-Root keyboard focus uses a three-pixel clay outline with a four-pixel offset. Shared game focus uses a three-pixel plum outline with a three-pixel offset. Disabled controls reduce opacity. Icon controls and ordinary fields generally retain a minimum 44-pixel touch area. Preserve visible labels or accessible names when icons stand alone.
-
-### Chips
-
-Source tags are quiet labels, not filter controls. The research tag uses pale teal, deep teal text, compact padding, and a small radius. Do not give this static tag an invented interaction or selected state.
-
-### Cards / Containers
-
-White analytical surfaces use a thin cool outline, the surface radius, and comfortable internal spacing. Comparison panels use roomy padding on desktop and reduce it on phones. Game controls and analytics panels use more compact padding. Hub game entries combine an illustration and text without wrapping every entry in another outlined white card.
-
-Informational evidence notes use pale teal and plain, readable text. Source limits sit beside the conclusion they qualify. Research entries use horizontal separators and a title/citation column beside summary/commentary; they stack on phones. Native details disclosures keep longer commentary and background references secondary.
+Focus uses a visible coral-family outline (3px), offset (3–4px). Light working surfaces use darker coral; the inverse appearance control uses bright coral. Disabled buttons retain native disabled behavior and reduced opacity.
 
 ### Inputs / Fields
 
-White fields use ink text, a thin cool outline, and compact rounded corners. The lab's fields have a seven-pixel local radius; game fields use the shared control radius. Labels remain above or beside their fields. Standard fields reach 44 pixels in height; compact phone lab selectors use a 40-pixel local variant. Focus inherits the relevant root or game outline. Range and checkbox accents use teal in the shared game foundation.
+Native inputs and selects use square raised surfaces, semantic text, control strokes, and minimum height (44px). Labels remain adjacent. Field padding is generally (10px 12px). Range and checkbox controls remain native with evidence-role accent colors. Placeholder text uses supporting ink at full opacity.
 
 ### Navigation
 
-The root header combines the small four-square brand mark with two visible destinations. Links use muted text, rounded hover fill, and an ink-filled current state with white text. Phone spacing tightens without replacing navigation with an icon-only menu. Definitions and research keep the same header and link back to the lab. Game headers use a bordered back control with a left-arrow SVG, plus a title and route-specific controls.
+The inverse masthead combines a sans brand, persistent labeled links, and circular appearance. Current links use mint/navy; ordinary links use inverse supporting text with navy hover. Phone navigation preserves both destinations on its second row.
 
-The lab's tab row uses plain text and a teal bottom border for the selected tab. Board selection uses a pale segmented tray and white selected option. Preserve the semantic selected states and keyboard behavior present in those controls.
+Appearance is a labeled native select with System, Light, and Dark options, displayed through inline SVG icons in a circular target (48px). Forced-colors mode exposes the native select. Saved preference is shared across pages; System follows live OS changes and storage events update open pages. Page appearance and optional game-board palettes are independent.
 
-### Puzzle and Dice Signatures
+### Cards / Containers
 
-The hub's miniature board makes the game itself the image. The lab's rotated teal 2048 tile is a real link to play, with an accessible name; its rotation relaxes on hover. The playable 2048 grid uses high-contrast numerals and a compact palette progression. Color Match places a miniature target beside instructions before the main board, and its hint uses an inset outline.
+Raised paper surfaces use subtle one-pixel borders, square corners, and restrained padding. Comparison panels use (32px), reducing on phones. Game entry links become visual-and-text rows on phones. Keep findings and prose free of unnecessary container decoration.
 
-Bank and Event Dice show large square dice on quiet white surfaces. Event matches use clay feedback and descriptive text; Bank distinguishes seven and doubles with clay and teal. Scores, timers, and game statistics retain the separate numeric type treatment. Optional analytics and developer logs stay secondary to play and settings.
+### Source / Context Receipts
+
+A green top rule and concise definition-list metadata connect the inverse entrance to the working surface. Filenames and citations wrap. Preserve source limitations and original recorded notes. A context receipt conveys evidence or scope; it does not certify security or supply an invented trust rating.
+
+### Tabs, Board Selection, and Source Tags
+
+Lab tabs use text with an accent underline for selection. Square segmented board buttons use an inverse selected state, explicit board labels, and monospace run counts. Source tags are small underlined evidence labels. Labels explain state independently of color.
+
+### Reading, Tables, and Sharing
+
+Serif titles introduce narrow, generously led prose, section rules, contents disclosure, and source context. Tables and code scroll inside bounded regions. Evidence links remain underlined. Sharing blocks preserve supplied QR artwork on white backing with its existing quiet zone, including in dark appearance.
+
+### Play and Dialogs
+
+Boards, dice, timers, and scores carry game-specific character within the shared frame. Tile palettes and board themes remain local. Dialogs use square raised surfaces, themed scrims, bounded viewport dimensions, and internal scrolling. Motion explains interaction; reduced-motion preferences disable or minimize animation, transitions, and smooth scrolling.
 
 ## Do's and Don'ts
 
 ### Do:
 
-- **Do** start from the daylight ground, white surfaces, ink text, and teal action roles recorded above.
-- **Do** preserve compact, square play geometry and put assistance after the primary activity.
-- **Do** keep numeric evidence aligned, labeled, and connected to its board and source.
-- **Do** place source limits beside findings and retain citations and original recorded notes.
-- **Do** keep responsive layouts readable by stacking, wrapping, and reducing padding before compressing the activity.
-- **Do** preserve visible focus, accessible icon names, touch-sized controls, and reduced-motion behavior.
+- **Do** build from semantic surface, text, action, border, and focus roles in `theme.css`.
+- **Do** keep the navy entrance expressive and the reading or evidence surface quiet.
+- **Do** use Georgia headings, sans controls, and monospace recorded values in their established roles.
+- **Do** preserve source context, caveats, recorded notes, and nearby evidence links.
+- **Do** keep visible focus, accessible SVG icon names, native controls, and touch targets at least (44px).
+- **Do** stack and wrap on small screens while preserving native scrolling for wide evidence.
+- **Do** preserve the QR image's white backing and existing quiet zone in both themes.
+- **Do** keep page appearance separate from board palettes and respect reduced-motion preferences.
 
 ### Don't:
 
-- **Don't** turn clay or plum into competing global primary-action colors.
-- **Don't** add elevated card treatment to every reading, settings, or analytics surface.
-- **Don't** treat a local game theme or tile palette as the root website's palette.
-- **Don't** use color alone to explain a selected result, chart value, or game outcome.
-- **Don't** present imported observations as controlled benchmarks or invent missing time, move, win-rate, or maximum-tile metrics.
-- **Don't** replace the self-hosted type hierarchy with a generic display face or use glyph characters as the reusable interface icon system.
-
-Evidence: `style.css`, `dashboard.css`, `assets/fonts/fonts.css`, `apps/games/game-foundation.css`, the five game styles and lab overrides, and their current HTML/JavaScript. This source-based document does not assert browser verification. `.impeccable/design.json` schema version 2 extends these tokens with component previews, motion, breakpoints, and shadows; its generated tonal strips are preview aids, not additional implemented colors.
-
-Not canonized: residual close-character icons and inherited legacy dialog styling are implementation inconsistencies, not new system rules. The optional game themes are recorded as local behavior rather than promoted to global tokens.
+- **Don't** use compatibility token names to restore the earlier teal/clay/plum palette.
+- **Don't** apply rounded cards, pills, or decorative elevation to every working surface.
+- **Don't** use color alone for selection, chart results, warnings, or game outcomes.
+- **Don't** shrink tables, code, or citations at the expense of legibility.
+- **Don't** invent missing performance metrics or present imported observations as controlled benchmarks.
+- **Don't** treat Library-specific trust ratings or governance metadata as required Game Hub components.
+- **Don't** introduce page-specific light/dark colors when an existing semantic role serves the same purpose.
 
 
 ### Random Event Dice motion
@@ -307,3 +316,5 @@ Not canonized: residual close-character icons and inherited legacy dialog stylin
 The 3D dice display extends the existing tangible-die treatment with six CSS faces, restrained face shading, and a single lifted tumble. Existing game colors and page themes remain authoritative. A visible 3D rolling / 2D fast control changes presentation independently of the seeded sample pool. Custom-sided dice use explicitly labeled numbered blocks. Results settle before event feedback; motion scales to the interval and respects reduced-motion, pause, stop, and hidden-page states.
 
 The display switch and cube faces use local 7px corners, with 13px helper text and captions. A soft black cast shadow at 40% opacity supports the dark-theme cube. These are object/control-specific details, not new global card or typography tokens.
+
+The combined Library preview uses shared body/control fonts and square display-selection controls for 3D/2D mode. The physical cube keeps its local face rounding; its pips, face values, and roll timing remain independent of the page design.
