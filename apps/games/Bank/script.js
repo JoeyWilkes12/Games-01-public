@@ -394,7 +394,7 @@ class BankGame {
                 // Doubles after protection: double the bank!
                 const oldBank = this.bankScore;
                 this.bankScore *= 2;
-                message = `🎉 DOUBLES! Bank doubled: ${oldBank} → ${this.bankScore}`;
+                message = `Doubles! Bank doubled: ${oldBank} → ${this.bankScore}`;
                 this.dom.lastRollInfo.className = 'last-roll-info special';
                 this.dom.bankScore.classList.add('doubled');
                 setTimeout(() => this.dom.bankScore.classList.remove('doubled'), 500);
@@ -706,7 +706,7 @@ class BankGame {
 
         let scoresHtml = '';
         sorted.forEach((player, index) => {
-            const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
+            const medal = `${index + 1}.`;
             scoresHtml += `
                 <div class="player-final">
                     <span>${medal} ${player.name}</span>
@@ -814,12 +814,10 @@ class BankGame {
 
         sorted.forEach((player, index) => {
             const isCurrent = this.players[this.currentPlayerIndex]?.id === player.id;
-            const medalRank = index === 0 && player.score > 0 ? '🥇' :
-                index === 1 && player.score > 0 ? '🥈' :
-                    index === 2 && player.score > 0 ? '🥉' : '';
+            const medalRank = player.score > 0 ? `${index + 1}.` : '';
 
             const statusText = player.hasBankedThisRound ? '✓ Banked' :
-                isCurrent ? '🎲 Rolling' : 'Waiting';
+                isCurrent ? 'Rolling' : 'Waiting';
 
             // Gap column: difference from leader (negative value for non-leaders)
             const gap = index === 0 ? '-' : `-${leaderScore - player.score}`;
@@ -859,10 +857,10 @@ class BankGame {
         this.players.forEach((player, index) => {
             html += `
                 <div class="player-config-item" data-index="${index}">
-                    <input type="text" value="${player.name}" 
+                    <input type="text" aria-label="Player ${index + 1} name" value="${player.name}"
                            onchange="game.updatePlayerName(${index}, this.value)">
                     ${this.players.length > 2 ?
-                    `<button class="btn-remove" onclick="game.removePlayer(${index})">✕</button>` :
+                    `<button class="btn-remove" aria-label="Remove player ${index + 1}" onclick="game.removePlayer(${index})">Remove</button>` :
                     ''}
                 </div>
             `;
@@ -1022,7 +1020,7 @@ class BankGame {
                 // Doubles after protection: double the bank!
                 const oldBank = this.bankScore;
                 this.bankScore *= 2;
-                message = `🎉 DOUBLES! Bank doubled: ${oldBank} → ${this.bankScore}`;
+                message = `Doubles! Bank doubled: ${oldBank} → ${this.bankScore}`;
                 this.dom.lastRollInfo.className = 'last-roll-info special';
                 this.dom.bankScore.classList.add('doubled');
                 setTimeout(() => this.dom.bankScore.classList.remove('doubled'), 500);

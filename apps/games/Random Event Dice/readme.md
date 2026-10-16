@@ -257,3 +257,20 @@ The recording features:
 | `random-event-dice-config.json` | Standard doubles configuration |
 | `only 6 doubles.json` | Only triggers on double 6s |
 | `impossible.json` | Contains impossible event (for validation testing) |
+
+
+## Dice display preview
+
+The play area defaults to **3D rolling**. Six-sided dice use six physical faces with pips; other side counts use numbered 3D blocks. Choose **2D fast** for the original flat number tiles with immediate results. The display choice is remembered locally and does not alter seeded randomness or exported game configuration.
+
+The tumble takes 72% of the configured roll interval, capped at 650 milliseconds, leaving time to read the result before the next roll. Results, analytics, and event alerts commit together on landing. Event reset holds begin at that point. Pause freezes a pending roll or reset hold; Resume continues it; Stop cancels unfinished motion. Reduced-motion preferences keep the 3D display but reveal results immediately.
+
+### Verify the display and timing
+
+After `npm install` at the repository root and starting the local static server, run:
+
+```sh
+node scripts/verify-dice-display.mjs http://127.0.0.1:4175/apps/games/Random%20Event%20Dice/index.html
+```
+
+The check uses installed Google Chrome by default (`DICE_BROWSER_CHANNEL` can select another installed Playwright channel), checks seeded results and timing transitions, and captures light/dark desktop and phone layouts. Results are written under ignored `output/playwright/dice-3d/`. Event holds pause active time and then resume the remainder of the configured interval.

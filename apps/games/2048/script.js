@@ -200,6 +200,7 @@ function startNewGame() {
     gameWon = false;
     updateScore(0);
     gameMsg.classList.add('hidden');
+    document.getElementById('hint-status')?.classList.add('hidden');
 
     // Add two starting tiles
     addRandomTile();
@@ -216,6 +217,10 @@ function setupInputs() {
     newGameBtn.addEventListener('click', startNewGame);
     hintBtn.addEventListener('click', showHint);
     solveBtn.addEventListener('click', toggleAutoPlay);
+
+    document.querySelectorAll('[data-direction]').forEach(button => {
+        button.addEventListener('click', () => handleInput({ key: button.dataset.direction, preventDefault() {} }));
+    });
 
     // Touch (Swipe)
     let touchStartX = 0;
@@ -256,7 +261,9 @@ function setupSettings() {
 // --- Game Logic ---
 
 function handleInput(e) {
-    if (gameOver) return;
+    if (gameOver || !settingsModal.classList.contains('hidden')) return;
+    if (e.target && /INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
+    if (['ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowLeft'].includes(e.key)) e.preventDefault();
 
     // 0: Up, 1: Right, 2: Down, 3: Left
     let moved = false;
@@ -495,6 +502,8 @@ function render() {
         }
     }
 
+    gridContainer.setAttribute('aria-label', '2048 board. Rows: ' + board.map(row => row.map(value => value || 'empty').join(', ')).join('; '));
+
     // Update active hint if any
     gridContainer.classList.remove('hint-active');
 }
@@ -509,10 +518,10 @@ function copyGrid(grid) {
 function showHint() {
     // Simple: Best next move
     let bestMove = getBestMove(board, 3); // Depth 3
-    if (bestMove !== -1) {
-        alert("Try moving " + getDirName(bestMove));
-    } else {
-        alert("No moves?");
+    const status = document.getElementById('hint-status');
+    if (status) {
+        status.textContent = bestMove !== -1 ? "Try moving " + getDirName(bestMove).toLowerCase() + "." : "No moves are available. Start a new game to try again.";
+        status.classList.remove('hidden');
     }
 }
 
@@ -527,7 +536,7 @@ function toggleAutoPlay() {
 function startAutoPlay() {
     if (isAutoPlaying || gameOver) return;
     isAutoPlaying = true;
-    solveBtn.textContent = "⏹ Stop";
+    solveBtn.textContent = "Stop autoplay";
     solveBtn.classList.remove('btn-highlight');
     solveBtn.classList.add('btn-secondary');
 
@@ -537,7 +546,7 @@ function startAutoPlay() {
 function stopAutoPlay() {
     isAutoPlaying = false;
     clearTimeout(autoPlayInterval);
-    solveBtn.textContent = "🤖 Play for Me";
+    solveBtn.textContent = "Play for me";
     solveBtn.classList.remove('btn-secondary');
     solveBtn.classList.add('btn-highlight');
 }
@@ -733,3 +742,6 @@ move = function (direction) {
 
 // Start
 init();
+
+// Inspectable state for local play verification and assistive tooling.
+window.render_game_to_text = () => JSON.stringify({ game: '2048', board, score, bestScore: Number(bestScore), gameOver, gameWon, isAutoPlaying });

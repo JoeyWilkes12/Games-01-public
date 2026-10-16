@@ -1,0 +1,53 @@
+{
+  "reviewedAt": "2026-10-12",
+  "purpose": "Reproducible local-only extraction of the directly relevant papers already cited by the app.",
+  "sources": [
+    {
+      "id": "jaskowski-2016",
+      "filename": "jaskowski-2016.pdf",
+      "title": "Mastering 2048 with Delayed Temporal Coherence Learning, Multi-Stage Weight Promotion, Redundant Encoding and Carousel Shaping",
+      "authors": "Wojciech Jaśkowski",
+      "year": 2016,
+      "version": "arXiv:1604.05085v3, revised 2016-12-12",
+      "url": "https://arxiv.org/abs/1604.05085v3",
+      "pdfUrl": "https://arxiv.org/pdf/1604.05085v3",
+      "sha256": "d842704fff21035cc0f28dcc2c126b214c3b0c792177d8770cc727c5d7144342",
+      "license": "arXiv non-exclusive distribution license; no general redistribution license established",
+      "licenseUrl": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/license.html",
+      "redistributeFullArtifact": false,
+      "previewPages": [2, 11],
+      "reviewedPages": [1, 2, 10, 11]
+    },
+    {
+      "id": "zaky-2014",
+      "filename": "zaky-2014.pdf",
+      "title": "Minimax and Expectimax Algorithm to Solve 2048",
+      "authors": "Ahmad Zaky",
+      "year": 2014,
+      "version": "IF2211 course paper, semester II 2013/2014",
+      "url": "https://informatika.stei.itb.ac.id/~rinaldi.munir/Stmik/2013-2014-genap/Makalah2014/MakalahIF2211-2014-037.pdf",
+      "pdfUrl": "https://informatika.stei.itb.ac.id/~rinaldi.munir/Stmik/2013-2014-genap/Makalah2014/MakalahIF2211-2014-037.pdf",
+      "sha256": "b1622ca8abead5dfc3f513bc7da0267ffd4f401c3b6e558e6e62ad6336909e61",
+      "license": "No explicit reuse license identified; local review only",
+      "redistributeFullArtifact": false,
+      "previewPages": [3, 5],
+      "reviewedPages": [1, 2, 3, 4, 5, 6],
+      "metadataCorrection": "The old app attributed this to Rinaldi Munir. Page 1 names Ahmad Zaky; the hosting path is not authorship. Embedded PDF Title is an unrelated template title."
+    },
+    {
+      "id": "rodgers-levine-2014",
+      "filename": "rodgers-levine-2014.pdf",
+      "title": "An Investigation into 2048 AI Strategies",
+      "authors": "Philip Rodgers and John Levine",
+      "year": 2014,
+      "version": "Two-page IEEE CIG 2014 paper, university-hosted PDF",
+      "url": "https://doi.org/10.1109/CIG.2014.6932920",
+      "pdfUrl": "https://www.cse.unr.edu/~sushil/pubs/newestPapers/aux/paper_106.pdf",
+      "sha256": "fd155447a8986d51ff37b2aaf8cc17b48fb5104a6893d30022d08d015f740712",
+      "license": "© 2014 IEEE; no general reuse license established",
+      "redistributeFullArtifact": false,
+      "previewPages": [1, 2],
+      "reviewedPages": [1, 2]
+    }
+  ]
+}

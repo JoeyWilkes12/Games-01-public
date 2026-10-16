@@ -1,0 +1,404 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-12T16:36:16.825Z",
+  "title": "Design System: Game Hub",
+  "extensions": {
+    "colorMeta": {
+      "teal": {
+        "role": "primary",
+        "displayName": "Exhibit Teal",
+        "tonalRamp": [
+          "oklch(15.00% 0.0803 189.19)",
+          "oklch(26.43% 0.0803 189.19)",
+          "oklch(37.86% 0.0803 189.19)",
+          "oklch(49.29% 0.0803 189.19)",
+          "oklch(60.71% 0.0803 189.19)",
+          "oklch(72.14% 0.0803 189.19)",
+          "oklch(83.57% 0.0803 189.19)",
+          "oklch(95.00% 0.0803 189.19)"
+        ]
+      },
+      "teal-dark": {
+        "role": "primary",
+        "displayName": "Deep Teal",
+        "tonalRamp": [
+          "oklch(15.00% 0.0641 190.35)",
+          "oklch(26.43% 0.0641 190.35)",
+          "oklch(37.86% 0.0641 190.35)",
+          "oklch(49.29% 0.0641 190.35)",
+          "oklch(60.71% 0.0641 190.35)",
+          "oklch(72.14% 0.0641 190.35)",
+          "oklch(83.57% 0.0641 190.35)",
+          "oklch(95.00% 0.0641 190.35)"
+        ]
+      },
+      "teal-pale": {
+        "role": "primary",
+        "displayName": "Pale Teal",
+        "tonalRamp": [
+          "oklch(15.00% 0.0205 185.47)",
+          "oklch(26.43% 0.0205 185.47)",
+          "oklch(37.86% 0.0205 185.47)",
+          "oklch(49.29% 0.0205 185.47)",
+          "oklch(60.71% 0.0205 185.47)",
+          "oklch(72.14% 0.0205 185.47)",
+          "oklch(83.57% 0.0205 185.47)",
+          "oklch(95.00% 0.0205 185.47)"
+        ]
+      },
+      "clay": {
+        "role": "secondary",
+        "displayName": "Fired Clay",
+        "tonalRamp": [
+          "oklch(15.00% 0.1540 38.48)",
+          "oklch(26.43% 0.1540 38.48)",
+          "oklch(37.86% 0.1540 38.48)",
+          "oklch(49.29% 0.1540 38.48)",
+          "oklch(60.71% 0.1540 38.48)",
+          "oklch(72.14% 0.1540 38.48)",
+          "oklch(83.57% 0.1540 38.48)",
+          "oklch(95.00% 0.1540 38.48)"
+        ]
+      },
+      "clay-deep": {
+        "role": "secondary",
+        "displayName": "Deep Clay",
+        "tonalRamp": [
+          "oklch(15.00% 0.1375 38.00)",
+          "oklch(26.43% 0.1375 38.00)",
+          "oklch(37.86% 0.1375 38.00)",
+          "oklch(49.29% 0.1375 38.00)",
+          "oklch(60.71% 0.1375 38.00)",
+          "oklch(72.14% 0.1375 38.00)",
+          "oklch(83.57% 0.1375 38.00)",
+          "oklch(95.00% 0.1375 38.00)"
+        ]
+      },
+      "plum": {
+        "role": "tertiary",
+        "displayName": "Study Plum",
+        "tonalRamp": [
+          "oklch(15.00% 0.0933 292.06)",
+          "oklch(26.43% 0.0933 292.06)",
+          "oklch(37.86% 0.0933 292.06)",
+          "oklch(49.29% 0.0933 292.06)",
+          "oklch(60.71% 0.0933 292.06)",
+          "oklch(72.14% 0.0933 292.06)",
+          "oklch(83.57% 0.0933 292.06)",
+          "oklch(95.00% 0.0933 292.06)"
+        ]
+      },
+      "ground": {
+        "role": "neutral",
+        "displayName": "Daylight Ground",
+        "tonalRamp": [
+          "oklch(15.00% 0.0074 197.03)",
+          "oklch(26.43% 0.0074 197.03)",
+          "oklch(37.86% 0.0074 197.03)",
+          "oklch(49.29% 0.0074 197.03)",
+          "oklch(60.71% 0.0074 197.03)",
+          "oklch(72.14% 0.0074 197.03)",
+          "oklch(83.57% 0.0074 197.03)",
+          "oklch(95.00% 0.0074 197.03)"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "White Paper",
+        "tonalRamp": [
+          "oklch(15.00% 0.0000 0.00)",
+          "oklch(26.43% 0.0000 0.00)",
+          "oklch(37.86% 0.0000 0.00)",
+          "oklch(49.29% 0.0000 0.00)",
+          "oklch(60.71% 0.0000 0.00)",
+          "oklch(72.14% 0.0000 0.00)",
+          "oklch(83.57% 0.0000 0.00)",
+          "oklch(95.00% 0.0000 0.00)"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Blue-Green Ink",
+        "tonalRamp": [
+          "oklch(15.00% 0.0352 216.83)",
+          "oklch(26.43% 0.0352 216.83)",
+          "oklch(37.86% 0.0352 216.83)",
+          "oklch(49.29% 0.0352 216.83)",
+          "oklch(60.71% 0.0352 216.83)",
+          "oklch(72.14% 0.0352 216.83)",
+          "oklch(83.57% 0.0352 216.83)",
+          "oklch(95.00% 0.0352 216.83)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Slate Caption",
+        "tonalRamp": [
+          "oklch(15.00% 0.0321 213.44)",
+          "oklch(26.43% 0.0321 213.44)",
+          "oklch(37.86% 0.0321 213.44)",
+          "oklch(49.29% 0.0321 213.44)",
+          "oklch(60.71% 0.0321 213.44)",
+          "oklch(72.14% 0.0321 213.44)",
+          "oklch(83.57% 0.0321 213.44)",
+          "oklch(95.00% 0.0321 213.44)"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Cool Divider",
+        "tonalRamp": [
+          "oklch(15.00% 0.0183 201.09)",
+          "oklch(26.43% 0.0183 201.09)",
+          "oklch(37.86% 0.0183 201.09)",
+          "oklch(49.29% 0.0183 201.09)",
+          "oklch(60.71% 0.0183 201.09)",
+          "oklch(72.14% 0.0183 201.09)",
+          "oklch(83.57% 0.0183 201.09)",
+          "oklch(95.00% 0.0183 201.09)"
+        ]
+      },
+      "soft": {
+        "role": "neutral",
+        "displayName": "Soft Cell",
+        "tonalRamp": [
+          "oklch(15.00% 0.0117 196.96)",
+          "oklch(26.43% 0.0117 196.96)",
+          "oklch(37.86% 0.0117 196.96)",
+          "oklch(49.29% 0.0117 196.96)",
+          "oklch(60.71% 0.0117 196.96)",
+          "oklch(72.14% 0.0117 196.96)",
+          "oklch(83.57% 0.0117 196.96)",
+          "oklch(95.00% 0.0117 196.96)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Fluid root-page headings; compact game headings use local scales."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section headings in the hub and reading pages."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Game cards and small panel headings."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Instructions, commentary, and reading text."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Sentence-case controls and game labels."
+      },
+      "data": {
+        "displayName": "Data",
+        "purpose": "Scores, source codes, chart values, and numeric table cells."
+      },
+      "game-metric": {
+        "displayName": "Game metric",
+        "purpose": "Larger scores in the compact 2048 play frame."
+      }
+    },
+    "shadows": [
+      {
+        "name": "exhibit-board",
+        "value": "0 16px 30px #173c3c19",
+        "purpose": "The hub miniature board."
+      },
+      {
+        "name": "die",
+        "value": "0 4px 12px rgb(20 47 54 / .07)",
+        "purpose": "Resting dice in Bank and Event Dice."
+      },
+      {
+        "name": "board-selection",
+        "value": "0 2px 4px #173c3c0a",
+        "purpose": "The selected lab board option."
+      },
+      {
+        "name": "dialog",
+        "value": "0 16px 48px rgb(20 47 54 / .16)",
+        "purpose": "Shared game modal content; legacy exit-dialog rules differ."
+      }
+    ],
+    "motion": [
+      {
+        "name": "root-action",
+        "value": "background 0.18s ease, transform 0.18s ease",
+        "purpose": "Root buttons and the linked 2048 tile."
+      },
+      {
+        "name": "hub-game-illustration",
+        "value": "transform 0.2s ease",
+        "purpose": "The hub game visual moves upward on hover."
+      },
+      {
+        "name": "puzzle-tile",
+        "value": "transform 0.15s ease-out",
+        "purpose": "Color Match tiles scale slightly on hover."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "prefers-reduced-motion: reduce",
+        "purpose": "Root transitions and animations are removed; shared game durations are reduced to .01ms and smooth scrolling is disabled."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "lab-intermediate",
+        "value": "900px"
+      },
+      {
+        "name": "hub-and-wide-games",
+        "value": "760px"
+      },
+      {
+        "name": "lab-and-research-phone",
+        "value": "680px"
+      },
+      {
+        "name": "root-small-phone",
+        "value": "360px"
+      },
+      {
+        "name": "game-small-phone",
+        "value": "359px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The shared hub and lab action.",
+      "html": "<a class=\"ds-primary\" href=\"apps/games/2048/index.html\">Play 2048<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M5 12h14m-6-6 6 6-6 6\"/></svg></a>",
+      "css": ".ds-primary{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;border:1px solid transparent;border-radius:9px;padding:11px 20px;font-family:var(--body,\"DM Sans\",sans-serif);font-weight:600;line-height:1.35;text-decoration:none;background:var(--teal,#14706b);color:var(--paper,#fff);transition:background .18s ease,transform .18s ease}.ds-primary svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.ds-primary:hover{background:var(--teal-dark,#0b514e);transform:translateY(-1px)}.ds-primary:focus-visible{outline:3px solid var(--clay,#c4532d);outline-offset:4px;}@media(prefers-reduced-motion:reduce){[class^=\"ds-\"]{transition:none!important;animation:none!important;}}"
+    },
+    {
+      "name": "Game primary button",
+      "kind": "button",
+      "refersTo": "button-game-primary",
+      "description": "A steady action for rolls and play assistance.",
+      "html": "<button class=\"ds-game-primary\" type=\"button\">Roll dice</button>",
+      "css": ".ds-game-primary{min-height:48px;padding:12px 16px;border:1px solid #14706b;border-radius:8px;background:var(--lab-teal,#14706b);color:#fff;font:600 .9375rem \"DM Sans\",sans-serif;cursor:pointer}.ds-game-primary:hover{background:var(--lab-teal-dark,#0b514e)}.ds-game-primary:focus-visible{outline:3px solid var(--lab-plum,#6c609c);outline-offset:3px}.ds-game-primary:disabled{opacity:.5;cursor:not-allowed}"
+    },
+    {
+      "name": "Secondary button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "An outlined companion action on root pages.",
+      "html": "<a class=\"ds-secondary\" href=\"definitions.html\">How to read the results</a>",
+      "css": ".ds-secondary{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:11px 20px;border:1px solid var(--line,#cadbdc);border-radius:9px;background:transparent;color:var(--ink,#142f36);font-family:var(--body,\"DM Sans\",sans-serif);font-weight:600;line-height:1.35;text-decoration:none;transition:background .18s ease,transform .18s ease}.ds-secondary:hover{background:var(--teal-pale,#d8ebe8);border-color:var(--teal,#14706b);transform:translateY(-1px)}.ds-secondary:focus-visible{outline:3px solid var(--clay,#c4532d);outline-offset:4px;}@media(prefers-reduced-motion:reduce){[class^=\"ds-\"]{transition:none!important;animation:none!important;}}"
+    },
+    {
+      "name": "Labeled field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "A compact field from the run-log toolbar.",
+      "html": "<label class=\"ds-field\" for=\"ds-run-search\">Search runs<input id=\"ds-run-search\" type=\"search\" placeholder=\"Strategy, score, or note\"></label>",
+      "css": ".ds-field{display:flex;flex-direction:column;gap:6px;font-family:var(--body,\"DM Sans\",sans-serif);font-size:.84rem;font-weight:600;color:var(--ink,#142f36)}.ds-field input{min-height:44px;min-width:0;width:100%;border:1px solid #adc4c5;border-radius:7px;background:var(--paper,#fff);color:var(--ink,#142f36);padding:9px 12px;font:400 1rem \"DM Sans\",sans-serif}.ds-field input:focus-visible{outline:3px solid var(--clay,#c4532d);outline-offset:4px;}"
+    },
+    {
+      "name": "Root navigation",
+      "kind": "nav",
+      "refersTo": "navigation-current",
+      "description": "Two visible destinations with a filled current state.",
+      "html": "<nav class=\"ds-nav\" aria-label=\"Main navigation\"><a href=\"index.html\">Play</a><a href=\"dashboard.html\" aria-current=\"page\">2048 lab</a></nav>",
+      "css": ".ds-nav{display:flex;align-items:center;gap:8px;font-family:var(--body,\"DM Sans\",sans-serif);}.ds-nav a{display:flex;align-items:center;min-height:44px;padding:9px 16px;border-radius:8px;text-decoration:none;font-weight:600;color:var(--muted,#4d676d)}.ds-nav a:hover{background:var(--teal-pale,#d8ebe8);color:var(--ink,#142f36)}.ds-nav a[aria-current]{background:var(--ink,#142f36);color:var(--paper,#fff)}.ds-nav a:focus-visible{outline:3px solid var(--clay,#c4532d);outline-offset:4px;}@media(max-width:760px){.ds-nav{gap:2px}.ds-nav a{padding:9px 10px;font-size:.9rem}}"
+    },
+    {
+      "name": "Research source tag",
+      "kind": "chip",
+      "refersTo": "source-tag",
+      "description": "A static classification label above a research title.",
+      "html": "<span class=\"ds-source-tag\">Direct 2048 study</span>",
+      "css": ".ds-source-tag{display:inline-block;font-family:var(--body,\"DM Sans\",sans-serif);font-size:.75rem;line-height:1.6;color:var(--teal-dark,#0b514e);background:var(--teal-pale,#d8ebe8);padding:3px 8px;border-radius:4px;margin-bottom:12px}"
+    },
+    {
+      "name": "Comparison surface",
+      "kind": "card",
+      "refersTo": "comparison-surface",
+      "description": "The lab panel framing labeled score comparisons.",
+      "html": "<section class=\"ds-comparison\"><h2>Score by strategy</h2><p>4 × 4 board · 20 runs per strategy</p></section>",
+      "css": ".ds-comparison{background:var(--paper,#fff);color:var(--ink,#142f36);border:1px solid var(--line,#cadbdc);border-radius:16px;padding:28px;font-family:var(--body,\"DM Sans\",sans-serif);}.ds-comparison h2{margin:0;font-family:var(--display,\"Space Grotesk\",sans-serif);font-size:clamp(1.55rem,3vw,2.1rem);font-weight:600;letter-spacing:-.035em;line-height:1.15}.ds-comparison p{margin:8px 0 0;color:var(--muted,#4d676d);font-size:.9rem;line-height:1.6}@media(max-width:680px){.ds-comparison{padding:22px}.ds-comparison h2{font-size:1.4rem}}"
+    },
+    {
+      "name": "Board selector",
+      "kind": "custom",
+      "refersTo": "board-option-selected",
+      "description": "The lab’s segmented choice keeps board scope explicit.",
+      "html": "<div class=\"ds-board-control\" role=\"group\" aria-label=\"Board size\"><button type=\"button\" aria-pressed=\"true\">4 × 4 <span>80 runs</span></button><button type=\"button\" aria-pressed=\"false\">5 × 5 <span>68 runs</span></button></div>",
+      "css": ".ds-board-control{display:flex;gap:7px;background:#dce9e8;padding:5px;border-radius:12px;font-family:var(--body,\"DM Sans\",sans-serif);}.ds-board-control button{min-height:48px;padding:10px 20px;background:transparent;color:var(--muted,#4d676d);border:1px solid transparent;border-radius:8px;font:600 1rem \"DM Sans\",sans-serif;cursor:pointer}.ds-board-control button[aria-pressed=\"true\"]{background:var(--paper,#fff);color:var(--ink,#142f36);border-color:#b9cece;box-shadow:0 2px 4px #173c3c0a}.ds-board-control button span{font:400 .76rem \"IBM Plex Mono\",monospace;margin-left:8px}.ds-board-control button:focus-visible{outline:3px solid var(--clay,#c4532d);outline-offset:4px;}@media(max-width:680px){.ds-board-control{width:100%}.ds-board-control button{flex:1;padding:9px 12px}}"
+    },
+    {
+      "name": "Linked 2048 tile",
+      "kind": "custom",
+      "refersTo": "number-tile",
+      "description": "The lab signature links the investigation back to play.",
+      "html": "<a class=\"ds-number-tile\" href=\"apps/games/2048/index.html\" aria-label=\"Play 2048\">2048</a>",
+      "css": ".ds-number-tile{display:flex;align-items:center;justify-content:center;width:112px;aspect-ratio:1;border-radius:20px;background:var(--teal,#14706b);color:#fff;font:600 2rem \"Space Grotesk\",sans-serif;text-decoration:none;transform:rotate(7deg);transition:background .18s ease,transform .18s ease}.ds-number-tile:hover{background:var(--teal-dark,#0b514e);transform:rotate(3deg)}.ds-number-tile:focus-visible{outline:3px solid var(--clay,#c4532d);outline-offset:4px;}@media(max-width:760px){.ds-number-tile{width:72px;font-size:1.3rem;border-radius:14px}}@media(max-width:360px){.ds-number-tile{display:none}}@media(prefers-reduced-motion:reduce){[class^=\"ds-\"]{transition:none!important;animation:none!important;}}"
+    },
+    {
+      "name": "Resting die",
+      "kind": "custom",
+      "refersTo": "die",
+      "description": "The rounded square used for live dice results.",
+      "html": "<div class=\"ds-die\" aria-label=\"Die value 4\">4</div>",
+      "css": ".ds-die{display:flex;align-items:center;justify-content:center;width:88px;height:88px;border:1px solid var(--lab-line,#cadbdc);background:#f5f9f8;color:var(--lab-ink,#142f36);border-radius:14px;font:600 2.25rem \"Space Grotesk\",sans-serif;box-shadow:0 4px 12px rgb(20 47 54 / .07)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Daylight Puzzle Exhibit",
+    "overview": "Game Hub presents play and algorithmic investigation as things to handle and inspect. A cool daylight ground supports white working surfaces, dark blue-green text, geometric headings, and deliberate teal actions. The visible mechanisms—numbered tiles, colored puzzle pieces, dice, score bars, and source rows—provide the character.\n\nThe interface is calm around the activity and expressive within it. The hub uses a rotated tile board and small game illustrations; playable routes put their boards or dice ahead of assistance and settings; the lab and reading pages use precise controls, clear comparisons, and nearby source context. This records the implemented local preview, not a deployment or release claim.",
+    "keyCharacteristics": [
+      "Flat daylight surfaces with restrained borders.",
+      "Geometric display type, readable prose, and distinct numeric typography.",
+      "Puzzle and dice geometry as the visual signature.",
+      "Phone layouts that keep play, controls, and evidence readable in sequence.",
+      "Source context and limitations visible beside analysis."
+    ],
+    "rules": [
+      {
+        "name": "The Teal Action Rule",
+        "body": "Teal identifies actions and selected analytical controls; clay and plum remain game, feedback, or focus colors.",
+        "section": "colors"
+      },
+      {
+        "name": "The Scope-Before-Color Rule",
+        "body": "Comparisons carry board labels, values, and source context. A colored winner row or bar is accompanied by text, never the only explanation of the result.",
+        "section": "colors"
+      },
+      {
+        "name": "The Number-and-Explanation Rule",
+        "body": "Use IBM Plex Mono for inspectable values and DM Sans for their explanation; use Space Grotesk for the playable tile or die itself.",
+        "section": "typography"
+      },
+      {
+        "name": "The Quiet Surface Rule",
+        "body": "Keep reading, comparison, settings, and analytics panels flat. Reserve lift for the puzzle exhibit, dice, and modal layers already present in the build.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** start from the daylight ground, white surfaces, ink text, and teal action roles recorded above.",
+      "**Do** preserve compact, square play geometry and put assistance after the primary activity.",
+      "**Do** keep numeric evidence aligned, labeled, and connected to its board and source.",
+      "**Do** place source limits beside findings and retain citations and original recorded notes.",
+      "**Do** keep responsive layouts readable by stacking, wrapping, and reducing padding before compressing the activity.",
+      "**Do** preserve visible focus, accessible icon names, touch-sized controls, and reduced-motion behavior."
+    ],
+    "donts": [
+      "**Don't** turn clay or plum into competing global primary-action colors.",
+      "**Don't** add elevated card treatment to every reading, settings, or analytics surface.",
+      "**Don't** treat a local game theme or tile palette as the root website's palette.",
+      "**Don't** use color alone to explain a selected result, chart value, or game outcome.",
+      "**Don't** present imported observations as controlled benchmarks or invent missing time, move, win-rate, or maximum-tile metrics.",
+      "**Don't** replace the self-hosted type hierarchy with a generic display face or use glyph characters as the reusable interface icon system."
+    ]
+  }
+}

@@ -1,520 +1,310 @@
-document.addEventListener('DOMContentLoaded', () => {
-    if (typeof dashboardData !== 'undefined') {
-        initDashboard(dashboardData);
-    } else {
-        console.error('Dashboard data not found. Ensure dashboard_data.js is loaded.');
-    }
-});
-
-// Algorithm name mapping
-const ALGO_NAMES = {
-    'Mc': 'Monte Carlo',
-    'E': 'Expectimax Tree',
-    'Igs': 'IDDFS Graph Search',
-    'Rl': 'Reinforcement Learning'
-};
-
-// Grid size mapping
-const GRID_NAMES = {
-    9: '3×3',
-    16: '4×4',
-    25: '5×5'
-};
-
-// Pagination state
-let currentPage = 1;
-let recordsPerPage = 25;
-let filteredRecords = [];
-
-function initDashboard(data) {
-    const { records } = data;
-
-    // Filter out empty records or invalid ones
-    const validRecords = records.filter(r => r.Score > 0);
-
-    updateSummaryStats(validRecords);
-    renderCharts(validRecords);
-    renderAnalysis(validRecords);
-    renderGridSizeAnalysis(validRecords);
-    initExplorer(validRecords);
-    initTable(validRecords);
-}
-
-function updateSummaryStats(records) {
-    const totalRuns = records.length;
-    const highScore = Math.max(...records.map(r => Number(r.Score) || 0));
-    
-    // Count grid sizes
-    const gridCounts = {};
-    records.forEach(r => {
-        const gridArea = r['Grid Area'];
-        gridCounts[gridArea] = (gridCounts[gridArea] || 0) + 1;
+"use strict";
+(() => {
+  const NAMES = {
+    Mc: "Monte Carlo",
+    E: "Expectimax",
+    Igs: "IDDFS graph search",
+    Rl: "Reinforcement learning",
+  };
+  const ORDER = Object.keys(NAMES);
+  const all =
+    typeof dashboardData !== "undefined"
+      ? dashboardData.records.filter(
+          (r) =>
+            Number.isFinite(r.Score) &&
+            r.Score > 0 &&
+            ORDER.includes(r.Algorithm) &&
+            [16, 25].includes(r["Grid Area"]),
+        )
+      : [];
+  const $ = (id) => document.getElementById(id);
+  const fmt = (n) => Math.round(n).toLocaleString("en-US");
+  const escape = (str) =>
+    String(str ?? "").replace(
+      /[&<>"']/g,
+      (c) =>
+        ({
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#39;",
+        })[c],
+    );
+  const params = new URLSearchParams(location.search);
+  const initialTab = location.hash.slice(1);
+  const state = {
+    board: params.get("board") === "25" ? 25 : 16,
+    metric: params.get("metric") === "median" ? "median" : "mean",
+    tab: "results",
+    page: 1,
+    search: params.get("q") || "",
+    algo: ORDER.includes(params.get("strategy"))
+      ? params.get("strategy")
+      : "all",
+    limit: 10,
+  };
+  function stats(rows) {
+    return ORDER.map((code) => {
+      const scores = rows
+        .filter((r) => r.Algorithm === code)
+        .map((r) => r.Score)
+        .sort((a, b) => a - b);
+      const n = scores.length;
+      return {
+        code,
+        name: NAMES[code],
+        n,
+        mean: n ? scores.reduce((a, b) => a + b, 0) / n : 0,
+        median: n
+          ? (scores[Math.floor((n - 1) / 2)] + scores[Math.floor(n / 2)]) / 2
+          : 0,
+        min: scores[0] || 0,
+        max: scores[n - 1] || 0,
+      };
     });
-
-    document.getElementById('stat-total-runs').textContent = totalRuns;
-    document.getElementById('stat-high-score').textContent = highScore.toLocaleString();
-    
-    // Show most common grid size instead of avg tile (which isn't in data)
-    const mostCommonGrid = Object.entries(gridCounts)
-        .sort((a, b) => b[1] - a[1])[0];
-    document.getElementById('stat-avg-tile').textContent = 
-        GRID_NAMES[mostCommonGrid[0]] || `${Math.sqrt(mostCommonGrid[0])}×${Math.sqrt(mostCommonGrid[0])}`;
-}
-
-// ---------------------------------------------------------
-// Grid Size Analysis - NEW
-// ---------------------------------------------------------
-
-function renderGridSizeAnalysis(records) {
-    // Group by Grid Area and Algorithm
-    const gridAlgoStats = {};
-    
-    records.forEach(r => {
-        const gridArea = r['Grid Area'];
-        const algo = r['Algorithm'] || 'Unknown';
-        
-        if (!gridAlgoStats[gridArea]) gridAlgoStats[gridArea] = {};
-        if (!gridAlgoStats[gridArea][algo]) {
-            gridAlgoStats[gridArea][algo] = { sum: 0, count: 0 };
-        }
-        
-        gridAlgoStats[gridArea][algo].sum += (Number(r.Score) || 0);
-        gridAlgoStats[gridArea][algo].count += 1;
+  }
+  const boardRows = () => all.filter((r) => r["Grid Area"] === state.board);
+  function syncUrl() {
+    const p = new URLSearchParams();
+    if (state.board !== 16) p.set("board", state.board);
+    if (state.metric !== "mean") p.set("metric", state.metric);
+    if (state.search) p.set("q", state.search);
+    if (state.algo !== "all") p.set("strategy", state.algo);
+    history.replaceState(
+      null,
+      "",
+      location.pathname + (p.size ? "?" + p : "") + "#" + state.tab,
+    );
+  }
+  function activateTab(tab, focus = false) {
+    if (!["results", "runs", "research"].includes(tab)) tab = "results";
+    state.tab = tab;
+    document.querySelectorAll("[data-tab]").forEach((b) => {
+      const selected = b.dataset.tab === tab;
+      b.setAttribute("aria-selected", selected);
+      b.tabIndex = selected ? 0 : -1;
+      if (selected && focus) b.focus();
     });
-
-    // Find best algorithm for each grid size
-    const gridWinners = {};
-    const gridSizes = Object.keys(gridAlgoStats).sort((a, b) => Number(a) - Number(b));
-    
-    gridSizes.forEach(gridArea => {
-        let bestAlgo = null;
-        let bestAvg = 0;
-        
-        Object.entries(gridAlgoStats[gridArea]).forEach(([algo, stats]) => {
-            const avg = stats.sum / stats.count;
-            if (avg > bestAvg) {
-                bestAvg = avg;
-                bestAlgo = algo;
-            }
-        });
-        
-        gridWinners[gridArea] = { algo: bestAlgo, avgScore: bestAvg };
+    ["results", "runs", "research"].forEach(
+      (id) => ($("panel-" + id).hidden = id !== tab),
+    );
+    syncUrl();
+  }
+  function renderResults() {
+    const rows = boardRows(),
+      groups = stats(rows),
+      ranked = [...groups].sort((a, b) => b[state.metric] - a[state.metric]);
+    const leader = ranked[0],
+      runner = ranked[1],
+      max =
+        Math.ceil(leader[state.metric] / (state.board === 16 ? 5000 : 25000)) *
+        (state.board === 16 ? 5000 : 25000);
+    $("comparison-scope").textContent =
+      `${Math.sqrt(state.board)} × ${Math.sqrt(state.board)} board · ${leader.n} runs per strategy`;
+    $("rank-chart").innerHTML = ranked
+      .map(
+        (g) =>
+          `<div class="rank-item"><div class="rank-label"><span>${g.name}</span><strong>${fmt(g[state.metric])}</strong></div><div class="rank-track" aria-hidden="true"><div class="rank-fill" style="--bar:${(g[state.metric] / max) * 100}%"></div></div><span class="rank-meta">${g.n} runs · ${state.metric === "mean" ? "mean" : "median"} score in points</span></div>`,
+      )
+      .join("");
+    $("chart-max").textContent = fmt(max) + " points";
+    $("finding-title").textContent =
+      `${leader.name} leads on the ${Math.sqrt(state.board)} × ${Math.sqrt(state.board)} board.`;
+    const delta = (leader[state.metric] / runner[state.metric] - 1) * 100;
+    $("finding-copy").innerHTML =
+      `Its ${state.metric === "mean" ? "mean" : "median"} score is <strong>${fmt(leader[state.metric])} points</strong>, ${delta.toFixed(1)}% above ${runner.name} in these recorded runs. ${state.board === 16 ? "Switch to the 5 × 5 board: the observed leader changes." : "On the 4 × 4 board, the observed leader is different."}`;
+    $("board-count").textContent = rows.length;
+    $("board-high").textContent = fmt(Math.max(...rows.map((r) => r.Score)));
+    const spreadMax =
+      Math.ceil(
+        Math.max(...rows.map((r) => r.Score)) /
+          (state.board === 16 ? 10000 : 50000),
+      ) * (state.board === 16 ? 10000 : 50000);
+    $("distribution-chart").innerHTML = groups
+      .map((g) => {
+        const points = rows
+          .filter((r) => r.Algorithm === g.code)
+          .map(
+            (r, i) =>
+              `<circle cx="${(r.Score / spreadMax) * 600}" cy="${28 + ((i % 5) - 2) * 6}" r="4" fill="var(--teal)" fill-opacity=".65"><title>Run ${r.Index}: ${fmt(r.Score)} points</title></circle>`,
+          )
+          .join("");
+        const mean = (g.mean / spreadMax) * 600;
+        return `<div class="distribution-row"><span>${g.name}</span><svg viewBox="0 0 600 56" preserveAspectRatio="none" role="img" aria-label="${g.name}: ${g.n} runs, range ${fmt(g.min)} to ${fmt(g.max)} points, mean ${fmt(g.mean)}"><path d="M0 28H600" class="spread-baseline" stroke="var(--line)"/>${points}<path d="M${mean} 6v44" class="spread-mean" stroke="var(--ink)" stroke-width="3"/></svg></div>`;
+      })
+      .join("");
+    $("spread-mid").textContent = fmt(spreadMax / 2);
+    $("spread-max").textContent = fmt(spreadMax);
+    $("range-table").innerHTML =
+      `<div class="table-wrap"><table><thead><tr><th scope="col">Strategy</th><th scope="col">Low</th><th scope="col">Mean</th><th scope="col">High</th></tr></thead><tbody>${groups.map((g) => `<tr><th scope="row">${g.name}</th><td class="numeric">${fmt(g.min)}</td><td class="numeric">${fmt(g.mean)}</td><td class="numeric">${fmt(g.max)}</td></tr>`).join("")}</tbody></table></div>`;
+    const small = stats(all.filter((r) => r["Grid Area"] === 16)),
+      large = stats(all.filter((r) => r["Grid Area"] === 25));
+    const bestSmall = Math.max(...small.map((g) => g.mean)),
+      bestLarge = Math.max(...large.map((g) => g.mean));
+    $("grid-comparison").innerHTML = small
+      .map(
+        (g, i) =>
+          `<tr><th scope="row">${g.name}</th><td class="numeric">${fmt(g.mean)}${g.mean === bestSmall ? '<span class="table-best">Highest mean</span>' : ""}</td><td class="numeric">${fmt(large[i].mean)}${large[i].mean === bestLarge ? '<span class="table-best">Highest mean</span>' : ""}</td></tr>`,
+      )
+      .join("");
+  }
+  function filtered() {
+    return boardRows().filter((r) => {
+      const text = [r.Index, NAMES[r.Algorithm], r.Algorithm, r.Notes]
+        .join(" ")
+        .toLowerCase();
+      return (
+        (state.algo === "all" || r.Algorithm === state.algo) &&
+        text.includes(state.search.toLowerCase().trim())
+      );
     });
-
-    // Render winner cards
-    const winnersContainer = document.getElementById('grid-winners');
-    winnersContainer.innerHTML = '';
-    
-    gridSizes.forEach(gridArea => {
-        const winner = gridWinners[gridArea];
-        const gridName = GRID_NAMES[gridArea] || `${Math.sqrt(gridArea)}×${Math.sqrt(gridArea)}`;
-        
-        const card = document.createElement('div');
-        card.className = 'grid-winner-card';
-        card.innerHTML = `
-            <h4>${gridName} Grid</h4>
-            <div class="winner-algo">${ALGO_NAMES[winner.algo] || winner.algo}</div>
-            <div class="winner-score">Avg: ${Math.round(winner.avgScore).toLocaleString()}</div>
-        `;
-        winnersContainer.appendChild(card);
+  }
+  function renderRuns() {
+    document.querySelector('[data-tab="runs"] span').textContent =
+      boardRows().length;
+    const rows = filtered(),
+      limit =
+        state.limit === "all" ? Math.max(1, rows.length) : Number(state.limit),
+      pages = Math.max(1, Math.ceil(rows.length / limit));
+    state.page = Math.min(state.page, pages);
+    const start = (state.page - 1) * limit,
+      visible = rows.slice(start, start + limit);
+    $("run-rows").innerHTML = visible
+      .map(
+        (r) =>
+          `<tr><td class="mono"><span class="mobile-only">Run </span>${r.Index}</td><td>${NAMES[r.Algorithm]}</td><td>${Math.sqrt(r["Grid Area"])} × ${Math.sqrt(r["Grid Area"])}</td><td class="numeric">${fmt(r.Score)}<span class="mobile-only score-unit">points</span></td><td class="${r.Notes ? "recorded-note" : "no-note"}">${r.Notes ? escape(r.Notes) : '<span class="muted">No note recorded</span>'}</td></tr>`,
+      )
+      .join("");
+    $("run-summary").textContent =
+      `${rows.length} matching ${rows.length === 1 ? "run" : "runs"} on the ${Math.sqrt(state.board)} × ${Math.sqrt(state.board)} board${rows.length ? ` · showing ${start + 1}–${Math.min(start + limit, rows.length)}` : ""}`;
+    $("page-info").textContent = `Page ${state.page} of ${pages}`;
+    $("prev-page").disabled = state.page <= 1;
+    $("next-page").disabled = state.page >= pages;
+    $("export-runs").disabled = !rows.length;
+    $("no-runs").hidden = !!rows.length;
+    $("runs-table-wrap").hidden = !rows.length;
+    $("run-pagination").hidden = !rows.length;
+  }
+  function setBoard(board) {
+    state.board = board;
+    state.page = 1;
+    document
+      .querySelectorAll("[data-board]")
+      .forEach((b) =>
+        b.setAttribute("aria-pressed", Number(b.dataset.board) === board),
+      );
+    renderResults();
+    renderRuns();
+    syncUrl();
+  }
+  document
+    .querySelectorAll("[data-board]")
+    .forEach((b) =>
+      b.addEventListener("click", () => setBoard(Number(b.dataset.board))),
+    );
+  document.querySelectorAll("[data-tab]").forEach((b, i, buttons) => {
+    b.addEventListener("click", () => activateTab(b.dataset.tab));
+    b.addEventListener("keydown", (e) => {
+      let next;
+      if (e.key === "ArrowRight") next = (i + 1) % buttons.length;
+      if (e.key === "ArrowLeft")
+        next = (i - 1 + buttons.length) % buttons.length;
+      if (e.key === "Home") next = 0;
+      if (e.key === "End") next = buttons.length - 1;
+      if (next !== undefined) {
+        e.preventDefault();
+        activateTab(buttons[next].dataset.tab, true);
+      }
     });
-
-    // Check if one algorithm dominates all grid sizes
-    const allWinners = Object.values(gridWinners).map(w => w.algo);
-    const uniqueWinners = [...new Set(allWinners)];
-    
-    if (uniqueWinners.length === 1) {
-        const dominantCard = document.createElement('div');
-        dominantCard.className = 'grid-winner-card';
-        dominantCard.style.background = 'linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(56, 189, 248, 0.2))';
-        dominantCard.style.borderColor = 'rgba(16, 185, 129, 0.5)';
-        dominantCard.innerHTML = `
-            <h4>🏆 Overall Winner</h4>
-            <div class="winner-algo">${ALGO_NAMES[uniqueWinners[0]] || uniqueWinners[0]}</div>
-            <div class="winner-score">Best across all grid sizes!</div>
-        `;
-        winnersContainer.appendChild(dominantCard);
-    }
-
-    // Render Grid Size Comparison Chart
-    renderGridSizeChart(gridAlgoStats);
-}
-
-function renderGridSizeChart(gridAlgoStats) {
-    const ctx = document.getElementById('gridSizeChart').getContext('2d');
-    
-    const gridSizes = Object.keys(gridAlgoStats).sort((a, b) => Number(a) - Number(b));
-    const algorithms = [...new Set(Object.values(gridAlgoStats).flatMap(g => Object.keys(g)))];
-    
-    const colors = {
-        'Mc': 'rgba(56, 189, 248, 0.8)',
-        'E': 'rgba(16, 185, 129, 0.8)',
-        'Igs': 'rgba(139, 92, 246, 0.8)',
-        'Rl': 'rgba(245, 158, 11, 0.8)'
-    };
-
-    const datasets = algorithms.map(algo => ({
-        label: ALGO_NAMES[algo] || algo,
-        data: gridSizes.map(grid => {
-            const stats = gridAlgoStats[grid]?.[algo];
-            return stats ? Math.round(stats.sum / stats.count) : 0;
-        }),
-        backgroundColor: colors[algo] || 'rgba(148, 163, 184, 0.8)',
-        borderColor: 'rgba(255, 255, 255, 0.1)',
-        borderWidth: 1
-    }));
-
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: gridSizes.map(g => GRID_NAMES[g] || `${Math.sqrt(g)}×${Math.sqrt(g)}`),
-            datasets: datasets
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { 
-                    display: true,
-                    position: 'top'
-                },
-                title: {
-                    display: false
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: { display: true, text: 'Average Score' }
-                },
-                x: {
-                    title: { display: true, text: 'Grid Size' }
-                }
-            }
-        }
-    });
-}
-
-// ---------------------------------------------------------
-// Analysis & Explorer Functions
-// ---------------------------------------------------------
-
-function renderAnalysis(records) {
-    const ctx = document.getElementById('bestAlgoChart').getContext('2d');
-
-    // Group by Algorithm & Calculate Average Score
-    const algoStats = {};
-    records.forEach(r => {
-        const algo = r['Algorithm'] || 'Unknown';
-        if (!algoStats[algo]) algoStats[algo] = { sum: 0, count: 0 };
-        algoStats[algo].sum += (Number(r.Score) || 0);
-        algoStats[algo].count += 1;
-    });
-
-    const labels = Object.keys(algoStats);
-    const data = labels.map(algo => Math.round(algoStats[algo].sum / algoStats[algo].count));
-
-    // Sort for better visualization (High to Low)
-    const sortedIndices = data.map((v, i) => [v, i])
-        .sort((a, b) => b[0] - a[0])
-        .map(pair => pair[1]);
-
-    const sortedLabels = sortedIndices.map(i => ALGO_NAMES[labels[i]] || labels[i]);
-    const sortedData = sortedIndices.map(i => data[i]);
-
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: sortedLabels,
-            datasets: [{
-                label: 'Average Score',
-                data: sortedData,
-                backgroundColor: [
-                    'rgba(56, 189, 248, 0.8)',
-                    'rgba(16, 185, 129, 0.8)',
-                    'rgba(139, 92, 246, 0.8)',
-                    'rgba(245, 158, 11, 0.8)'
-                ],
-                borderColor: 'rgba(255, 255, 255, 0.1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: { display: false },
-                tooltip: {
-                    callbacks: {
-                        label: function (context) {
-                            return `Avg Score: ${context.raw.toLocaleString()}`;
-                        }
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    title: { display: true, text: 'Average Score' }
-                }
-            }
-        }
-    });
-}
-
-function initExplorer(records) {
-    const ctx = document.getElementById('explorerChart').getContext('2d');
-    let explorerChart;
-
-    const groupBySelect = document.getElementById('group-by');
-    const metricSelect = document.getElementById('metric');
-
-    const updateChart = () => {
-        const groupBy = groupBySelect.value;
-        const metric = metricSelect.value;
-
-        // Aggregate Data
-        const groups = {};
-        records.forEach(r => {
-            let key = r[groupBy];
-            if (!key) key = 'Unknown';
-
-            if (!groups[key]) groups[key] = { sum: 0, count: 0 };
-
-            if (metric === 'Count') {
-                groups[key].count += 1;
-            } else {
-                groups[key].sum += (Number(r[metric]) || 0);
-                groups[key].count += 1;
-            }
-        });
-
-        const labels = Object.keys(groups).sort();
-
-        let data;
-        let chartType = 'bar';
-
-        if (metric === 'Count') {
-            data = labels.map(k => groups[k].count);
-            if (labels.length <= 5) chartType = 'pie';
-        } else {
-            data = labels.map(k => Math.round(groups[k].sum / groups[k].count));
-        }
-
-        // Format labels for display
-        const displayLabels = labels.map(label => {
-            if (groupBy === 'Algorithm') return ALGO_NAMES[label] || label;
-            if (groupBy === 'Grid Area') return GRID_NAMES[label] || label;
-            return label;
-        });
-
-        // Color palette
-        const colors = displayLabels.map((_, i) => `hsl(${i * 360 / displayLabels.length}, 70%, 60%)`);
-
-        // Destroy old chart if exists
-        if (explorerChart) explorerChart.destroy();
-
-        explorerChart = new Chart(ctx, {
-            type: chartType,
-            data: {
-                labels: displayLabels,
-                datasets: [{
-                    label: metric === 'Count' ? 'Count' : `Average ${metric}`,
-                    data: data,
-                    backgroundColor: colors,
-                    borderColor: 'rgba(255,255,255,0.1)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: displayLabels.length <= 10 },
-                    title: {
-                        display: true,
-                        text: `${metric} by ${groupBy}`,
-                        color: '#f8fafc',
-                        font: { size: 16 }
-                    }
-                }
-            }
-        });
-    };
-
-    // Listeners
-    groupBySelect.addEventListener('change', updateChart);
-    metricSelect.addEventListener('change', updateChart);
-
-    // Initial call
-    updateChart();
-}
-
-function renderCharts(records) {
-    const ctxScore = document.getElementById('scoreChart').getContext('2d');
-    const ctxTile = document.getElementById('tileChart').getContext('2d');
-    const ctxTimeline = document.getElementById('timelineChart').getContext('2d');
-
-    Chart.defaults.color = '#94a3b8';
-    Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
-
-    // Score Distribution Chart (Bar)
-    const scoreBins = {};
-    records.forEach(r => {
-        const bin = Math.floor((Number(r.Score) || 0) / 20000) * 20000;
-        const label = `${(bin / 1000)}k-${(bin + 20000) / 1000}k`;
-        scoreBins[label] = (scoreBins[label] || 0) + 1;
-    });
-
-    new Chart(ctxScore, {
-        type: 'bar',
-        data: {
-            labels: Object.keys(scoreBins),
-            datasets: [{
-                label: 'Frequency',
-                data: Object.values(scoreBins),
-                backgroundColor: 'rgba(56, 189, 248, 0.6)',
-                borderColor: '#38bdf8',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { legend: { display: false } }
-        }
-    });
-
-    // Algorithm Distribution (Doughnut) - replacing Max Tile which isn't in data
-    const algoCounts = {};
-    records.forEach(r => {
-        const algo = ALGO_NAMES[r['Algorithm']] || r['Algorithm'] || 'Unknown';
-        algoCounts[algo] = (algoCounts[algo] || 0) + 1;
-    });
-
-    new Chart(ctxTile, {
-        type: 'doughnut',
-        data: {
-            labels: Object.keys(algoCounts),
-            datasets: [{
-                data: Object.values(algoCounts),
-                backgroundColor: [
-                    '#38bdf8', '#10b981', '#8b5cf6', '#f59e0b'
-                ]
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: { 
-                legend: { position: 'right' },
-                title: { display: true, text: 'Algorithm Distribution' }
-            }
-        }
-    });
-
-    // Timeline Chart (Scores over time/index)
-    new Chart(ctxTimeline, {
-        type: 'line',
-        data: {
-            labels: records.map((r, i) => `Run ${r.Index || i + 1}`),
-            datasets: [{
-                label: 'Score',
-                data: records.map(r => r.Score),
-                borderColor: '#818cf8',
-                tension: 0.3,
-                fill: true,
-                backgroundColor: 'rgba(129, 140, 248, 0.1)'
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: { beginAtZero: true }
-            }
-        }
-    });
-}
-
-// ---------------------------------------------------------
-// Table with Pagination
-// ---------------------------------------------------------
-
-function initTable(records) {
-    filteredRecords = records;
-    
-    const limitSelect = document.getElementById('rows-limit');
-    const searchInput = document.getElementById('search-input');
-    const prevBtn = document.getElementById('prev-page');
-    const nextBtn = document.getElementById('next-page');
-
-    // Limit Change Listener
-    limitSelect.addEventListener('change', (e) => {
-        recordsPerPage = e.target.value === 'all' ? filteredRecords.length : parseInt(e.target.value);
-        currentPage = 1;
-        renderTable();
-    });
-
-    // Search functionality
-    searchInput.addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase();
-        filteredRecords = records.filter(r =>
-            (r.Algorithm && String(r.Algorithm).toLowerCase().includes(term)) ||
-            (r.Notes && String(r.Notes).toLowerCase().includes(term)) ||
-            (r['Grid Area'] && String(r['Grid Area']).includes(term))
-        );
-        currentPage = 1;
-        renderTable();
-    });
-
-    // Pagination buttons
-    prevBtn.addEventListener('click', () => {
-        if (currentPage > 1) {
-            currentPage--;
-            renderTable();
-        }
-    });
-
-    nextBtn.addEventListener('click', () => {
-        const totalPages = Math.ceil(filteredRecords.length / recordsPerPage);
-        if (currentPage < totalPages) {
-            currentPage++;
-            renderTable();
-        }
-    });
-
-    // Initial render
-    renderTable();
-}
-
-function renderTable() {
-    const tbody = document.querySelector('#runs-table tbody');
-    const pageInfo = document.getElementById('page-info');
-    const prevBtn = document.getElementById('prev-page');
-    const nextBtn = document.getElementById('next-page');
-    
-    tbody.innerHTML = '';
-
-    const totalPages = Math.ceil(filteredRecords.length / recordsPerPage) || 1;
-    const startIndex = (currentPage - 1) * recordsPerPage;
-    const endIndex = Math.min(startIndex + recordsPerPage, filteredRecords.length);
-    const displayRecords = filteredRecords.slice(startIndex, endIndex);
-
-    displayRecords.forEach((r) => {
-        const gridName = GRID_NAMES[r['Grid Area']] || `${Math.sqrt(r['Grid Area'])}×${Math.sqrt(r['Grid Area'])}`;
-        const algoName = ALGO_NAMES[r.Algorithm] || r.Algorithm || '-';
-        
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>#${r.Index || '-'}</td>
-            <td>${algoName}</td>
-            <td>${gridName}</td>
-            <td>${Number(r.Score).toLocaleString()}</td>
-            <td>${r.Notes || '-'}</td>
-        `;
-        tbody.appendChild(tr);
-    });
-
-    // Update pagination info
-    pageInfo.textContent = `Page ${currentPage} of ${totalPages} (${filteredRecords.length} records)`;
-    
-    // Update button states
-    prevBtn.disabled = currentPage === 1;
-    nextBtn.disabled = currentPage === totalPages;
-}
+  });
+  document.querySelectorAll("[data-open-tab]").forEach((a) =>
+    a.addEventListener("click", (e) => {
+      e.preventDefault();
+      activateTab(a.dataset.openTab, true);
+      document.querySelector(".lab-tabs").scrollIntoView({
+        block: "start",
+        behavior: matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "instant"
+          : "smooth",
+      });
+    }),
+  );
+  $("score-metric").value = state.metric;
+  $("score-metric").addEventListener("change", (e) => {
+    state.metric = e.target.value;
+    renderResults();
+    syncUrl();
+  });
+  $("run-search").value = state.search;
+  $("run-search").addEventListener("input", (e) => {
+    state.search = e.target.value;
+    state.page = 1;
+    renderRuns();
+    syncUrl();
+  });
+  $("run-algorithm").value = state.algo;
+  $("run-algorithm").addEventListener("change", (e) => {
+    state.algo = e.target.value;
+    state.page = 1;
+    renderRuns();
+    syncUrl();
+  });
+  $("rows-limit").addEventListener("change", (e) => {
+    state.limit = e.target.value;
+    state.page = 1;
+    renderRuns();
+  });
+  $("prev-page").addEventListener("click", () => {
+    state.page--;
+    renderRuns();
+  });
+  $("next-page").addEventListener("click", () => {
+    state.page++;
+    renderRuns();
+  });
+  $("reset-runs").addEventListener("click", () => {
+    state.search = "";
+    state.algo = "all";
+    state.page = 1;
+    $("run-search").value = "";
+    $("run-algorithm").value = "all";
+    renderRuns();
+    syncUrl();
+  });
+  $("export-runs").addEventListener("click", () => {
+    const cell = (v) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+    const data = [
+      ["Run ID", "Strategy", "Board", "Score", "Recorded notes"],
+      ...filtered().map((r) => [
+        r.Index,
+        NAMES[r.Algorithm],
+        `${Math.sqrt(state.board)}x${Math.sqrt(state.board)}`,
+        r.Score,
+        r.Notes,
+      ]),
+    ]
+      .map((row) => row.map(cell).join(","))
+      .join("\r\n");
+    const url = URL.createObjectURL(
+      new Blob(["\uFEFF" + data], { type: "text/csv;charset=utf-8;" }),
+    );
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `2048-runs-${Math.sqrt(state.board)}x${Math.sqrt(state.board)}.csv`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+  addEventListener("hashchange", () => {
+    const tab = location.hash.slice(1);
+    if (["results", "runs", "research"].includes(tab)) activateTab(tab);
+  });
+  window.dashboardModel = { stats, all, filtered, state };
+  if (!all.length) {
+    $("panel-results").innerHTML =
+      '<div class="no-script"><h2>The run data could not be loaded.</h2><p>Reload this page, or <a href="dashboard_data.json">open the original JSON</a>.</p></div>';
+    return;
+  }
+  setBoard(state.board);
+  activateTab(initialTab);
+})();

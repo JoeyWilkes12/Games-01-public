@@ -6,3 +6,8 @@ test-results/
 playwright-report/
 .DS_Store
 __MACOSX/
+
+# Local frontend review artifacts
+output/
+.playwright-cli/
+__pycache__/

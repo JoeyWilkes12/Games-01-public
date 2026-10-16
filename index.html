@@ -1,158 +1,243 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Hub - Play & Explore</title>
-    <link rel="stylesheet" href="style.css">
+  <head>
+    <script src="theme.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="Play logic, dice and strategy games. Explore the algorithms behind 2048 in the puzzle lab."
+    />
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <title>Game Hub — Play & discover</title>
+    <link rel="stylesheet" href="style.css" />
+      <link rel="stylesheet" href="theme.css">
 </head>
-
-<body>
-    <header>
-        <h1>Game Hub</h1>
-        <p class="subtitle">A collection of logic puzzles, strategy games, and algorithmic challenges.</p>
-        <div class="header-links"
-            style="margin-top: 1rem; display: flex; gap: 1.5rem; justify-content: center; font-size: 0.9rem;">
-            <a href="https://www.notion.so/Random-Event-Dice-Game-Public-2e2692f524348040969cd794baa02219?source=copy_link"
-                target="_blank"
-                style="color: var(--primary-color); text-decoration: none; display: flex; align-items: center; gap: 0.5rem;">
-                <span>📄</span> Website Overview
-            </a>
-            <a href="https://github.com/JoeyWilkes12/Games-01-public" target="_blank"
-                style="color: var(--primary-color); text-decoration: none; display: flex; align-items: center; gap: 0.5rem;">
-                <span>💻</span> See code here
-            </a>
+  <body>
+    <a class="skip-link" href="#main">Skip to games</a>
+    <header class="site-header">
+      <nav class="site-nav wrap" aria-label="Main navigation">
+        <a class="brand" href="index.html"
+          ><span class="brand-mark" aria-hidden="true"
+            ><i></i><i></i><i></i><i></i></span
+          >Game Hub</a
+        >
+        <div class="nav-links">
+          <a href="index.html" aria-current="page">Play</a
+          ><a href="dashboard.html">2048 lab</a>
         </div>
+      </nav>
     </header>
-
-    <main>
-        <div class="games-grid">
-            <!-- Random Event Dice (Original) -->
-            <a href="apps/games/Random Event Dice/index.html" class="game-card">
-                <div class="card-image poisson-bg">
-                    <div class="game-icon">🎲</div>
-                </div>
-                <div class="card-content">
-                    <div>
-                        <div class="card-status status-playable">Playable</div>
-                        <h2 class="card-title">Random Event Dice</h2>
-                    </div>
-                </div>
-            </a>
-
-            <!-- 2048 -->
-            <a href="apps/games/2048/index.html" class="game-card">
-                <div class="card-image num-2048-bg">
-                    <div class="game-icon">🔢</div>
-                </div>
-                <div class="card-content">
-                    <div>
-                        <div class="card-status status-playable">Playable</div>
-                        <h2 class="card-title">2048</h2>
-                    </div>
-                </div>
-            </a>
-
-            <!-- Sliding Puzzle -->
-            <a href="apps/games/Sliding Puzzle 3x3/index.html" class="game-card">
-                <div class="card-image puzzle-bg">
-                    <div class="game-icon">🧩</div>
-                </div>
-                <div class="card-content">
-                    <div>
-                        <div class="card-status status-playable">Playable</div>
-                        <h2 class="card-title">Sliding Puzzle</h2>
-                    </div>
-                </div>
-            </a>
-
-            <!-- Bank -->
-            <a href="apps/games/Bank/index.html" class="game-card">
-                <div class="card-image bank-bg">
-                    <div class="game-icon">🏦</div>
-                </div>
-                <div class="card-content">
-                    <div>
-                        <div class="card-status status-playable">Playable</div>
-                        <h2 class="card-title">Bank</h2>
-                    </div>
-                </div>
-            </a>
-
-            <!-- Acquire (Coming Soon) -->
-
-            <a href="#" class="game-card coming-soon">
-                <div class="card-image acquire-bg">
-                    <div class="game-icon">🏨</div>
-                </div>
-                <div class="card-content">
-                    <div>
-                        <div class="card-status status-soon">Coming Soon</div>
-                        <h2 class="card-title">Acquire</h2>
-                    </div>
-                </div>
-            </a>
-
-            <!-- Mastermind (Coming Soon) -->
-            <a href="#" class="game-card coming-soon">
-                <div class="card-image mastermind-bg">
-                    <div class="game-icon">🔴</div>
-                </div>
-                <div class="card-content">
-                    <div>
-                        <div class="card-status status-soon">Coming Soon</div>
-                        <h2 class="card-title">Mastermind</h2>
-                    </div>
-                </div>
-            </a>
-
-            <!-- Queens (Coming Soon) -->
-            <a href="#" class="game-card coming-soon">
-                <div class="card-image queens-bg">
-                    <div class="game-icon">👑</div>
-                </div>
-                <div class="card-content">
-                    <div>
-                        <div class="card-status status-soon">Coming Soon</div>
-                        <h2 class="card-title">Queens</h2>
-                    </div>
-                </div>
-            </a>
-
-            <!-- Wordle (Coming Soon) -->
-            <a href="#" class="game-card coming-soon">
-                <div class="card-image wordle-bg">
-                    <div class="game-icon">📝</div>
-                </div>
-                <div class="card-content">
-                    <div>
-                        <div class="card-status status-soon">Coming Soon</div>
-                        <h2 class="card-title">Wordle</h2>
-                    </div>
-                </div>
-            </a>
-
-            <!-- Risk (Coming Soon) -->
-            <a href="#" class="game-card coming-soon">
-                <div class="card-image risk-bg">
-                    <div class="game-icon">🌍</div>
-                </div>
-                <div class="card-content">
-                    <div>
-                        <div class="card-status status-soon">Coming Soon</div>
-                        <h2 class="card-title">Risk</h2>
-                    </div>
-                </div>
-            </a>
+    <main class="wrap" id="main">
+      <section class="hub-intro">
+        <h1>A little play.<br />A lot to discover.</h1>
+        <p>
+          Logic puzzles, lucky rolls, and the algorithms that make the next
+          move.
+        </p>
+      </section>
+      <section class="featured-game" aria-labelledby="featured-title">
+        <div class="featured-copy">
+          <h2 id="featured-title">2048</h2>
+          <p>
+            One swipe. Two matching tiles. See how far a good strategy can take
+            you.
+          </p>
+          <div class="actions">
+            <a class="btn" href="apps/games/2048/index.html"
+              >Play 2048
+              <svg class="icon" aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M5 12h14m-6-6 6 6-6 6" /></svg></a
+            ><a class="btn secondary" href="dashboard.html">Explore the AI</a>
+          </div>
         </div>
+        <div class="tile-stage" aria-hidden="true">
+          <div class="mini-board">
+            <span>2</span><span>4</span><span class="t8">8</span
+            ><span class="t16">16</span><span>4</span><span class="t8">8</span
+            ><span class="t16">16</span><span class="t32">32</span
+            ><span class="t8">8</span><span class="t16">16</span
+            ><span class="t32">32</span><span class="t64">64</span
+            ><span class="t16">16</span><span class="t32">32</span
+            ><span class="t2048">2048</span>
+          </div>
+        </div>
+      </section>
+      <section class="game-list" aria-labelledby="more-games">
+        <div class="section-heading">
+          <h2 id="more-games">Find your next game</h2>
+          <p>A quick puzzle or a game with friends.</p>
+        </div>
+        <div class="games-grid">
+          <a
+            class="game-card"
+            href="apps/games/Random%20Event%20Dice/index.html"
+            ><div class="game-visual dice-visual" aria-hidden="true">
+              <svg viewBox="0 0 140 140" fill="none">
+                <rect
+                  x="15"
+                  y="18"
+                  width="72"
+                  height="72"
+                  rx="15"
+                  transform="rotate(-12 15 18)"
+                  fill="#fff"
+                />
+                <g fill="currentColor">
+                  <circle cx="34" cy="35" r="5" />
+                  <circle cx="65" cy="28" r="5" />
+                  <circle cx="49" cy="51" r="5" />
+                  <circle cx="39" cy="68" r="5" />
+                  <circle cx="70" cy="62" r="5" />
+                </g>
+                <rect
+                  x="65"
+                  y="65"
+                  width="65"
+                  height="65"
+                  rx="14"
+                  transform="rotate(10 65 65)"
+                  fill="currentColor"
+                />
+                <circle cx="79" cy="82" r="5" fill="white" />
+                <circle cx="96" cy="104" r="5" fill="white" />
+              </svg>
+            </div>
+            <div>
+              <h3>
+                Random Event Dice
+                <svg class="icon" aria-hidden="true" viewBox="0 0 24 24">
+                  <path d="M5 12h14m-6-6 6 6-6 6" />
+                </svg>
+              </h3>
+              <p>Roll, react, and see where chance takes your group.</p>
+            </div></a
+          >
+          <a
+            class="game-card"
+            href="apps/games/Sliding%20Puzzle%203x3/index.html"
+            ><div class="game-visual puzzle-visual" aria-hidden="true">
+              <svg viewBox="0 0 140 140">
+                <g fill="#fff">
+                  <rect x="9" y="9" width="37" height="37" rx="6" />
+                  <rect x="51" y="9" width="37" height="37" rx="6" />
+                  <rect x="93" y="9" width="37" height="37" rx="6" />
+                  <rect x="9" y="51" width="37" height="37" rx="6" />
+                  <rect x="51" y="51" width="37" height="37" rx="6" />
+                  <rect x="93" y="51" width="37" height="37" rx="6" />
+                  <rect x="9" y="93" width="37" height="37" rx="6" />
+                  <rect x="51" y="93" width="37" height="37" rx="6" />
+                </g>
+                <g
+                  fill="#8c472a"
+                  font-family="Space Grotesk"
+                  font-size="23"
+                  text-anchor="middle"
+                >
+                  <text x="28" y="36">1</text>
+                  <text x="70" y="36">2</text>
+                  <text x="112" y="36">3</text>
+                  <text x="28" y="78">4</text>
+                  <text x="70" y="78">5</text>
+                  <text x="112" y="78">6</text>
+                  <text x="28" y="120">7</text>
+                  <text x="70" y="120">8</text>
+                </g>
+              </svg>
+            </div>
+            <div>
+              <h3>
+                Sliding Puzzle
+                <svg class="icon" aria-hidden="true" viewBox="0 0 24 24">
+                  <path d="M5 12h14m-6-6 6 6-6 6" />
+                </svg>
+              </h3>
+              <p>Eight tiles, one empty space. Put everything in its place.</p>
+            </div></a
+          >
+          <a class="game-card" href="apps/games/Bank/index.html"
+            ><div class="game-visual bank-visual" aria-hidden="true">
+              <svg viewBox="0 0 140 140" fill="none">
+                <ellipse cx="70" cy="106" rx="43" ry="15" fill="#718440" />
+                <path
+                  d="M27 91v15c0 8 19 15 43 15s43-7 43-15V91"
+                  fill="#718440"
+                />
+                <ellipse cx="70" cy="91" rx="43" ry="15" fill="#a6b46f" />
+                <path
+                  d="M27 72v15c0 8 19 15 43 15s43-7 43-15V72"
+                  fill="#718440"
+                />
+                <ellipse cx="70" cy="72" rx="43" ry="15" fill="#bdca8f" />
+                <path
+                  d="M27 53v15c0 8 19 15 43 15s43-7 43-15V53"
+                  fill="#718440"
+                />
+                <ellipse cx="70" cy="53" rx="43" ry="15" fill="#d3dfa7" />
+                <path
+                  d="M61 49h18m-18 7h18m-9-12v17"
+                  stroke="#4b6223"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </div>
+            <div>
+              <h3>
+                Bank
+                <svg class="icon" aria-hidden="true" viewBox="0 0 24 24">
+                  <path d="M5 12h14m-6-6 6 6-6 6" />
+                </svg>
+              </h3>
+              <p>Press your luck, or bank your points before the next roll.</p>
+            </div></a
+          >
+        </div>
+      </section>
+      <section class="lab-entry">
+        <div>
+          <h2>Play meets a good question.</h2>
+          <p>
+            Which 2048 strategy scores highest? Compare recorded runs, inspect
+            the evidence, and read the research behind the moves.
+          </p>
+        </div>
+        <a class="btn" href="dashboard.html"
+          >Open the 2048 lab
+          <svg class="icon" aria-hidden="true" viewBox="0 0 24 24">
+            <path d="M5 12h14m-6-6 6 6-6 6" /></svg
+        ></a>
+      </section>
+      <details class="upcoming">
+        <summary>More games on the drawing board</summary>
+        <p>
+          Acquire, Mastermind, Queens, Wordle, and Risk are planned. Explore the
+          playable games above while these take shape.
+        </p>
+      </details>
     </main>
-
-    <script src="script.js"></script>
-    <footer
-        style="text-align: center; padding: 2rem; color: #94a3b8; font-size: 0.85rem; border-top: 1px solid #334155; margin-top: 2rem;">
-        <p>v3.03.00</p>
+    <footer class="site-footer">
+      <div class="footer-inner wrap">
+        <span
+          >Made for curious players.
+          <span data-app-version>v3.4.0-alpha.5 · Preview</span></span
+        >
+        <div class="footer-links">
+          <a href="about.html">About</a>
+          <a
+            href="https://www.notion.so/Random-Event-Dice-Game-Public-2e2692f524348040969cd794baa02219?source=copy_link"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Project overview</a
+          ><a
+            href="https://github.com/JoeyWilkes12/Games-01-public"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Source code</a
+          ><a href="changelog.html">Changelog</a>
+        </div>
+      </div>
     </footer>
-</body>
-
+    <script src="scripts/version.js"></script>
+  </body>
 </html>

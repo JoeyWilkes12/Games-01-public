@@ -1,0 +1,47 @@
+{
+  "reviewedAt": "2026-10-12",
+  "extractionVersion": 1,
+  "localCorpus": "research/local (ignored)",
+  "sources": [
+    {
+      "id": "jaskowski-2016",
+      "sha256": "d842704fff21035cc0f28dcc2c126b214c3b0c792177d8770cc727c5d7144342",
+      "pdfBytes": 559289,
+      "pages": 12,
+      "pagesWithText": 12,
+      "embeddedImages": 4,
+      "previewPages": [
+        2,
+        11
+      ],
+      "warnings": []
+    },
+    {
+      "id": "zaky-2014",
+      "sha256": "b1622ca8abead5dfc3f513bc7da0267ffd4f401c3b6e558e6e62ad6336909e61",
+      "pdfBytes": 652418,
+      "pages": 6,
+      "pagesWithText": 6,
+      "embeddedImages": 10,
+      "previewPages": [
+        3,
+        5
+      ],
+      "warnings": []
+    },
+    {
+      "id": "rodgers-levine-2014",
+      "sha256": "fd155447a8986d51ff37b2aaf8cc17b48fb5104a6893d30022d08d015f740712",
+      "pdfBytes": 250513,
+      "pages": 2,
+      "pagesWithText": 2,
+      "embeddedImages": 3,
+      "previewPages": [
+        1,
+        2
+      ],
+      "warnings": []
+    }
+  ],
+  "limitations": "Text order and equations need visual verification; no OCR. Full sources are not redistributed."
+}

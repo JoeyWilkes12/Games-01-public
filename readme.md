@@ -7,7 +7,34 @@ Welcome to my games repository! I explore logical aspects and algorithmic soluti
 
 ---
 
-## Game Gallery
+## Redesign preview
+
+This branch previews **3.4.0-alpha.5**, the approved 3D Random Event Dice update on `codex/dice-3d-roll`, including the mobile redesign. The current Pages preview remains **3.4.0-alpha.3** on `codex/mobile-game-lab`. The separate Library design branch uses **3.4.0-alpha.4** and is not included here. `main` remains unchanged. Every HTML page has an Appearance selector with Light, Dark, and live System modes; your choice is shared across pages. Application display versions come from `version.json`; saved-game/configuration schema versions remain independent. See [changelog](CHANGELOG.md) and [versioning policy](docs/versioning.md).
+
+Run the static app locally from this folder:
+
+```sh
+python3 -m http.server 4173 --bind 127.0.0.1
+```
+
+Open [the hub](http://127.0.0.1:4173/) or [the 2048 lab](http://127.0.0.1:4173/dashboard.html). The lab separates results, inspectable run records and annotated research. [Source audit and PDF extraction instructions](docs/research-notes.md) document the historical observations and local-only research corpus.
+
+## Reading pages
+
+[About Game Hub](docs/about.md) introduces the project. The [Changelog](CHANGELOG.md), this README, versioning, research notes, PDF extraction, and testing guide have themed HTML editions linked from the site. They are pre-rendered and work without JavaScript; appearance preferences use the shared selector.
+
+To refresh the committed HTML after editing a public Markdown source, use Python 3.10 or newer:
+
+```sh
+python3 -m venv /tmp/game-hub-docs
+/tmp/game-hub-docs/bin/python -m pip install -r scripts/requirements-docs.txt
+/tmp/game-hub-docs/bin/python scripts/build-docs.py
+/tmp/game-hub-docs/bin/python scripts/build-docs.py --check
+```
+
+The generator rejects unresolved local links and rewrites document links to HTML. Edit the Markdown sources, then regenerate and commit their HTML editions together. The reusable `assets/qr/changelog.svg` encodes the live changelog URL, retains a four-module quiet zone, and stays black on white in both appearances.
+
+## Game Gallery — earlier interface screenshots
 
 ### Game Hub
 ![Game Hub](screenshots/hub.png)
@@ -27,17 +54,17 @@ Welcome to my games repository! I explore logical aspects and algorithmic soluti
 ---
 
 ## Playable Games
-- [Random Event Dice (v2.0)](apps/games/Random%20Event%20Dice)
-- [2048](apps/games/2048)
-- [Sliding Puzzle 3x3](apps/games/Sliding%20Puzzle%203x3)
-- [Bank](apps/games/Bank)
+- [Random Event Dice (v2.0)](apps/games/Random%20Event%20Dice/index.html)
+- [2048](apps/games/2048/index.html)
+- [Sliding Puzzle 3x3](apps/games/Sliding%20Puzzle%203x3/index.html)
+- [Bank](apps/games/Bank/index.html)
 
 ## Coming Soon / In Development
-- [Acquire](apps/games/Acquire)
-- [Mastermind](apps/games/Mastermind)
-- [Queens](apps/games/Queens)
-- [Wordle](apps/games/Wordle)
-- [Risk](apps/games/Risk)
+- [Acquire](#acquire-coming-soon)
+- [Mastermind](#mastermind-coming-soon)
+- [Queens](#queens-coming-soon)
+- [Wordle](#wordle-coming-soon)
+- [Risk](#risk-coming-soon)
 
 ## Development & Deployment
 
@@ -48,8 +75,10 @@ Reproducibility is ensured through semantic versioning of game logic and determi
 
 ### Deployment (GitHub Pages)
 This repository is deployed using [GitHub Pages](https://pages.github.com/).
-- **Method**: Static file serving from the `main` branch.
-- **CI/CD**: Currently, there are no GitHub Actions or complex build pipelines. Updates are live immediately upon push to the main branch.
+- **Source**: The root (`/`) of `codex/mobile-game-lab`, published directly as a preview without merging into `main`.
+- **Build**: GitHub’s generated Pages workflow serves the static files; `.nojekyll` bypasses Jekyll processing. Future pushes to this branch trigger publication after the workflow succeeds.
+- **Scope**: `main` remains the default branch. Local research PDFs and review screenshots are ignored and are not published.
+- **Appearance**: Every HTML page supports Light, Dark, and System modes.
 
 ### Testing
 

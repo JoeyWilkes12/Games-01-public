@@ -2,24 +2,29 @@
 <html lang="en">
 
 <head>
+    <script src="../../../theme.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bank - Dice Game</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="../home_button_style.css">
     <link rel="stylesheet" href="../confirm-exit.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../game-foundation.css">
+    <link rel="stylesheet" href="lab-style.css">
+    <link rel="stylesheet" href="../../../theme.css">
+    <link rel="icon" type="image/svg+xml" href="../../../assets/favicon.svg">
 </head>
 
 <body>
-    <a href="../../../index.html" class="home-button" id="home-btn" title="Back to Game Hub"
-        onclick="return window.game ? window.game.confirmExit() : true">🏠</a>
+
 
     <div class="game-container">
         <!-- Header -->
         <header>
-            <h1>🏦 BANK</h1>
-            <p class="subtitle">Roll the dice. Bank your points. Don't get busted!</p>
+    <a href="../../../index.html" class="home-button lab-home" id="home-btn" title="Back to Game Hub"
+        onclick="return window.game ? window.game.confirmExit() : true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14 5-7 7 7 7"/><path d="M7 12h14"/></svg><span>Games</span></a>
+            <h1>Bank</h1>
+            <p class="subtitle">Roll together. Choose when to bank your points.</p>
         </header>
 
         <!-- Main Game Area -->
@@ -34,9 +39,9 @@
 
             <!-- BANK Score Display -->
             <div class="bank-display">
-                <div class="bank-label">BANK</div>
+                <div class="bank-label">Available to bank</div>
                 <div class="bank-score" id="bank-score">0</div>
-                <div class="bank-sublabel">Points available to claim</div>
+                <div class="bank-sublabel">Points this round</div>
             </div>
 
             <!-- Dice Container -->
@@ -60,10 +65,10 @@
                         <button class="byod-btn" data-sum="10">10</button>
                         <button class="byod-btn" data-sum="11">11</button>
                         <button class="byod-btn" data-sum="12">12</button>
-                        <button class="byod-btn byod-doubles" data-doubles="true">⚀⚀ Doubles</button>
+                        <button class="byod-btn byod-doubles" data-doubles="true">Doubles</button>
                     </div>
                 </details>
-                <div class="last-roll-info" id="last-roll-info"></div>
+                <div class="last-roll-info" id="last-roll-info" aria-live="polite"></div>
             </div>
 
             <!-- Alert Message -->
@@ -80,8 +85,8 @@
 
             <!-- Action Buttons -->
             <div class="action-buttons">
-                <button class="btn btn-roll" id="roll-btn">🎲 Roll Dice</button>
-                <button class="btn btn-undo" id="undo-btn" disabled title="Undo (Ctrl+Z)">↶ Undo</button>
+                <button class="btn btn-roll" id="roll-btn">Roll dice</button>
+                <button class="btn btn-undo" id="undo-btn" disabled title="Undo (Ctrl+Z)">Undo</button>
             </div>
 
             <!-- Banking info (hides after roll 3) -->
@@ -103,7 +108,7 @@
                         <!-- Populated by JavaScript with checkboxes -->
                     </div>
                 </div>
-                <button class="btn btn-bank" id="bank-btn" disabled>🏦 BANK Selected</button>
+                <button class="btn btn-bank" id="bank-btn" disabled>Bank selected</button>
             </details>
 
             <!-- Fallback dropdown (hidden, for backwards compatibility) -->
@@ -115,9 +120,9 @@
         <!-- Players Panel -->
         <aside class="players-panel" id="players-panel">
             <div class="panel-header">
-                <h2>🎯 Scoreboard</h2>
+                <h2>Scoreboard</h2>
                 <div class="panel-controls">
-                    <button class="btn-icon" id="toggle-settings" title="Settings">⚙️</button>
+                    <button class="btn-icon" id="toggle-settings" title="Settings" aria-label="Game settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 17h16"/><circle cx="9" cy="7" r="3" fill="currentColor"/><circle cx="15" cy="17" r="3" fill="currentColor"/></svg></button>
                 </div>
             </div>
 
@@ -146,7 +151,7 @@
 
             <!-- Full Scoreboard (Collapsible) -->
             <details class="full-scoreboard-details" id="full-scoreboard-details">
-                <summary>📋 Full Scoreboard</summary>
+                <summary>Full scoreboard</summary>
                 <div class="players-list" id="players-list">
                     <!-- Populated by JavaScript -->
                 </div>
@@ -154,10 +159,10 @@
         </aside>
 
         <!-- Settings Panel -->
-        <div class="settings-panel hidden" id="settings-panel">
+        <div class="settings-panel hidden" id="settings-panel" role="dialog" aria-modal="true" aria-label="Game settings" tabindex="-1">
             <div class="settings-header">
-                <h3>⚙️ Game Settings</h3>
-                <button class="btn-icon" id="close-settings">✖</button>
+                <h3>Game settings</h3>
+                <button class="btn-icon" id="close-settings" aria-label="Close settings">&times;</button>
             </div>
             <div class="settings-content">
                 <div class="setting-group">
@@ -198,20 +203,20 @@
                 <div class="setting-group json-config-group">
                     <label>Configuration</label>
                     <div class="json-config-buttons">
-                        <button id="import-json-btn" class="btn-small" title="Import Configuration">📤 Import</button>
-                        <button id="export-json-btn" class="btn-small" title="Export Configuration">📥 Export</button>
+                        <button id="import-json-btn" class="btn-small" title="Import Configuration">Import</button>
+                        <button id="export-json-btn" class="btn-small" title="Export Configuration">Export</button>
                         <input type="file" id="json-file-input" accept=".json" hidden>
                     </div>
                 </div>
                 <div class="setting-group">
-                    <button class="btn btn-new-game" id="new-game-btn">🎮 New Game</button>
+                    <button class="btn btn-new-game" id="new-game-btn">New game</button>
                 </div>
             </div>
         </div>
 
         <!-- Probability Cheatsheet with Survival -->
         <details class="probability-cheatsheet" id="probability-cheatsheet">
-            <summary>📊</summary>
+            <summary>Dice probabilities</summary>
             <h4 class="cheatsheet-title">Dice Probabilities (2d6)</h4>
             <div class="survival-display">
                 <span class="survival-label">Survival (no 7)</span>
@@ -286,14 +291,14 @@
         </details>
 
         <!-- Game Over Modal -->
-        <div class="modal hidden" id="game-over-modal">
+        <div class="modal hidden" id="game-over-modal" role="dialog" aria-modal="true" aria-label="Game complete" tabindex="-1">
             <div class="modal-content">
-                <h2>🏆 Game Over!</h2>
+                <h2>Game complete</h2>
                 <div class="winner-display" id="winner-display">
                     <!-- Populated by JavaScript -->
                 </div>
                 <div class="game-over-actions">
-                    <button class="btn btn-new-game" id="play-again-btn">🎮 Play Again</button>
+                    <button class="btn btn-new-game" id="play-again-btn">Play again</button>
                     <button class="btn btn-undo" id="undo-from-gameover-btn" disabled title="Undo last action">↶
                         Undo</button>
                 </div>
@@ -305,9 +310,9 @@
     </div>
 
     <!-- Exit Confirmation Modal -->
-    <div class="confirm-exit-overlay hidden" id="confirm-exit-modal">
+    <div class="confirm-exit-overlay hidden" id="confirm-exit-modal" role="dialog" aria-modal="true" aria-label="Leave game?" tabindex="-1">
         <div class="confirm-exit-modal">
-            <div class="confirm-exit-icon">⚠️</div>
+            <div class="confirm-exit-icon"></div>
             <div class="confirm-exit-title">Leave Game?</div>
             <div class="confirm-exit-message">Your current game progress will be lost. Are you sure you want to return
                 to the Game Hub?</div>
@@ -319,6 +324,7 @@
     </div>
 
     <script src="script.js"></script>
+    <script src="../game-ui.js"></script>
 </body>
 
 </html>

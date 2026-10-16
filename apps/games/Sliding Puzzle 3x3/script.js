@@ -56,10 +56,12 @@ function init() {
             // UI Toggle
             if (isAdvancedMode) {
                 advancedBtn.classList.add('active');
-                advancedBtn.innerHTML = '<span class="emoji">🎓</span> Advanced: ON';
+                advancedBtn.textContent = 'Number mode: on';
+                advancedBtn.setAttribute('aria-pressed', 'true');
             } else {
                 advancedBtn.classList.remove('active');
-                advancedBtn.innerHTML = '<span class="emoji">🎓</span> Advanced';
+                advancedBtn.textContent = 'Number mode';
+                advancedBtn.setAttribute('aria-pressed', 'false');
             }
             document.body.classList.toggle('mode-advanced', isAdvancedMode);
 
@@ -188,10 +190,17 @@ function performMove(index) {
     const neighbors = getNeighbors(emptyPos);
 
     if (neighbors.includes(index)) {
+        const focusedTile = gameGrid.contains(document.activeElement) ? document.activeElement : null;
+        const focusedIndex = focusedTile ? Number(focusedTile.dataset.index) : null;
+        const nextFocusIndex = focusedIndex === index ? emptyPos : focusedIndex;
+
         [currentState[emptyPos], currentState[index]] = [currentState[index], currentState[emptyPos]];
         movesTaken++;
 
         render(gameGrid, currentState, true);
+        if (nextFocusIndex !== null) {
+            gameGrid.querySelector(`button[data-index="${nextFocusIndex}"]`)?.focus({ preventScroll: true });
+        }
         checkWin();
         updateStatsUI(movesTaken);
 
@@ -211,8 +220,10 @@ function checkWin() {
 
 function render(container, state, interactive) {
     container.innerHTML = '';
+    const tileDescriptions = [];
     state.forEach((val, index) => {
-        const tile = document.createElement('div');
+        const tile = document.createElement(interactive && val !== 0 ? 'button' : 'div');
+        if (interactive && val !== 0) tile.type = 'button';
         tile.className = 'tile';
         tile.setAttribute('data-index', index);
 
@@ -228,12 +239,19 @@ function render(container, state, interactive) {
             }
         }
 
-        if (interactive) {
+        const color = Array.from(tile.classList).find(name => name.startsWith('color-'))?.replace('color-', '') || 'empty';
+        const description = `${color}${isAdvancedMode && val ? ' ' + val : ''}, row ${Math.floor(index / GRID_SIZE) + 1}, column ${index % GRID_SIZE + 1}`;
+        tile.setAttribute('aria-label', description);
+        tileDescriptions.push(description);
+        if (interactive && val !== 0) {
             tile.addEventListener('click', () => handleTileClick(index));
         }
 
         container.appendChild(tile);
     });
+    if (!interactive) {
+        container.setAttribute('aria-label', 'Target pattern. ' + tileDescriptions.join('; ') + '.');
+    }
 }
 
 function updateStatsUI(moves) {
@@ -420,7 +438,7 @@ function startAutoSolve() {
     if (JSON.stringify(currentState) === JSON.stringify(targetState)) return;
 
     isAutoSolving = true;
-    solveBtn.textContent = "⏹ Stop";
+    solveBtn.textContent = "Stop autoplay";
     solveBtn.classList.remove('btn-highlight');
     solveBtn.classList.add('btn-primary'); // Indicate active/toggle
 
@@ -430,7 +448,7 @@ function startAutoSolve() {
 function stopAutoSolve() {
     isAutoSolving = false;
     clearTimeout(autoSolveInterval);
-    solveBtn.textContent = "🤖 Play for Me";
+    solveBtn.textContent = "Play for me";
     solveBtn.classList.remove('btn-primary');
     solveBtn.classList.add('btn-highlight');
 }
@@ -495,3 +513,5 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Start
 init();
+
+window.render_game_to_text = () => JSON.stringify({ game: 'Color Match', currentState, targetState, isAdvancedMode, moves: moveCountEl.textContent });

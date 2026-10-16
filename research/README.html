@@ -1,0 +1,31 @@
+<!doctype html>
+<!-- Generated from research/README.md by scripts/build-docs.py. Edit the Markdown source. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script src="../theme.js"></script>
+  <meta name="description" content="Reproduce the research corpus while keeping complete sources local.">
+  <title>Local PDF extraction guide — Game Hub</title>
+  <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../docs.css">
+  <link rel="stylesheet" href="../theme.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header"><nav class="site-nav wrap" aria-label="Main navigation"><a class="brand" href="../index.html"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Game Hub</a><div class="nav-links"><a href="../index.html">Play</a><a href="../dashboard.html">2048 lab</a></div></nav></header>
+  <main class="wrap" id="main">
+    <div class="doc-heading"><h1 id="local-research-corpus">Local PDF extraction guide</h1><p>Reproduce the research corpus while keeping complete sources local.</p></div>
+
+
+    <div class="doc-layout"><article class="doc-content" aria-label="Local PDF extraction guide"><p>Three directly relevant 2048 PDFs are ingested locally. See <a href="../docs/research-notes.html">source notes</a>, <a href="sources.json">source manifest</a>, and <a href="coverage.json">extraction coverage</a>.</p>
+<p>Run <code>python3 scripts/ingest-research.py --fetch</code> from the repository root to fetch and extract the public PDFs. Run without <code>--fetch</code> to repeat extraction offline. Python requires pypdf, Pillow and Poppler or pypdfium2. The source manifest pins fingerprints and relevant pages.</p>
+<p>Each ignored <code>local/&lt;source-id&gt;/</code> directory contains <code>source.pdf</code>, <code>full-text.txt</code>, page text, an image/page mapping and figure/page previews. Filenames are listed by the manifest rather than assumed here. The complete 20-page corpus has 17 embedded raster images and six rendered previews. Vector charts are captured by page renders, not embedded raster extraction.</p>
+<p>The original PDFs and extracts stay local because blanket redistribution rights were not established. Only concise original commentary, metadata and reproducible scripts belong in public source. The script never uploads contents.</p>
+<p class="doc-origin"><a href="#main">Back to top</a></p></article><aside class="doc-sidebar"><h2>Project pages</h2><nav aria-label="Project documents"><a href="../about.html">About Game Hub</a><a href="../changelog.html">Changelog</a><a href="../readme.html">Project guide / README</a><a href="../docs/versioning.html">Application versioning</a><a href="../docs/research-notes.html">2048 research and data notes</a><a href="README.html" aria-current="page">Local PDF extraction guide</a><a href="../tests.html">Testing guide</a></nav></aside></div>
+  </main>
+  <footer class="site-footer"><div class="footer-inner wrap"><span>Game Hub · <span data-app-version>v3.4.0-alpha.5 · Preview</span></span><div class="footer-links"><a href="../about.html">About</a><a href="../changelog.html">Changelog</a><a href="../dashboard.html">2048 lab</a></div></div></footer>
+  <script src="../scripts/version.js"></script>
+</body>
+</html>
