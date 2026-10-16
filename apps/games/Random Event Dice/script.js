@@ -380,8 +380,22 @@ class DiceGame {
         this.rollInterval = null;
         this.resetTimeout = null;
         this.timeLeft = 0;
+        this.timeRemainingMs = 0;
+        this.lastClockTick = 0;
+        this.resetRollDelay = 0;
         this.audioCtx = null;
         this.diceValues = [];
+        this.pendingRoll = null;
+        this.rollRevealTimeout = null;
+        this.nextRollAt = 0;
+        this.rollDelayRemaining = 0;
+        this.resetRemaining = 0;
+        this.resetDeadline = 0;
+        this.motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
+        this.diceDisplayMode = '3d';
+        try {
+            if (localStorage.getItem('random-event-dice-display') === '2d') this.diceDisplayMode = '2d';
+        } catch (_) { /* A blocked store still allows the control on this page. */ }
 
         // Default players (1-15)
         this.defaultPlayers = {
@@ -489,6 +503,9 @@ class DiceGame {
             toggleTimerBtn: document.getElementById('toggle-timer-visibility')
         };
 
+        this.diceDisplay = new DiceDisplay(this.dom.diceContainer, this.diceDisplayMode);
+        this.initDiceDisplay();
+
         // Initialize debug console
         this.initDebugConsole();
 
@@ -500,6 +517,40 @@ class DiceGame {
 
         this.initTimerToggle();
         this.init();
+    }
+
+    initDiceDisplay() {
+        document.querySelectorAll('[data-dice-display]').forEach(button => {
+            button.addEventListener('click', () => {
+                if (button.dataset.diceDisplay === this.diceDisplayMode) return;
+                // Finish one in-flight sample before changing its presentation.
+                this.finishPendingRoll();
+                this.diceDisplayMode = button.dataset.diceDisplay;
+                this.diceDisplay.mode = this.diceDisplayMode;
+                try { localStorage.setItem('random-event-dice-display', this.diceDisplayMode); } catch (_) {}
+                this.renderDice(this.diceDisplay.values.length === 0);
+                if (this.isResetting) this.dom.diceContainer.querySelectorAll('.die').forEach(die => die.classList.add('match'));
+            });
+        });
+        this.motionPreference.addEventListener('change', () => {
+            if (this.motionPreference.matches) this.finishPendingRoll();
+            this.updateDiceDisplayControls();
+        });
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) this.diceDisplay.stopMotion();
+        });
+        this.updateDiceDisplayControls();
+    }
+
+    updateDiceDisplayControls() {
+        document.querySelectorAll('[data-dice-display]').forEach(button => {
+            button.setAttribute('aria-pressed', String(button.dataset.diceDisplay === this.diceDisplayMode));
+        });
+        document.getElementById('dice-display-hint').textContent = this.diceDisplayMode === '2d'
+            ? 'Instant results, ready for fast rolling.'
+            : this.motionPreference.matches ? '3D dice with motion reduced to match your device preference.'
+            : this.settings.diceSides !== 6 ? 'Custom-sided dice use numbered 3D blocks.'
+            : '3D settles with each roll. Choose 2D for instant results.';
     }
 
     initTimerToggle() {
@@ -779,6 +830,11 @@ class DiceGame {
             return;
         }
 
+        // Commit the current sample once before simulating the remaining pool.
+        this.finishPendingRoll();
+        this.isPaused = false;
+        this.isResetting = false;
+        this.clearAlert();
         // Stop the normal game loop
         clearInterval(this.timer);
         clearInterval(this.rollInterval);
@@ -821,6 +877,8 @@ class DiceGame {
         this.timeLeft = 0;
         this.dom.timerDisplay.textContent = '00:00';
         this.dom.startBtn.disabled = false;
+        this.dom.startBtn.textContent = 'Start Game';
+        this.dom.startBtn.classList.remove('paused');
         this.dom.stopBtn.disabled = true;
         this.setInputsDisabled(false);
         if (this.dom.skipToEndBtn) {
@@ -944,6 +1002,7 @@ class DiceGame {
         }
 
         if (key === 'diceSides') {
+            if (!this.isPlaying) this.renderDice(true);
             this.samplePool.updateConfig(this.settings.diceCount, this.settings.diceSides);
             this.preGenerateSamples();
         }
@@ -961,8 +1020,8 @@ class DiceGame {
 
         // If interval changes while playing, restart loop
         if (this.isPlaying && key === 'interval' && !this.isResetting) {
-            clearInterval(this.rollInterval);
-            this.rollInterval = setInterval(() => this.rollDice(), this.settings.interval);
+            this.finishPendingRoll();
+            if (!this.isResetting) this.scheduleNextRoll(this.settings.interval);
         }
     }
 
@@ -1657,6 +1716,16 @@ class DiceGame {
     }
 
     pauseGame() {
+        this.syncClock();
+        if (!this.isPlaying) return;
+        const now = performance.now();
+        this.rollDelayRemaining = Math.max(0, this.nextRollAt - now);
+        this.resetRemaining = Math.max(0, this.resetDeadline - now);
+        if (this.pendingRoll) {
+            this.pendingRoll.remaining = Math.max(0, this.pendingRoll.deadline - now);
+            clearTimeout(this.rollRevealTimeout);
+            this.diceDisplay.pause();
+        }
         this.isPaused = true;
         this.dom.startBtn.textContent = 'Resume Game';
         this.dom.startBtn.classList.add('paused');
@@ -1677,8 +1746,14 @@ class DiceGame {
         this.dom.startBtn.classList.remove('paused');
 
         this.startTimer(false); // Resume timer without reset
-        if (!this.isResetting) {
-            this.startRollLoop();
+        if (this.isResetting) {
+            this.scheduleReset(this.resetRemaining);
+        } else {
+            if (this.pendingRoll) {
+                this.diceDisplay.resume();
+                this.scheduleRollReveal(this.pendingRoll.remaining);
+            }
+            this.scheduleNextRoll(this.rollDelayRemaining);
         }
 
         this.analyticsUpdateInterval = setInterval(() => {
@@ -1689,6 +1764,10 @@ class DiceGame {
     }
 
     handleGameExpired() {
+        this.timeRemainingMs = 0;
+        this.timeLeft = 0;
+        this.cancelPendingRoll();
+        this.isResetting = false;
         // Stop the game loop but allow extension
         this.isPlaying = false;
         this.isExpired = true;
@@ -1716,6 +1795,7 @@ class DiceGame {
     extendGame() {
         // Add 10 minutes
         this.timeLeft = 10 * 60;
+        this.timeRemainingMs = this.timeLeft * 1000;
         this.isPlaying = true;
         this.isPaused = false;
         this.isExpired = false;
@@ -1750,6 +1830,7 @@ class DiceGame {
     }
 
     stopGame() {
+        this.cancelPendingRoll();
         this.isPlaying = false;
         this.isPaused = false;
         this.isResetting = false;
@@ -1784,77 +1865,96 @@ class DiceGame {
     }
 
     startTimer(reset = true) {
-        if (reset) {
-            this.timeLeft = this.settings.duration * 60;
-        }
+        if (reset) this.timeRemainingMs = this.settings.duration * 60 * 1000;
+        this.timeLeft = Math.ceil(this.timeRemainingMs / 1000);
+        this.lastClockTick = performance.now();
         this.updateTimerDisplay();
+        clearInterval(this.timer);
+        this.timer = setInterval(() => this.syncClock(), 100);
+    }
 
-        this.timer = setInterval(() => {
-            if (!this.isResetting && !this.isPaused) {
-                this.timeLeft--;
-                this.updateTimerDisplay();
-                if (this.timeLeft <= 0) {
-                    this.handleGameExpired();
-                }
-            }
-        }, 1000);
+    syncClock() {
+        const now = performance.now();
+        const elapsed = now - this.lastClockTick;
+        this.lastClockTick = now;
+        if (!this.isPlaying || this.isPaused || this.isResetting) return;
+        this.timeRemainingMs = Math.max(0, this.timeRemainingMs - elapsed);
+        const seconds = Math.ceil(this.timeRemainingMs / 1000);
+        if (seconds !== this.timeLeft) {
+            this.timeLeft = seconds;
+            this.updateTimerDisplay();
+        }
+        if (this.timeRemainingMs === 0) this.handleGameExpired();
     }
 
     startRollLoop() {
-        this.rollDice();
-        this.rollInterval = setInterval(() => {
-            if (!this.isResetting && !this.isPaused) {
-                this.rollDice();
-            }
-        }, this.settings.interval);
+        clearTimeout(this.rollInterval);
+        this.nextRollAt = performance.now() + this.settings.interval;
+        if (!this.pendingRoll && !this.isResetting) this.rollDice();
+        if (!this.isResetting) this.scheduleNextRoll(Math.max(0, this.nextRollAt - performance.now()));
+    }
+
+    scheduleNextRoll(delay) {
+        clearTimeout(this.rollInterval);
+        this.nextRollAt = performance.now() + delay;
+        this.rollInterval = setTimeout(() => {
+            if (!this.isPlaying || this.isPaused || this.isResetting) return;
+            // A delayed browser frame must settle its sample before the next one.
+            this.finishPendingRoll();
+            if (this.isResetting) return;
+            this.nextRollAt = performance.now() + this.settings.interval;
+            this.rollDice();
+            if (!this.isResetting) this.scheduleNextRoll(Math.max(0, this.nextRollAt - performance.now()));
+        }, delay);
     }
 
     setInputsDisabled(disabled) {
-        Object.values(this.dom.inputs).forEach(input => {
-            input.disabled = disabled;
-        });
+        Object.values(this.dom.inputs).forEach(input => { input.disabled = disabled; });
     }
 
     renderDice(placeholder = false) {
-        this.dom.diceContainer.innerHTML = '';
-        for (let i = 0; i < this.settings.diceCount; i++) {
-            const dieFn = document.createElement('div');
-            dieFn.className = 'die';
-            dieFn.textContent = placeholder ? '?' : this.diceValues[i];
-
-            // Visual config could go here (color)
-            if (i === 0) dieFn.style.borderColor = "#ef4444"; // Red outline for die 1
-            if (i === 1) dieFn.style.borderColor = "#3b82f6"; // Blue outline for die 2
-
-            this.dom.diceContainer.appendChild(dieFn);
-        }
+        this.diceDisplay.render(this.settings.diceCount, this.settings.diceSides, placeholder ? [] : this.diceValues);
+        this.updateDiceDisplayControls();
     }
 
     rollDice() {
-        const diceEls = document.querySelectorAll('.die');
-        diceEls.forEach(el => {
-            el.classList.add('rolling');
-            setTimeout(() => el.classList.remove('rolling'), 200);
-        });
+        if (!this.isPlaying || this.isPaused || this.isResetting || this.pendingRoll) return;
+        const values = [...this.samplePool.getNext()];
+        const duration = this.diceDisplayMode === '2d' || this.motionPreference.matches || document.hidden
+            ? 0 : Math.min(650, this.settings.interval * .72);
+        this.pendingRoll = { values, remaining: duration, deadline: performance.now() + duration };
+        this.diceDisplay.roll(values, duration);
+        if (duration) this.scheduleRollReveal(duration);
+        else this.finishPendingRoll();
+    }
 
-        // Use pre-generated samples from the pool
-        this.diceValues = this.samplePool.getNext();
+    scheduleRollReveal(delay) {
+        if (!this.pendingRoll) return;
+        clearTimeout(this.rollRevealTimeout);
+        this.pendingRoll.deadline = performance.now() + delay;
+        this.rollRevealTimeout = setTimeout(() => {
+            if (!this.isPlaying || this.isPaused) return;
+            this.finishPendingRoll();
+        }, delay);
+    }
 
-        // Record roll in analytics
-        this.analytics.recordRoll(this.diceValues);
-
-        // Increment rolls since last event
+    finishPendingRoll() {
+        if (!this.pendingRoll) return;
+        clearTimeout(this.rollRevealTimeout);
+        const values = this.pendingRoll.values;
+        this.pendingRoll = null;
+        this.diceValues = values;
+        this.diceDisplay.settle(values);
+        this.analytics.recordRoll(values);
         this.rollsSinceLastEvent++;
         this.updateRollsCounter();
+        this.checkAlertCondition();
+    }
 
-        setTimeout(() => {
-            diceEls.forEach((el, i) => {
-                if (this.diceValues[i] !== undefined) {
-                    el.textContent = this.diceValues[i];
-                }
-            });
-            this.checkAlertCondition();
-        }, 150);
+    cancelPendingRoll() {
+        clearTimeout(this.rollRevealTimeout);
+        this.pendingRoll = null;
+        this.diceDisplay.settle(this.diceValues);
     }
 
     updateRollsCounter() {
@@ -1897,6 +1997,10 @@ class DiceGame {
     }
 
     triggerAlert() {
+        // Account for active time before entering the event hold.
+        this.syncClock();
+        if (!this.isPlaying) return;
+        this.resetRollDelay = this.isPaused ? this.rollDelayRemaining : Math.max(0, this.nextRollAt - performance.now());
         document.body.classList.add('alert-active');
         this.dom.alertMessage.classList.remove('hidden');
 
@@ -1920,11 +2024,21 @@ class DiceGame {
         this.isResetting = true;
         this.dom.alertMessage.textContent = `Event matched! Resetting in ${this.settings.resetDuration / 1000}s...`;
 
+        clearTimeout(this.rollInterval);
+        this.resetRemaining = this.settings.resetDuration;
+        if (!this.isPaused) this.scheduleReset(this.resetRemaining);
+    }
+
+    scheduleReset(delay) {
         clearTimeout(this.resetTimeout);
+        this.resetDeadline = performance.now() + delay;
         this.resetTimeout = setTimeout(() => {
+            if (!this.isPlaying || this.isPaused) return;
+            this.syncClock();
             this.clearAlert();
             this.isResetting = false;
-        }, this.settings.resetDuration);
+            this.scheduleNextRoll(this.resetRollDelay);
+        }, delay);
     }
 
     clearAlert() {
@@ -2018,6 +2132,20 @@ class DiceGame {
 let game;
 window.addEventListener('DOMContentLoaded', () => {
     game = new DiceGame();
+    window.render_game_to_text = () => JSON.stringify({
+        state: !game.isPlaying ? 'idle' : game.isPaused ? 'paused' : game.isResetting ? 'event' : game.pendingRoll ? 'rolling' : 'settled',
+        display: game.diceDisplayMode,
+        dice: game.diceDisplay.values,
+        diceSides: game.settings.diceSides,
+        intervalMs: game.settings.interval,
+        remainingSeconds: game.timeLeft,
+        totalRolls: game.analytics.totalRolls,
+        rollsSinceEvent: game.rollsSinceLastEvent,
+        player: game.dom.currentPlayerName.textContent,
+        event: game.isResetting,
+        reducedMotion: game.motionPreference.matches,
+        coordinates: 'DOM layout; dice ordered left to right, wrapping top to bottom'
+    });
 
     // ==================== Exit Confirmation ====================
 

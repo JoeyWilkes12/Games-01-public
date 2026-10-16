@@ -4,8 +4,11 @@ The application uses [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.
 and a curated [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/)
 changelog. `version.json` is the source of truth for the application version.
 
-The current worktree is **3.4.0-alpha.3**, a public prerelease preview.
-It is published directly from `codex/mobile-game-lab`; `main` remains unchanged. The intended
+The current worktree is **3.4.0-alpha.5**, the approved 3D-dice prerelease
+on `codex/dice-3d-roll`. The GitHub Pages source still uses the tagged mobile
+baseline **3.4.0-alpha.3** on `codex/mobile-game-lab`. The separate
+`codex/library-design-system` branch uses **3.4.0-alpha.4** and is not included
+in this preview. `main` remains at its existing baseline. The intended
 stable version is **3.4.0** because the work adds and reorganizes user-facing
 features while preserving saved-game configuration compatibility. A visual
 redesign alone does not require a major version.
@@ -40,7 +43,7 @@ URL and updates elements with the `data-app-version` attribute. Use a readable
 fallback so the page still identifies the preview if the manifest cannot load:
 
 ```html
-<span data-app-version>v3.4.0-alpha.3 · Preview</span>
+<span data-app-version>v3.4.0-alpha.5 · Preview</span>
 <script src="scripts/version.js" defer></script>
 ```
 
@@ -84,7 +87,7 @@ project's earlier development or deployment history.
 | `v3.03.00` | Footer changed at `f086ffe`; PR #4 merged at `a533fba` with title `V3.3.0 bank byod, undo functionality` | `a533fba` | Original UI label retained in the changelog; the merged PR establishes intended `3.3.0` numbering. |
 
 `v3.03.00` is not valid SemVer because numeric components contain leading zeros.
-The preview uses `3.4.0-alpha.3`, continuing the **intended 3.3.0 sequence** from
+The preview uses `3.4.0-alpha.5`, continuing the **intended 3.3.0 sequence** from
 PR #4. Historical versions are not retagged or retroactively certified as SemVer.
 No standalone 3.0.0, 3.1.0, or 3.2.x release is invented to fill numbering gaps.
 
@@ -96,6 +99,40 @@ migration branches are excluded from the changelog for `main`.
 
 Dates in historical changelog headings are commit dates for footer milestones
 and merge dates for merged milestones, recorded in the original Git metadata.
-No production deployment log or GitHub published-release record was used.
+No production deployment log or GitHub published-release record was used in that historical reconstruction.
 Compare links use full commit IDs whose ancestry was checked locally. They
 identify code changes, not proof of publication.
+
+## Tags recorded on 2026-10-16
+
+| Tag | Source | Meaning |
+| --- | --- | --- |
+| `v3.3.0` | Existing `origin/main` commit `a533fbaf36cf29525472c873aa0faf70aea915ee` | Retrospective normalized baseline, matching PR #4's intended version; the historical UI label remains documented. |
+| `v3.4.0-alpha.3` | Mobile worktree commit `1f9415dff1e55e4a71ec92df4eeaf8b8c7db61f4` | Exact previously published mobile/reading-page preview from which dice development branched. |
+| `v3.4.0-alpha.5` | Approved dice PR source commit | New 3D/2D display and timing prerelease, including the mobile baseline. |
+
+These annotated tags are created at their existing source commits; neither historical
+baseline is rewritten. Tag creation is recorded on 2026-10-16, separately from
+older commit/deployment dates. No GitHub Release object or new Pages deployment
+is implied. The next combined integration preview should use a new prerelease
+identifier rather than moving a published tag. `alpha.4` remains the separate
+Library branch's preview identity.
+
+`previousVersion` records the direct preview baseline, while
+`stableBaselineVersion` records the normalized stable baseline. Saved-game
+configuration versions and the Playwright package version remain independent.
+
+## Integrating the parallel work
+
+The dice branch contains all four mobile-baseline commits. Its PR to `main`
+therefore includes the mobile redesign, shared themes, themed reading pages,
+and QR code as well as the dice changes. Merging a second mobile-baseline PR
+would not add distinct work after that PR lands.
+
+The Library branch adds two commits after the same baseline. It can be integrated
+in a follow-up PR once the dice PR is reviewed and merged. If both features must
+ship together, use a temporary integration branch created from current `main`,
+review the feature PRs against that branch, resolve shared version/changelog/design
+files, test the combined app, and open one final integration PR to `main`.
+Every specific PR merge still requires the user's explicit approval; approval
+of a preview or permission to open a PR does not authorize merging it.

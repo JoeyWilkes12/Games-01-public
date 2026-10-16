@@ -46,3 +46,21 @@ Seven reading pages passed all 42 Light/Dark combinations at 320, 390, and 1440 
 The QR code was generated using the qr-code-generator skill as an SVG with H error correction and a four-module quiet zone. The actual 128-pixel-wide SVG rendered on the 320-pixel Changelog layout decoded via local macOS Vision in both themes to exactly `https://joeywilkes12.github.io/Games-01-public/changelog.html`. No physical-phone scan was performed. An ordinary Changelog link is provided alongside it.
 
 Hub-to-Changelog, About, README, contents anchors, dynamic research links, and keyboard focus of the table region were checked in the local browser. `scripts/build-docs.py --check` confirms generated HTML matches its Markdown sources. The independent review returned **ship** with no actionable findings.
+
+
+## 3D Random Event Dice preview — 2026-10-15
+
+Worktree branch `codex/dice-3d-roll` starts from the published `codex/mobile-game-lab` commit `1f9415d`. Default 3D tumbling and a saved 2D fast option were added only to the original Random Event Dice route. The six-sided renderer uses correct opposing faces and pip counts; custom-sided dice use numbered blocks. Rendering does not draw random samples.
+
+The focused browser verifier passed **21 checks**, including landing before event/analytics commits, one-second and 100ms cadence, all six front-face orientations, equal seeded results in both modes, pause/resume before landing and during reset holds, stop cancellation, mode switching, persistence, reduced motion, skip-to-end, expiration/extension, and active countdown accuracy during repeated event holds. Real-time transforms changed during a roll and settled correctly. Light/dark layouts at 320, 390, and 1440 pixels had no document overflow; mode controls meet 44px targets. Keyboard selection, visible focus, and 200% text zoom passed. Ten numbered blocks with values up to 100 fit the 320px layout. No browser errors were found.
+
+The existing Random Event Dice seeded browser suite passed **35 tests**, and its Node logic suite passed **46 assertions**. The web-game skill client ran against the local app using installed Chrome and DOM screenshots (the existing analytics canvas is hidden until opened); captured JSON state agreed with the display. Screenshot and timing records remain ignored under `output/playwright/dice-3d/`.
+
+Localhost port 4175 and its private Tailscale HTTP endpoint were checked from this Mac: the page, renderer, styles, and game script returned 200 and matched this worktree byte-for-byte. Other Serve mappings were preserved. No physical-phone or Safari test was performed. The app is a local preview; GitHub Pages publication was not changed.
+
+The single design detector pass reported four advisories: two local 7px radii, a 13px helper-text size, and the dark cast-shadow color. These are scoped to the inset display switch, physical cube faces, compact die captions, and object shadow; they follow the incumbent compact-control and tangible-die treatment rather than changing the shared visual system.
+
+
+## Approved PR preparation — 2026-10-16
+
+The user approved the 3D preview and supplied an approval screenshot for the PR. A fresh focused independent code reviewer returned **ship**, with no material renderer, scheduler, pause/reset, cancellation, or test-reproducibility findings. After a clean `npm ci --ignore-scripts`, the checked-in `scripts/verify-dice-display.mjs` passed all 21 checks using the locked Playwright dependency and installed Chrome. The application prerelease is now `3.4.0-alpha.5`; generated HTML and fallback labels are synchronized. Baseline tags identify existing commits rather than rewriting main or the published mobile branch. The PR to main includes the four mobile-base commits because those have not yet landed on main.

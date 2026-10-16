@@ -11,9 +11,24 @@ including the nonstandard `v3.03.00`. The repository had no Git tags at the time
 reconstruction. Links use verified commit boundaries rather than invented tags.
 See [versioning policy and evidence](docs/versioning.md).
 
-## Unreleased
+## [Unreleased]
 
-Changes not yet published will be listed here.
+Changes after this tagged preview will be listed here.
+
+## [3.4.0-alpha.5] - 2026-10-16
+
+Approved 3D-dice preview, based on the mobile preview `v3.4.0-alpha.3`.
+The separate Library design branch uses `3.4.0-alpha.4`; its styling is not
+included in this branch. This tag identifies reviewed source, not a new Pages deployment.
+
+### Added
+
+- Random Event Dice now defaults to 3D dice that tumble and settle within the configured roll interval. A saved 2D fast display option gives instant results, and reduced-motion preferences skip the tumble.
+
+### Fixed
+
+- Dice results, event alerts, and analytics now settle together without overlapping reveals at fast intervals. Pausing preserves an in-flight roll and event reset hold; stopping cancels pending reveals.
+- The active countdown excludes paused and reset-hold time, including rapid repeated events.
 
 ## [3.4.0-alpha.3] - 2026-10-12
 
@@ -56,7 +71,9 @@ Public preview published directly from `codex/mobile-game-lab` to GitHub Pages;
 
 ## [v3.03.00] - 2026-01-10
 
-Historical UI label. The corresponding merged pull request, [#4](https://github.com/JoeyWilkes12/Games-01-public/pull/4), calls this milestone **v3.3.0**.
+Historical UI label. The retrospective tag `v3.3.0` was added on 2026-10-16
+to the existing `origin/main` baseline `a533fba`, preserving the original label.
+The corresponding merged pull request, [#4](https://github.com/JoeyWilkes12/Games-01-public/pull/4), calls this milestone **v3.3.0**.
 
 ### Added
 
@@ -162,4 +179,7 @@ The available history begins at root commit `86c1414`. Earlier development and r
 
 [3.4.0-alpha.2]: https://github.com/JoeyWilkes12/Games-01-public/compare/a533fbaf36cf29525472c873aa0faf70aea915ee...dc49801da9b97033abdc4b9f50ea9ab976df2e42
 
-[3.4.0-alpha.3]: https://github.com/JoeyWilkes12/Games-01-public/compare/dc49801da9b97033abdc4b9f50ea9ab976df2e42...codex/mobile-game-lab
+[3.4.0-alpha.3]: https://github.com/JoeyWilkes12/Games-01-public/compare/dc49801da9b97033abdc4b9f50ea9ab976df2e42...v3.4.0-alpha.3
+
+[Unreleased]: https://github.com/JoeyWilkes12/Games-01-public/compare/v3.4.0-alpha.5...codex/dice-3d-roll
+[3.4.0-alpha.5]: https://github.com/JoeyWilkes12/Games-01-public/compare/v3.4.0-alpha.3...v3.4.0-alpha.5

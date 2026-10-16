@@ -300,3 +300,10 @@ Bank and Event Dice show large square dice on quiet white surfaces. Event matche
 Evidence: `style.css`, `dashboard.css`, `assets/fonts/fonts.css`, `apps/games/game-foundation.css`, the five game styles and lab overrides, and their current HTML/JavaScript. This source-based document does not assert browser verification. `.impeccable/design.json` schema version 2 extends these tokens with component previews, motion, breakpoints, and shadows; its generated tonal strips are preview aids, not additional implemented colors.
 
 Not canonized: residual close-character icons and inherited legacy dialog styling are implementation inconsistencies, not new system rules. The optional game themes are recorded as local behavior rather than promoted to global tokens.
+
+
+### Random Event Dice motion
+
+The 3D dice display extends the existing tangible-die treatment with six CSS faces, restrained face shading, and a single lifted tumble. Existing game colors and page themes remain authoritative. A visible 3D rolling / 2D fast control changes presentation independently of the seeded sample pool. Custom-sided dice use explicitly labeled numbered blocks. Results settle before event feedback; motion scales to the interval and respects reduced-motion, pause, stop, and hidden-page states.
+
+The display switch and cube faces use local 7px corners, with 13px helper text and captions. A soft black cast shadow at 40% opacity supports the dark-theme cube. These are object/control-specific details, not new global card or typography tokens.

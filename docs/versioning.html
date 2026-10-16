@@ -18,12 +18,15 @@
   <main class="wrap" id="main">
     <div class="doc-heading"><h1 id="application-versioning">Application versioning</h1><p>How versions are chosen, what stays compatible, and what the history can establish.</p></div>
 
-    <details class="doc-contents"><summary>On this page</summary><nav aria-label="On this page"><a href="#what-the-version-covers">What the version covers</a><a href="#displaying-the-version">Displaying the version</a><a href="#maintaining-the-changelog">Maintaining the changelog</a><a href="#reconstruction-evidence">Reconstruction evidence</a></nav></details>
+    <details class="doc-contents"><summary>On this page</summary><nav aria-label="On this page"><a href="#what-the-version-covers">What the version covers</a><a href="#displaying-the-version">Displaying the version</a><a href="#maintaining-the-changelog">Maintaining the changelog</a><a href="#reconstruction-evidence">Reconstruction evidence</a><a href="#tags-recorded-on-2026-10-16">Tags recorded on 2026-10-16</a><a href="#integrating-the-parallel-work">Integrating the parallel work</a></nav></details>
     <div class="doc-layout"><article class="doc-content" aria-label="Application versioning"><p>The application uses <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning 2.0.0</a>
 and a curated <a href="https://keepachangelog.com/en/1.1.0/">Keep a Changelog 1.1.0</a>
 changelog. <code>version.json</code> is the source of truth for the application version.</p>
-<p>The current worktree is <strong>3.4.0-alpha.3</strong>, a public prerelease preview.
-It is published directly from <code>codex/mobile-game-lab</code>; <code>main</code> remains unchanged. The intended
+<p>The current worktree is <strong>3.4.0-alpha.5</strong>, the approved 3D-dice prerelease
+on <code>codex/dice-3d-roll</code>. The GitHub Pages source still uses the tagged mobile
+baseline <strong>3.4.0-alpha.3</strong> on <code>codex/mobile-game-lab</code>. The separate
+<code>codex/library-design-system</code> branch uses <strong>3.4.0-alpha.4</strong> and is not included
+in this preview. <code>main</code> remains at its existing baseline. The intended
 stable version is <strong>3.4.0</strong> because the work adds and reorganizes user-facing
 features while preserving saved-game configuration compatibility. A visual
 redesign alone does not require a major version.</p>
@@ -51,7 +54,7 @@ manifest identifies the app.</p>
 <p>The shared <code>scripts/version.js</code> loader reads <code>version.json</code> relative to its own
 URL and updates elements with the <code>data-app-version</code> attribute. Use a readable
 fallback so the page still identifies the preview if the manifest cannot load:</p>
-<pre tabindex="0" aria-label="Code example"><code class="language-html">&lt;span data-app-version&gt;v3.4.0-alpha.3 · Preview&lt;/span&gt;
+<pre tabindex="0" aria-label="Code example"><code class="language-html">&lt;span data-app-version&gt;v3.4.0-alpha.5 · Preview&lt;/span&gt;
 &lt;script src=&quot;scripts/version.js&quot; defer&gt;&lt;/script&gt;
 </code></pre>
 <p>Nested game pages can load the same script using their relative path, for
@@ -126,7 +129,7 @@ project's earlier development or deployment history.</p>
 </tbody>
 </table></div>
 <p><code>v3.03.00</code> is not valid SemVer because numeric components contain leading zeros.
-The preview uses <code>3.4.0-alpha.3</code>, continuing the <strong>intended 3.3.0 sequence</strong> from
+The preview uses <code>3.4.0-alpha.5</code>, continuing the <strong>intended 3.3.0 sequence</strong> from
 PR #4. Historical versions are not retagged or retroactively certified as SemVer.
 No standalone 3.0.0, 3.1.0, or 3.2.x release is invented to fill numbering gaps.</p>
 <p>The remote-tracking branch <code>origin/v3.4.0</code> was inspected. It contains four
@@ -136,12 +139,60 @@ establish a completed 3.4.0 release. Likewise, unmerged algorithm and React
 migration branches are excluded from the changelog for <code>main</code>.</p>
 <p>Dates in historical changelog headings are commit dates for footer milestones
 and merge dates for merged milestones, recorded in the original Git metadata.
-No production deployment log or GitHub published-release record was used.
+No production deployment log or GitHub published-release record was used in that historical reconstruction.
 Compare links use full commit IDs whose ancestry was checked locally. They
 identify code changes, not proof of publication.</p>
+<h2 id="tags-recorded-on-2026-10-16">Tags recorded on 2026-10-16</h2>
+<div class="doc-table-wrap" tabindex="0" role="region" aria-label="Tags recorded on 2026-10-16 — table 2"><table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>Source</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>v3.3.0</code></td>
+<td>Existing <code>origin/main</code> commit <code>a533fbaf36cf29525472c873aa0faf70aea915ee</code></td>
+<td>Retrospective normalized baseline, matching PR #4's intended version; the historical UI label remains documented.</td>
+</tr>
+<tr>
+<td><code>v3.4.0-alpha.3</code></td>
+<td>Mobile worktree commit <code>1f9415dff1e55e4a71ec92df4eeaf8b8c7db61f4</code></td>
+<td>Exact previously published mobile/reading-page preview from which dice development branched.</td>
+</tr>
+<tr>
+<td><code>v3.4.0-alpha.5</code></td>
+<td>Approved dice PR source commit</td>
+<td>New 3D/2D display and timing prerelease, including the mobile baseline.</td>
+</tr>
+</tbody>
+</table></div>
+<p>These annotated tags are created at their existing source commits; neither historical
+baseline is rewritten. Tag creation is recorded on 2026-10-16, separately from
+older commit/deployment dates. No GitHub Release object or new Pages deployment
+is implied. The next combined integration preview should use a new prerelease
+identifier rather than moving a published tag. <code>alpha.4</code> remains the separate
+Library branch's preview identity.</p>
+<p><code>previousVersion</code> records the direct preview baseline, while
+<code>stableBaselineVersion</code> records the normalized stable baseline. Saved-game
+configuration versions and the Playwright package version remain independent.</p>
+<h2 id="integrating-the-parallel-work">Integrating the parallel work</h2>
+<p>The dice branch contains all four mobile-baseline commits. Its PR to <code>main</code>
+therefore includes the mobile redesign, shared themes, themed reading pages,
+and QR code as well as the dice changes. Merging a second mobile-baseline PR
+would not add distinct work after that PR lands.</p>
+<p>The Library branch adds two commits after the same baseline. It can be integrated
+in a follow-up PR once the dice PR is reviewed and merged. If both features must
+ship together, use a temporary integration branch created from current <code>main</code>,
+review the feature PRs against that branch, resolve shared version/changelog/design
+files, test the combined app, and open one final integration PR to <code>main</code>.
+Every specific PR merge still requires the user's explicit approval; approval
+of a preview or permission to open a PR does not authorize merging it.</p>
 <p class="doc-origin"><a href="#main">Back to top</a></p></article><aside class="doc-sidebar"><h2>Project pages</h2><nav aria-label="Project documents"><a href="../about.html">About Game Hub</a><a href="../changelog.html">Changelog</a><a href="../readme.html">Project guide / README</a><a href="versioning.html" aria-current="page">Application versioning</a><a href="research-notes.html">2048 research and data notes</a><a href="../research/README.html">Local PDF extraction guide</a><a href="../tests.html">Testing guide</a></nav></aside></div>
   </main>
-  <footer class="site-footer"><div class="footer-inner wrap"><span>Game Hub · <span data-app-version>v3.4.0-alpha.3 · Preview</span></span><div class="footer-links"><a href="../about.html">About</a><a href="../changelog.html">Changelog</a><a href="../dashboard.html">2048 lab</a></div></div></footer>
+  <footer class="site-footer"><div class="footer-inner wrap"><span>Game Hub · <span data-app-version>v3.4.0-alpha.5 · Preview</span></span><div class="footer-links"><a href="../about.html">About</a><a href="../changelog.html">Changelog</a><a href="../dashboard.html">2048 lab</a></div></div></footer>
   <script src="../scripts/version.js"></script>
 </body>
 </html>

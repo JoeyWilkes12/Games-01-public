@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="../game-foundation.css">
     <link rel="stylesheet" href="lab-style.css">
     <link rel="stylesheet" href="../../../theme.css">
+    <link rel="stylesheet" href="dice-display.css">
     <link rel="icon" type="image/svg+xml" href="../../../assets/favicon.svg">
 </head>
 
@@ -34,6 +35,14 @@
         </header>
 
         <main class="game-area">
+            <div class="dice-display-controls">
+                <span id="dice-display-label">Dice display</span>
+                <div class="dice-display-options" role="group" aria-labelledby="dice-display-label">
+                    <button type="button" data-dice-display="3d" aria-pressed="true">3D rolling</button>
+                    <button type="button" data-dice-display="2d" aria-pressed="false">2D fast</button>
+                </div>
+            </div>
+            <p class="dice-display-hint" id="dice-display-hint">3D settles with each roll. Choose 2D for instant results.</p>
             <div class="dice-container" id="dice-container">
                 <!-- Dice will be injected here via JS -->
                 <div class="die placeholder">?</div>
@@ -262,6 +271,7 @@
     </div>
 
     <!-- Audio context for simple beep -->
+    <script src="dice-display.js"></script>
     <script src="script.js"></script>
     <script src="../game-ui.js"></script>
 </body>

@@ -1,0 +1,39 @@
+/* Tangible dice within the existing Game Hub palette. */
+.dice-display-controls { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px 16px; width: 100%; }
+.dice-display-controls > span { font-size: .875rem; font-weight: 600; color: var(--lab-muted); }
+.dice-display-options { display: inline-flex; border: 1px solid var(--lab-line); border-radius: 10px; padding: 3px; gap: 3px; background: var(--lab-soft); }
+.dice-display-options button { min-height: 44px; padding: 9px 16px; border: 0; border-radius: 7px; background: transparent; color: var(--lab-ink); font: 600 .875rem 'DM Sans', sans-serif; cursor: pointer; }
+.dice-display-options button[aria-pressed="true"] { background: var(--lab-paper); color: var(--lab-teal-dark); box-shadow: 0 2px 5px rgb(20 47 54 / .08); }
+.dice-display-options button:hover { background: var(--lab-control); }
+.dice-display-options button:focus-visible { outline: 3px solid var(--lab-plum); outline-offset: 2px; }
+.dice-display-hint { font-size: .8125rem; line-height: 1.5; color: var(--lab-muted); text-align: center; margin: -12px 0 0; max-width: 46ch; }
+.dice-container[data-display="3d"] { --cube-size: 72px; gap: 22px 18px; padding: 24px 0 4px; }
+.die.die-3d { width: 116px; height: 128px; border: 0; border-radius: 0; background: transparent; box-shadow: none; display: flex; flex-direction: column; justify-content: flex-start; perspective: 650px; isolation: auto; color: var(--lab-ink); transition: none; }
+.die-3d::after { content: ''; position: absolute; top: 78px; width: 72px; height: 12px; border-radius: 50%; background: rgb(20 47 54 / .16); filter: blur(7px); pointer-events: none; }
+.die-lift { position: relative; z-index: 1; width: var(--cube-size); height: var(--cube-size); transform-style: preserve-3d; }
+.die-view { width: 100%; height: 100%; transform: rotateX(-18deg) rotateY(-24deg); transform-style: preserve-3d; }
+.die-cube { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; }
+.is-rolling .die-cube, .is-rolling .die-lift { will-change: transform; }
+.die-face { position: absolute; inset: 0; box-sizing: border-box; border: 2px solid var(--die-accent); border-radius: 7px; backface-visibility: hidden; background: var(--lab-control); color: var(--lab-ink); display: grid; grid-template: repeat(3, 1fr) / repeat(3, 1fr); padding: 12px; gap: 5px; box-shadow: inset 0 2px 3px rgb(255 255 255 / .15); }
+.face-1 { transform: translateZ(calc(var(--cube-size) / 2)); }
+.face-2 { transform: rotateX(90deg) translateZ(calc(var(--cube-size) / 2)); background: color-mix(in srgb, var(--lab-control) 92%, white); }
+.face-3 { transform: rotateY(90deg) translateZ(calc(var(--cube-size) / 2)); background: color-mix(in srgb, var(--lab-control) 90%, var(--lab-ink)); }
+.face-4 { transform: rotateY(-90deg) translateZ(calc(var(--cube-size) / 2)); background: color-mix(in srgb, var(--lab-control) 95%, var(--lab-ink)); }
+.face-5 { transform: rotateX(-90deg) translateZ(calc(var(--cube-size) / 2)); }
+.face-6 { transform: rotateY(180deg) translateZ(calc(var(--cube-size) / 2)); }
+.pip { display: block; align-self: center; justify-self: center; width: 9px; height: 9px; border-radius: 50%; }
+.pip.filled { background: currentColor; }
+.numbered-face { display: flex; align-items: center; justify-content: center; padding: 6px; font: 600 1.9rem 'Space Grotesk', sans-serif; }
+.die-caption { position: absolute; bottom: 0; font: 600 .8125rem 'DM Sans', sans-serif; color: var(--lab-muted); white-space: nowrap; }
+.die-3d.match .die-face { background: var(--game-warning-bg); border-color: var(--game-warning-ink); color: var(--game-warning-ink); }
+.die-3d.match .die-caption { color: var(--game-warning-ink); }
+html[data-theme="dark"] .die-3d::after { background: rgb(0 0 0 / .4); }
+@media (max-width: 359px) {
+ .dice-container[data-display="3d"] { --cube-size: 62px; gap: 18px 12px; }
+ .die.die-3d { width: 98px; height: 116px; }
+ .die-face { padding: 9px; gap: 4px; }
+ .die-3d::after { top: 68px; }
+}
+@media (prefers-reduced-motion: reduce) {
+ .is-rolling .die-cube, .is-rolling .die-lift { will-change: auto; }
+}
