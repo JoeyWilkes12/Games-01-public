@@ -1,10 +1,11 @@
 /* Tangible dice within the existing Game Hub palette. */
 .dice-display-controls { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px 16px; width: 100%; }
 .dice-display-controls > span { font-size: .875rem; font-weight: 600; color: var(--lab-muted); }
-.dice-display-options { display: inline-flex; border: 1px solid var(--lab-line); border-radius: 10px; padding: 3px; gap: 3px; background: var(--lab-soft); }
-.dice-display-options button { min-height: 44px; padding: 9px 16px; border: 0; border-radius: 7px; background: transparent; color: var(--lab-ink); font: 600 .875rem 'DM Sans', sans-serif; cursor: pointer; }
-.dice-display-options button[aria-pressed="true"] { background: var(--lab-paper); color: var(--lab-teal-dark); box-shadow: 0 2px 5px rgb(20 47 54 / .08); }
+.dice-display-options { display: inline-flex; border: 1px solid var(--border-control); border-radius: 0; padding: 3px; gap: 3px; background: var(--lab-soft); }
+.dice-display-options button { min-height: 44px; padding: 9px 16px; border: 0; border-radius: 0; background: transparent; color: var(--lab-ink); font: 600 .875rem var(--body); cursor: pointer; }
+.dice-display-options button[aria-pressed="true"] { background: var(--surface-inverse); color: var(--text-inverse); box-shadow: none; }
 .dice-display-options button:hover { background: var(--lab-control); }
+.dice-display-options button[aria-pressed="true"]:hover { background: var(--action-hover); color: var(--text-inverse); }
 .dice-display-options button:focus-visible { outline: 3px solid var(--lab-plum); outline-offset: 2px; }
 .dice-display-hint { font-size: .8125rem; line-height: 1.5; color: var(--lab-muted); text-align: center; margin: -12px 0 0; max-width: 46ch; }
 .dice-container[data-display="3d"] { --cube-size: 72px; gap: 22px 18px; padding: 24px 0 4px; }
@@ -23,8 +24,8 @@
 .face-6 { transform: rotateY(180deg) translateZ(calc(var(--cube-size) / 2)); }
 .pip { display: block; align-self: center; justify-self: center; width: 9px; height: 9px; border-radius: 50%; }
 .pip.filled { background: currentColor; }
-.numbered-face { display: flex; align-items: center; justify-content: center; padding: 6px; font: 600 1.9rem 'Space Grotesk', sans-serif; }
-.die-caption { position: absolute; bottom: 0; font: 600 .8125rem 'DM Sans', sans-serif; color: var(--lab-muted); white-space: nowrap; }
+.numbered-face { display: flex; align-items: center; justify-content: center; padding: 6px; font: 600 1.9rem var(--body); }
+.die-caption { position: absolute; bottom: 0; font: 600 .8125rem var(--body); color: var(--lab-muted); white-space: nowrap; }
 .die-3d.match .die-face { background: var(--game-warning-bg); border-color: var(--game-warning-ink); color: var(--game-warning-ink); }
 .die-3d.match .die-caption { color: var(--game-warning-ink); }
 html[data-theme="dark"] .die-3d::after { background: rgb(0 0 0 / .4); }

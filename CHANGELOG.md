@@ -13,13 +13,24 @@ See [versioning policy and evidence](docs/versioning.md).
 
 ## [Unreleased]
 
-Changes after this tagged preview will be listed here.
+### Changed
+
+- Adopted the Agent Skills Resource Library visual system throughout the hub, 2048 lab, games, reference pages, and generated documents: navy/paper/mint/coral, editorial serif headings, semantic light/dark surfaces, and square controls.
+- Added responsive evidence/context strips, a desktop reading rail, and compact phone navigation while preserving gameplay, recorded results, source commentary, and the changelog QR.
+- Replaced the visible Appearance label with a compact theme icon dropdown on every page. System, Light, and Dark remain available with native keyboard controls and a shared saved preference.
+
+- Integrated the Library appearance with the approved 3D dice while preserving the 2D fast option and all dice timing fixes.
+
+### Fixed
+
+- Bank shortcuts ignore form controls and editable fields, so the theme dropdown can be used without rolling the dice.
+- The paused dice Resume action uses the shared high-contrast action colors in both themes, including hover.
 
 ## [3.4.0-alpha.5] - 2026-10-16
 
 Approved 3D-dice preview, based on the mobile preview `v3.4.0-alpha.3`.
-The separate Library design branch uses `3.4.0-alpha.4`; its styling is not
-included in this branch. This tag identifies reviewed source, not a new Pages deployment.
+The separate Library design branch used `3.4.0-alpha.4`; its styling was not
+included in that prerelease. This tag identifies reviewed source, not a new Pages deployment.
 
 ### Added
 
@@ -181,5 +192,5 @@ The available history begins at root commit `86c1414`. Earlier development and r
 
 [3.4.0-alpha.3]: https://github.com/JoeyWilkes12/Games-01-public/compare/dc49801da9b97033abdc4b9f50ea9ab976df2e42...v3.4.0-alpha.3
 
-[Unreleased]: https://github.com/JoeyWilkes12/Games-01-public/compare/v3.4.0-alpha.5...codex/dice-3d-roll
+[Unreleased]: https://github.com/JoeyWilkes12/Games-01-public/compare/v3.4.0-alpha.5...codex/library-after-dice
 [3.4.0-alpha.5]: https://github.com/JoeyWilkes12/Games-01-public/compare/v3.4.0-alpha.3...v3.4.0-alpha.5

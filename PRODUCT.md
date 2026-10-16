@@ -20,7 +20,7 @@ Static HTML, CSS, and JavaScript, with no application build step. Existing playa
 
 ## Capabilities and Constraints
 
-Preserve playable game behavior, data, local configuration/import/export workflows, and existing routes. Redesign the frontend freely with responsive layouts and mobile priority. Work in an isolated Git worktree. Preserve main and origin/main. The user authorized publishing the worktree branch directly to GitHub Pages on 2026-10-12. Every HTML page supports Light, Dark, and live System appearance with a shared saved preference.
+Preserve playable game behavior, data, local configuration/import/export workflows, and existing routes. Redesign the frontend freely with responsive layouts and mobile priority. Work in an isolated Git worktree. Preserve main and origin/main. The user authorized publishing the worktree branch directly to GitHub Pages on 2026-10-12. Every HTML page supports Light, Dark, and live System appearance with a shared saved preference. PR #5 merged the default 3D / optional fast 2D Random Event Dice display and timing fixes into main; preserve them while integrating the Library system.
 
 ## Evidence on Hand
 
@@ -32,6 +32,7 @@ Preserve playable game behavior, data, local configuration/import/export workflo
 - Start analysis with a clear question, then show comparisons and inspectable evidence.
 - Keep source limitations visible beside conclusions.
 - Retain a lightweight static application.
+- Adopt the Agent Skills Resource Library visual system across the app: navy/paper/mint/coral, Georgia editorial headings, compact sans controls, square surfaces, and semantic light/dark roles. The original library DESIGN.md v0.3 and implemented CSS are the visual authority; the proposed global skill wrapper is absent.
 
 ## Open Decisions
 

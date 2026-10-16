@@ -4,11 +4,11 @@ The application uses [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.
 and a curated [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/)
 changelog. `version.json` is the source of truth for the application version.
 
-The current worktree is **3.4.0-alpha.5**, the approved 3D-dice prerelease
-on `codex/dice-3d-roll`. The GitHub Pages source still uses the tagged mobile
-baseline **3.4.0-alpha.3** on `codex/mobile-game-lab`. The separate
-`codex/library-design-system` branch uses **3.4.0-alpha.4** and is not included
-in this preview. `main` remains at its existing baseline. The intended
+The current worktree is **3.4.0-alpha.6**, an unreleased combined Library/dice
+preview on `codex/library-after-dice`. PR #5 merged the approved dice and mobile
+baseline into `main` as **3.4.0-alpha.5**. GitHub Pages still serves **3.4.0-alpha.3**
+from `codex/mobile-game-lab`. The original `codex/library-design-system` branch
+is preserved at its historical **3.4.0-alpha.4** preview. The intended
 stable version is **3.4.0** because the work adds and reorganizes user-facing
 features while preserving saved-game configuration compatibility. A visual
 redesign alone does not require a major version.
@@ -43,7 +43,7 @@ URL and updates elements with the `data-app-version` attribute. Use a readable
 fallback so the page still identifies the preview if the manifest cannot load:
 
 ```html
-<span data-app-version>v3.4.0-alpha.5 · Preview</span>
+<span data-app-version>v3.4.0-alpha.6 · Preview</span>
 <script src="scripts/version.js" defer></script>
 ```
 
@@ -87,7 +87,7 @@ project's earlier development or deployment history.
 | `v3.03.00` | Footer changed at `f086ffe`; PR #4 merged at `a533fba` with title `V3.3.0 bank byod, undo functionality` | `a533fba` | Original UI label retained in the changelog; the merged PR establishes intended `3.3.0` numbering. |
 
 `v3.03.00` is not valid SemVer because numeric components contain leading zeros.
-The preview uses `3.4.0-alpha.5`, continuing the **intended 3.3.0 sequence** from
+The preview uses `3.4.0-alpha.6`, continuing the **intended 3.3.0 sequence** from
 PR #4. Historical versions are not retagged or retroactively certified as SemVer.
 No standalone 3.0.0, 3.1.0, or 3.2.x release is invented to fill numbering gaps.
 
@@ -124,15 +124,18 @@ configuration versions and the Playwright package version remain independent.
 
 ## Integrating the parallel work
 
-The dice branch contains all four mobile-baseline commits. Its PR to `main`
-therefore includes the mobile redesign, shared themes, themed reading pages,
-and QR code as well as the dice changes. Merging a second mobile-baseline PR
-would not add distinct work after that PR lands.
+PR #5 merged the mobile baseline and approved 3D dice into `main` on
+2026-10-16 at `bb773525b278fa45f093e396cdcd567d3ed90581`.
+The follow-up branch `codex/library-after-dice` starts from that merge and
+replays the two Library commits (`614312d`, `6393643`) as a focused change.
+The original Library branch remains preserved; no published branch history
+or version tag is rewritten.
 
-The Library branch adds two commits after the same baseline. It can be integrated
-in a follow-up PR once the dice PR is reviewed and merged. If both features must
-ship together, use a temporary integration branch created from current `main`,
-review the feature PRs against that branch, resolve shared version/changelog/design
-files, test the combined app, and open one final integration PR to `main`.
-Every specific PR merge still requires the user's explicit approval; approval
-of a preview or permission to open a PR does not authorize merging it.
+The combined preview uses `3.4.0-alpha.6` with status `unreleased` while its
+specific PR is reviewed. It retains the alpha.5 dice feature and all published
+tag boundaries. Its changelog entries remain under Unreleased until release
+approval. Any eventual alpha.6 tag must reference the final approved commit.
+
+Sequential PRs are the selected workflow; a separate integration branch is not
+needed. PR #5's explicit merge approval does not grant approval to merge the
+new Library PR. Every specific PR merge still requires the user's approval.

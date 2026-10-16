@@ -1,6 +1,6 @@
 {
-  "version": "3.4.0-alpha.5",
-  "status": "prerelease",
-  "previousVersion": "3.4.0-alpha.3",
+  "version": "3.4.0-alpha.6",
+  "status": "unreleased",
+  "previousVersion": "3.4.0-alpha.5",
   "stableBaselineVersion": "3.3.0"
 }

@@ -7,8 +7,9 @@
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
     <title>How to read 2048 results — Game Hub</title>
     <link rel="stylesheet" href="style.css" />
-      <link rel="stylesheet" href="theme.css">
-</head>
+    <link rel="stylesheet" href="dashboard.css" />
+    <link rel="stylesheet" href="theme.css" />
+  </head>
   <body>
     <a class="skip-link" href="#main">Skip to definitions</a>
     <header class="site-header">
@@ -24,7 +25,7 @@
       </nav>
     </header>
     <main class="wrap" id="main">
-      <div class="page-heading">
+      <div class="page-heading page-intro">
         <div>
           <h1>A few things to know before you compare.</h1>
           <p>
@@ -33,127 +34,143 @@
           </p>
         </div>
       </div>
-      <div class="prose">
-        <section>
-          <h2>The score counts every merge.</h2>
-          <p>
-            When two matching tiles combine, the new tile’s value is added to
-            your score. The final score is the sum of these merge values
-            throughout a game. It is different from the largest tile on the
-            board.
-          </p>
-          <div
-            class="merge-example"
-            aria-label="Two tiles with value 2 merge into a tile with value 4, adding 4 points"
-          >
-            <span>2</span> + <span>2</span> → <span>4</span>
-          </div>
-          <p class="muted">
-            This merge adds 4 points. Merging two 4s adds 8 more.
-          </p>
-        </section>
-        <section>
-          <h2>Four ways to choose a move.</h2>
-          <p>
-            The workbook labels its runs with the following strategy codes.
-            These descriptions explain the method families; implementation and
-            training settings were not recorded with each run.
-          </p>
-          <dl class="definition-list">
-            <dt>Monte Carlo <span class="mono">Mc</span></dt>
-            <dd>
-              Estimates the quality of possible moves using random simulations.
-              A move can be selected from the outcomes of those samples. The
-              result depends on the simulation policy and budget.
-            </dd>
-            <dt>Expectimax <span class="mono">E</span></dt>
-            <dd>
-              Searches a tree of player moves and chance events. At chance
-              nodes, it combines possible tile spawns using their probabilities.
-              Search depth and the evaluation function affect its decisions.
-            </dd>
-            <dt>IDDFS graph search <span class="mono">Igs</span></dt>
-            <dd>
-              Iterative deepening depth-first search explores successively
-              deeper limits. Graph-based state tracking can avoid revisiting
-              duplicate positions. The workbook does not identify its search
-              depth or evaluation rules.
-            </dd>
-            <dt>Reinforcement learning <span class="mono">Rl</span></dt>
-            <dd>
-              Learns decisions or state values from experience and reward. Its
-              performance depends on the model, training, and whether search is
-              added at play time. Those details are absent here.
-            </dd>
-          </dl>
-        </section>
-        <section>
-          <h2>Compare like with like.</h2>
-          <p>
-            The dataset has 80 runs on a standard 4 × 4 board and 68 on a 5 × 5
-            board. Each strategy has 20 runs on the smaller board and 17 on the
-            larger one.
-          </p>
-          <p>
-            A larger board can sustain longer games. Compare strategies within
-            one board before interpreting their raw scores. The dashboard keeps
-            the two boards separate by default.
-          </p>
-          <dl class="definition-list">
-            <dt>Mean score</dt>
-            <dd>
-              Add the recorded scores and divide by the number of runs. A very
-              high score can pull the mean upward.
-            </dd>
-            <dt>Median score</dt>
-            <dd>
-              The middle score after sorting the runs. With an even number of
-              runs, average the middle two. Use it alongside the mean to
-              understand the typical recorded outcome.
-            </dd>
-            <dt>Score spread</dt>
-            <dd>
-              The dots show individual outcomes. A wide range indicates
-              variation in these runs; it is not a confidence interval or a
-              claim of statistical significance.
-            </dd>
-          </dl>
-        </section>
-        <section>
-          <h2>Know what the data cannot tell us.</h2>
-          <p>
-            There are no recorded timestamps, seeds, move counts, maximum tiles,
-            compute budgets, or elapsed times. Some notes mention reaching a
-            tile, but notes are incomplete. We cannot calculate win rates,
-            speed, or efficiency from these fields.
-          </p>
-          <p>
-            The “Full Name” field is inconsistent. Strategy names are resolved
-            from the workbook’s code mapping. All 148 rows have valid positive
-            scores and are included.
-          </p>
-          <p>
-            These results describe this collection of recorded games. They do
-            not establish a universally best 2048 algorithm.
-          </p>
-          <a class="text-link" href="dashboard.html"
-            >Explore the results
-            <svg class="icon" aria-hidden="true" viewBox="0 0 24 24">
-              <path d="M5 12h14m-6-6 6 6-6 6" /></svg
-          ></a>
-          <a class="text-link" href="research.html"
-            >Read the supporting research
-            <svg class="icon" aria-hidden="true" viewBox="0 0 24 24">
-              <path d="M5 12h14m-6-6 6 6-6 6" /></svg
-          ></a>
-        </section>
+      <aside class="evidence-receipt" aria-label="Guide context">
+        <dl class="receipt-facts">
+          <div><dt>Reading scope</dt><dd>Scores, strategies, and recorded-data limits</dd></div>
+          <div><dt>Source coverage</dt><dd>148 runs across two board sizes</dd></div>
+          <div><dt>Data notes</dt><dd>Seeds and timing not recorded</dd></div>
+        </dl>
+      </aside>
+      <div class="reference-layout">
+        <nav class="reference-toc" aria-label="On this page">
+          <p>On this page</p>
+          <a href="#score">How scoring works</a>
+          <a href="#strategies">The four strategies</a>
+          <a href="#comparison">Compare the records</a>
+          <a href="#limits">Limits of the data</a>
+        </nav>
+        <div class="prose reference-prose">
+          <section id="score">
+            <h2>The score counts every merge.</h2>
+            <p>
+              When two matching tiles combine, the new tile’s value is added to
+              your score. The final score is the sum of these merge values
+              throughout a game. It is different from the largest tile on the
+              board.
+            </p>
+            <div
+              class="merge-example"
+              aria-label="Two tiles with value 2 merge into a tile with value 4, adding 4 points"
+            >
+              <span>2</span> + <span>2</span> → <span>4</span>
+            </div>
+            <p class="muted">
+              This merge adds 4 points. Merging two 4s adds 8 more.
+            </p>
+          </section>
+          <section id="strategies">
+            <h2>Four ways to choose a move.</h2>
+            <p>
+              The workbook labels its runs with the following strategy codes.
+              These descriptions explain the method families; implementation and
+              training settings were not recorded with each run.
+            </p>
+            <dl class="definition-list">
+              <dt>Monte Carlo <span class="mono">Mc</span></dt>
+              <dd>
+                Estimates the quality of possible moves using random simulations.
+                A move can be selected from the outcomes of those samples. The
+                result depends on the simulation policy and budget.
+              </dd>
+              <dt>Expectimax <span class="mono">E</span></dt>
+              <dd>
+                Searches a tree of player moves and chance events. At chance
+                nodes, it combines possible tile spawns using their probabilities.
+                Search depth and the evaluation function affect its decisions.
+              </dd>
+              <dt>IDDFS graph search <span class="mono">Igs</span></dt>
+              <dd>
+                Iterative deepening depth-first search explores successively
+                deeper limits. Graph-based state tracking can avoid revisiting
+                duplicate positions. The workbook does not identify its search
+                depth or evaluation rules.
+              </dd>
+              <dt>Reinforcement learning <span class="mono">Rl</span></dt>
+              <dd>
+                Learns decisions or state values from experience and reward. Its
+                performance depends on the model, training, and whether search is
+                added at play time. Those details are absent here.
+              </dd>
+            </dl>
+          </section>
+          <section id="comparison">
+            <h2>Compare like with like.</h2>
+            <p>
+              The dataset has 80 runs on a standard 4 × 4 board and 68 on a 5 × 5
+              board. Each strategy has 20 runs on the smaller board and 17 on the
+              larger one.
+            </p>
+            <p>
+              A larger board can sustain longer games. Compare strategies within
+              one board before interpreting their raw scores. The dashboard keeps
+              the two boards separate by default.
+            </p>
+            <dl class="definition-list">
+              <dt>Mean score</dt>
+              <dd>
+                Add the recorded scores and divide by the number of runs. A very
+                high score can pull the mean upward.
+              </dd>
+              <dt>Median score</dt>
+              <dd>
+                The middle score after sorting the runs. With an even number of
+                runs, average the middle two. Use it alongside the mean to
+                understand the typical recorded outcome.
+              </dd>
+              <dt>Score spread</dt>
+              <dd>
+                The dots show individual outcomes. A wide range indicates
+                variation in these runs; it is not a confidence interval or a
+                claim of statistical significance.
+              </dd>
+            </dl>
+          </section>
+          <section id="limits">
+            <h2>Know what the data cannot tell us.</h2>
+            <p>
+              There are no recorded timestamps, seeds, move counts, maximum tiles,
+              compute budgets, or elapsed times. Some notes mention reaching a
+              tile, but notes are incomplete. We cannot calculate win rates,
+              speed, or efficiency from these fields.
+            </p>
+            <p>
+              The “Full Name” field is inconsistent. Strategy names are resolved
+              from the workbook’s code mapping. All 148 rows have valid positive
+              scores and are included.
+            </p>
+            <p>
+              These results describe this collection of recorded games. They do
+              not establish a universally best 2048 algorithm.
+            </p>
+            <a class="text-link" href="dashboard.html"
+              >Explore the results
+              <svg class="icon" aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M5 12h14m-6-6 6 6-6 6" /></svg
+            ></a>
+            <a class="text-link" href="research.html"
+              >Read the supporting research
+              <svg class="icon" aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M5 12h14m-6-6 6 6-6 6" /></svg
+            ></a>
+          </section>
+        </div>
       </div>
     </main>
     <footer class="site-footer">
       <div class="footer-inner wrap">
         <span
           >Game Hub ·
-          <span data-app-version>v3.4.0-alpha.5 · Preview</span></span
+          <span data-app-version>v3.4.0-alpha.6 · Preview</span></span
         >
         <div class="footer-links">
           <a href="about.html">About</a>
