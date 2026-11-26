@@ -1325,3 +1325,47 @@ header h1 {
     border-top: 1px solid var(--border-color);
     width: 100%;
 }
+/* ===== Turn order (player configuration) ===== */
+.modal-content { display: flex; flex-direction: column; }
+.modal-header, .modal-footer { flex: none; }
+.modal-body { overscroll-behavior: contain; }
+.player-config-section, .event-definitions-section { max-height: none; overflow: visible; }
+.player-config-section { flex: 0 1 320px; }
+.config-section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 4px; }
+.config-section-head h3 { margin: 0; font-size: 1rem; color: var(--text-color); }
+.player-count { font-size: .8125rem; font-variant-numeric: tabular-nums; color: var(--secondary-color); white-space: nowrap; }
+.player-config-hint { margin: 0 0 12px; font-size: .8125rem; line-height: 1.5; color: var(--secondary-color); }
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.player-list { position: relative; display: flex; flex-direction: column; gap: 6px; max-height: none; overflow: visible; }
+.player-item { position: relative; display: grid; grid-template-columns: 44px 2.25ch minmax(0, 1fr) 44px; align-items: center; gap: 6px; min-height: 56px; padding: 5px; background: var(--bg-color); border: 1px solid var(--border-color); border-radius: 8px; }
+.player-order { font-weight: 600; font-variant-numeric: tabular-nums; text-align: right; color: var(--primary-color); }
+.player-name-input { width: 100%; min-width: 0; min-height: 44px; padding: 8px 10px; font: inherit; font-size: 1rem; color: var(--input-text); background: var(--input-bg); border: 1px solid var(--border-color); border-radius: 6px; }
+.player-name-input:focus { outline: none; border-color: var(--primary-color); }
+.player-drag-handle, .remove-player-btn { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; background: transparent; border: 0; border-radius: 6px; color: var(--secondary-color); }
+.player-drag-handle { cursor: grab; touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.player-drag-handle:hover, .player-drag-handle:focus-visible { color: var(--text-color); background: rgb(148 163 184 / .15); }
+.player-drag-handle:focus-visible, .remove-player-btn:focus-visible { outline: 2px solid var(--primary-color); outline-offset: 2px; }
+.remove-player-btn { cursor: pointer; }
+.remove-player-btn:hover:not(:disabled) { color: var(--accent-color); background: rgb(239 68 68 / .12); }
+.remove-player-btn:disabled { opacity: .3; cursor: not-allowed; }
+.player-item.is-dragging { z-index: 2; background: var(--surface-color); border-color: var(--primary-color); box-shadow: 0 12px 28px rgb(0 0 0 / .4), 0 2px 6px rgb(0 0 0 / .25); }
+.player-item.is-dragging .player-drag-handle { cursor: grabbing; color: var(--primary-color); }
+.player-list.is-reordering .player-item:not(.is-dragging) { opacity: .88; }
+body.player-drag-active, body.player-drag-active * { cursor: grabbing !important; -webkit-user-select: none; user-select: none; }
+.add-player-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 48px; margin-top: 10px; }
+
+@media (max-width: 768px) {
+    .player-config-section { flex: none; max-height: none; border-bottom: 1px solid var(--border-color); padding-bottom: 1.25rem; }
+    .event-definitions-section { max-height: none; }
+}
+
+/* Phones: full-screen sheet; header and footer stay put while the body scrolls. */
+@media (max-width: 600px) {
+    .modal { align-items: stretch; }
+    .modal-content { width: 100%; max-width: 100%; height: 100dvh; max-height: 100dvh; border-radius: 0; }
+    .modal-header { padding-top: max(1rem, env(safe-area-inset-top)); }
+    .modal-body { padding: 1rem; }
+    .modal-footer { flex-direction: row; gap: .5rem; padding: .75rem 1rem; padding-bottom: max(.75rem, env(safe-area-inset-bottom)); }
+    .save-button-group { flex: 1; width: auto; justify-content: flex-end; }
+    .save-button-group button { flex: 1 1 0; min-width: 0; }
+}
