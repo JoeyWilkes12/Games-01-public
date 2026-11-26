@@ -1049,70 +1049,264 @@ class DiceGame {
         if (!this.dom.playerList) return;
 
         this.dom.playerList.innerHTML = '';
+        this.dom.playerList.setAttribute('role', 'list');
         const playerCount = Object.keys(this.settings.players).length;
 
         for (let i = 1; i <= playerCount; i++) {
             const playerName = this.settings.players[i] || `Player ${i}`;
             this.addPlayerInputToDOM(i, playerName);
         }
+        this.refreshPlayerOrder();
     }
 
     addPlayerInputToDOM(index, name) {
         const item = document.createElement('div');
         item.className = 'player-item';
+        item.setAttribute('role', 'listitem');
         item.dataset.playerIndex = index;
-        item.style.cssText = 'display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;';
+
+        const handle = document.createElement('button');
+        handle.type = 'button';
+        handle.className = 'player-drag-handle';
+        handle.innerHTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">' +
+            '<circle cx="9" cy="6" r="1.6"/><circle cx="15" cy="6" r="1.6"/>' +
+            '<circle cx="9" cy="12" r="1.6"/><circle cx="15" cy="12" r="1.6"/>' +
+            '<circle cx="9" cy="18" r="1.6"/><circle cx="15" cy="18" r="1.6"/></svg>';
+        handle.addEventListener('pointerdown', (e) => this.startPlayerDrag(e, item));
+        handle.addEventListener('keydown', (e) => this.handlePlayerHandleKey(e, item));
+        // Stop the synthetic click from submitting or stealing focus after a drag.
+        handle.addEventListener('click', (e) => e.preventDefault());
 
         const label = document.createElement('span');
-        label.textContent = `${index}.`;
-        label.style.cssText = 'width: 24px; color: var(--secondary-color); font-weight: 600;';
+        label.className = 'player-order';
+        label.setAttribute('aria-hidden', 'true');
+        label.textContent = index;
 
         const input = document.createElement('input');
         input.type = 'text';
         input.value = name;
         input.placeholder = `Player ${index}`;
         input.className = 'player-name-input';
-        input.style.cssText = 'flex: 1; padding: 0.5rem; border: 1px solid var(--border-color); border-radius: 6px; background: var(--input-bg); color: var(--input-text); font-family: inherit;';
+        input.autocomplete = 'off';
+        input.addEventListener('input', () => this.refreshPlayerOrder());
 
         const removeBtn = document.createElement('button');
         removeBtn.type = 'button';
-        removeBtn.textContent = '×';
         removeBtn.className = 'remove-player-btn';
-        removeBtn.style.cssText = 'width: 28px; height: 28px; background: transparent; border: 1px solid var(--accent-color); border-radius: 4px; color: var(--accent-color); cursor: pointer; font-size: 1.25rem; line-height: 1;';
-        removeBtn.addEventListener('click', () => this.removePlayerFromList(index));
+        removeBtn.innerHTML = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+        removeBtn.addEventListener('click', () => this.removePlayerFromList(item));
 
-        item.appendChild(label);
-        item.appendChild(input);
-        item.appendChild(removeBtn);
+        item.append(handle, label, input, removeBtn);
         this.dom.playerList.appendChild(item);
+        return item;
+    }
+
+    /** Renumber rows and refresh accessible names after any add, remove, rename or move. */
+    refreshPlayerOrder() {
+        if (!this.dom.playerList) return;
+        const items = [...this.dom.playerList.querySelectorAll('.player-item')];
+        const total = items.length;
+        items.forEach((item, idx) => {
+            const position = idx + 1;
+            const input = item.querySelector('.player-name-input');
+            const name = input.value.trim() || `Player ${position}`;
+            item.dataset.playerIndex = position;
+            item.querySelector('.player-order').textContent = position;
+            input.placeholder = `Player ${position}`;
+            input.setAttribute('aria-label', `Name of player ${position}`);
+            item.querySelector('.player-drag-handle').setAttribute('aria-label',
+                `Move ${name}, turn ${position} of ${total}. Drag, or use the up and down arrow keys.`);
+            const removeBtn = item.querySelector('.remove-player-btn');
+            removeBtn.setAttribute('aria-label', `Remove ${name}`);
+            removeBtn.disabled = total <= 1;
+        });
+        const count = document.getElementById('player-count');
+        if (count) count.textContent = `${total} ${total === 1 ? 'player' : 'players'}`;
+    }
+
+    announcePlayerOrder(message) {
+        const live = document.getElementById('player-order-status');
+        if (live) live.textContent = message;
     }
 
     addPlayerToList() {
         const playerCount = this.dom.playerList.querySelectorAll('.player-item').length;
         // No maximum player limit - users can add as many as needed
         const newIndex = playerCount + 1;
-        const defaultName = `Player ${newIndex}`;
-        this.addPlayerInputToDOM(newIndex, defaultName);
+        const item = this.addPlayerInputToDOM(newIndex, `Player ${newIndex}`);
+        this.refreshPlayerOrder();
+        const input = item.querySelector('.player-name-input');
+        item.scrollIntoView({ block: 'nearest' });
+        input.focus();
+        input.select();
     }
 
-    removePlayerFromList(index) {
-        const items = this.dom.playerList.querySelectorAll('.player-item');
+    removePlayerFromList(target) {
+        const items = [...this.dom.playerList.querySelectorAll('.player-item')];
         if (items.length <= 1) {
             console.warn('[Players] Cannot remove last player');
             return;
         }
+        // Accept the row element or a 1-based position (legacy callers).
+        const item = typeof target === 'number' ? items[target - 1] : target;
+        if (!item) return;
+        const position = items.indexOf(item);
+        const name = item.querySelector('.player-name-input').value.trim() || `Player ${position + 1}`;
+        const flip = this.capturePlayerPositions();
+        item.remove();
+        this.refreshPlayerOrder();
+        this.playPlayerFlip(flip);
+        const remaining = [...this.dom.playerList.querySelectorAll('.player-item')];
+        const next = remaining[Math.min(position, remaining.length - 1)];
+        if (next) next.querySelector('.remove-player-btn').focus();
+        this.announcePlayerOrder(`${name} removed.`);
+    }
 
-        // Remove the item and reindex
-        this.dom.playerList.innerHTML = '';
-        let newIndex = 1;
-        items.forEach(item => {
-            if (parseInt(item.dataset.playerIndex) !== index) {
-                const input = item.querySelector('.player-name-input');
-                const name = input.value || `Player ${newIndex}`;
-                this.addPlayerInputToDOM(newIndex, name);
-                newIndex++;
-            }
+    // --- Turn-order reordering (pointer: touch, pen and mouse; keyboard: arrows) ---
+
+    movePlayer(item, delta) {
+        const items = [...this.dom.playerList.querySelectorAll('.player-item')];
+        const from = items.indexOf(item);
+        const to = Math.max(0, Math.min(items.length - 1, from + delta));
+        if (from === to) return;
+        const flip = this.capturePlayerPositions();
+        if (delta < 0) this.dom.playerList.insertBefore(item, items[to]);
+        else this.dom.playerList.insertBefore(item, items[to].nextSibling);
+        this.refreshPlayerOrder();
+        this.playPlayerFlip(flip);
+        item.querySelector('.player-drag-handle').focus();
+        const name = item.querySelector('.player-name-input').value.trim() || `Player ${to + 1}`;
+        this.announcePlayerOrder(`${name} moved to turn ${to + 1} of ${items.length}.`);
+    }
+
+    handlePlayerHandleKey(e, item) {
+        const keys = { ArrowUp: -1, ArrowDown: 1, Home: -Infinity, End: Infinity };
+        if (!(e.key in keys)) return;
+        e.preventDefault();
+        const items = [...this.dom.playerList.querySelectorAll('.player-item')];
+        const from = items.indexOf(item);
+        const delta = keys[e.key] === -Infinity ? -from
+            : keys[e.key] === Infinity ? items.length - 1 - from : keys[e.key];
+        this.movePlayer(item, delta);
+    }
+
+    capturePlayerPositions() {
+        const map = new Map();
+        this.dom.playerList.querySelectorAll('.player-item').forEach(el => map.set(el, el.getBoundingClientRect().top));
+        return map;
+    }
+
+    /** Slide displaced rows from their old position to the new one (skipped for reduced motion). */
+    playPlayerFlip(before, skip) {
+        if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        this.dom.playerList.querySelectorAll('.player-item').forEach(el => {
+            if (el === skip || !before.has(el)) return;
+            const dy = before.get(el) - el.getBoundingClientRect().top;
+            if (!dy) return;
+            el.animate([{ transform: `translateY(${dy}px)` }, { transform: 'translateY(0)' }],
+                { duration: 220, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' });
         });
+    }
+
+    startPlayerDrag(e, item) {
+        if (e.button !== undefined && e.button !== 0) return;
+        const list = this.dom.playerList;
+        if (list.querySelectorAll('.player-item').length < 2) return;
+        e.preventDefault();
+
+        const handle = e.currentTarget;
+        const pointerId = e.pointerId;
+        const scroller = item.closest('.modal-body') || item.closest('.modal-content') || document.scrollingElement;
+        const startIndex = [...list.children].indexOf(item);
+        // Distance between the pointer and the row's natural top, kept as the row moves in the DOM.
+        item.getAnimations?.().forEach(anim => anim.cancel());
+        const grabOffset = e.clientY - (list.getBoundingClientRect().top + item.offsetTop);
+        let lastY = e.clientY;
+        let raf = 0;
+
+        item.classList.add('is-dragging');
+        list.classList.add('is-reordering');
+        document.body.classList.add('player-drag-active');
+
+        const position = () => {
+            // Layout position, so a still-running slide animation cannot skew the lifted row.
+            const naturalTop = list.getBoundingClientRect().top + item.offsetTop;
+            item.style.transform = `translateY(${lastY - grabOffset - naturalTop}px)`;
+        };
+
+        const reorder = () => {
+            // Layout offsets ignore running FLIP transforms, so rows never oscillate mid-slide.
+            const draggedMid = lastY - grabOffset - list.getBoundingClientRect().top + item.offsetHeight / 2;
+            const siblings = [...list.querySelectorAll('.player-item')].filter(el => el !== item);
+            let before = null;
+            for (const el of siblings) {
+                if (draggedMid < el.offsetTop + el.offsetHeight / 2) { before = el; break; }
+            }
+            if (item.nextElementSibling === before || (before === null && item === list.lastElementChild)) return;
+            const flip = this.capturePlayerPositions();
+            list.insertBefore(item, before);
+            this.refreshPlayerOrder();
+            this.playPlayerFlip(flip, item);
+        };
+
+        const autoScroll = () => {
+            const bounds = scroller === document.scrollingElement
+                ? { top: 0, bottom: window.innerHeight }
+                : scroller.getBoundingClientRect();
+            const edge = 56;
+            let speed = 0;
+            if (lastY < bounds.top + edge) speed = -Math.ceil((bounds.top + edge - lastY) / 4);
+            else if (lastY > bounds.bottom - edge) speed = Math.ceil((lastY - (bounds.bottom - edge)) / 4);
+            if (speed) {
+                scroller.scrollTop += speed;
+                reorder();
+                position();
+            }
+            raf = requestAnimationFrame(autoScroll);
+        };
+        raf = requestAnimationFrame(autoScroll);
+
+        // Listen on window: re-inserting the row in the DOM drops pointer capture on the handle.
+        const onMove = (ev) => {
+            if (ev.pointerId !== pointerId) return;
+            ev.preventDefault();
+            lastY = ev.clientY;
+            reorder();
+            position();
+        };
+
+        const onEnd = (ev) => {
+            if (ev && ev.pointerId !== undefined && ev.pointerId !== pointerId) return;
+            cancelAnimationFrame(raf);
+            window.removeEventListener('pointermove', onMove);
+            window.removeEventListener('pointerup', onEnd);
+            window.removeEventListener('pointercancel', onEnd);
+            window.removeEventListener('blur', onEnd);
+
+            const offset = item.style.transform;
+            item.style.transform = '';
+            item.classList.remove('is-dragging');
+            list.classList.remove('is-reordering');
+            document.body.classList.remove('player-drag-active');
+            if (offset && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+                item.animate([{ transform: offset }, { transform: 'translateY(0)' }],
+                    { duration: 180, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' });
+            }
+
+            const endIndex = [...list.children].indexOf(item);
+            if (endIndex !== startIndex) {
+                const name = item.querySelector('.player-name-input').value.trim() || `Player ${endIndex + 1}`;
+                const total = list.querySelectorAll('.player-item').length;
+                this.announcePlayerOrder(`${name} moved to turn ${endIndex + 1} of ${total}.`);
+                console.debug(`[Players] Moved player from ${startIndex + 1} to ${endIndex + 1}`);
+            }
+        };
+
+        window.addEventListener('pointermove', onMove, { passive: false });
+        window.addEventListener('pointerup', onEnd);
+        window.addEventListener('pointercancel', onEnd);
+        window.addEventListener('blur', onEnd);
+        handle.focus({ preventScroll: true });
     }
 
     savePlayersFromUI() {
