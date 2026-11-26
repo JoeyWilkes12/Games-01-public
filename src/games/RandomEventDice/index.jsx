@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react'
 import { HomeButton } from '../../components'
 import useRandomEventDice from './hooks/useRandomEventDice'
+import TurnOrderList, { newPlayerKey } from './TurnOrderList'
+
+const withKeys = (list) => list.map(p => ({ ...p, key: p.key || newPlayerKey() }))
+const withoutKeys = (list) => list.map(({ key, ...p }, i) => ({ ...p, id: i + 1, name: p.name.trim() || `Player ${i + 1}` }))
 
 // Die face display
 function DiceFace({ value, sides = 6 }) {
@@ -296,12 +300,12 @@ function AdvancedSettingsModal({
     settings,
     onExportConfig
 }) {
-    const [localPlayers, setLocalPlayers] = useState(players)
+    const [localPlayers, setLocalPlayers] = useState(() => withKeys(players))
     const [localEvents, setLocalEvents] = useState(eventDefinitions)
 
     // Sync local state when props change
     useEffect(() => {
-        setLocalPlayers(players)
+        setLocalPlayers(withKeys(players))
         setLocalEvents(eventDefinitions)
     }, [players, eventDefinitions])
 
@@ -309,16 +313,16 @@ function AdvancedSettingsModal({
 
     const addPlayer = () => {
         const newId = localPlayers.length + 1
-        setLocalPlayers([...localPlayers, { id: newId, name: `Player ${newId}` }])
+        setLocalPlayers([...localPlayers, { id: newId, name: `Player ${newId}`, key: newPlayerKey() }])
     }
 
-    const removePlayer = (index) => {
+    const removePlayer = (key) => {
         if (localPlayers.length <= 1) return
-        setLocalPlayers(localPlayers.filter((_, i) => i !== index))
+        setLocalPlayers(localPlayers.filter(p => p.key !== key))
     }
 
-    const updatePlayerName = (index, name) => {
-        setLocalPlayers(localPlayers.map((p, i) => i === index ? { ...p, name } : p))
+    const updatePlayerName = (key, name) => {
+        setLocalPlayers(localPlayers.map(p => p.key === key ? { ...p, name } : p))
     }
 
     const addEventDefinition = () => {
@@ -361,7 +365,7 @@ function AdvancedSettingsModal({
     }
 
     const handleSave = () => {
-        onPlayersChange(localPlayers)
+        onPlayersChange(withoutKeys(localPlayers))
         onEventDefinitionsChange(localEvents)
         onClose()
     }
@@ -376,7 +380,7 @@ function AdvancedSettingsModal({
                 diceSides: settings.diceSides,
                 duration: settings.gameDuration,
             },
-            players: localPlayers.reduce((acc, p, i) => ({ ...acc, [i + 1]: p.name }), {}),
+            players: withoutKeys(localPlayers).reduce((acc, p, i) => ({ ...acc, [i + 1]: p.name }), {}),
             eventDefinitions: localEvents.map(def => ({
                 id: def.id,
                 name: def.name,
@@ -396,45 +400,44 @@ function AdvancedSettingsModal({
     }
 
     return (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-start justify-center p-4 overflow-y-auto" onClick={onClose}>
-            <div className="bg-bg-card rounded-2xl border border-white/10 p-6 max-w-2xl w-full my-8" onClick={e => e.stopPropagation()}>
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl font-bold">⚡ Advanced Settings</h2>
-                    <button onClick={onClose} className="text-2xl hover:text-accent">&times;</button>
+        <div className="fixed inset-0 z-50 flex justify-center bg-black/70 sm:items-center sm:p-4" onClick={onClose}>
+            <div
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="advanced-settings-title"
+                className="flex flex-col w-full h-[100dvh] bg-bg-primary sm:h-auto sm:max-h-[min(90dvh,960px)] sm:max-w-2xl lg:max-w-5xl sm:rounded-2xl sm:border sm:border-white/10 sm:shadow-2xl overflow-hidden"
+                onClick={e => e.stopPropagation()}
+            >
+                <div className="flex flex-none items-center justify-between gap-4 px-4 sm:px-6 py-3 border-b border-white/10 pt-[max(0.75rem,env(safe-area-inset-top))]">
+                    <h2 id="advanced-settings-title" className="text-xl font-bold">Advanced event logic</h2>
+                    <button type="button" onClick={onClose} aria-label="Close advanced settings" className="flex items-center justify-center w-11 h-11 rounded-full text-2xl hover:text-accent hover:bg-white/10">&times;</button>
                 </div>
 
-                {/* Player Configuration */}
-                <div className="mb-6">
-                    <h3 className="font-bold mb-3">👥 Players ({localPlayers.length})</h3>
-                    <div className="space-y-2 max-h-40 overflow-y-auto bg-white/5 rounded-lg p-3">
-                        {localPlayers.map((player, idx) => (
-                            <div key={idx} className="flex items-center gap-2">
-                                <span className="text-text-secondary w-6">{idx + 1}.</span>
-                                <input
-                                    type="text"
-                                    value={player.name}
-                                    onChange={e => updatePlayerName(idx, e.target.value)}
-                                    className="flex-1 p-2 rounded bg-white/10 border border-white/10"
-                                />
-                                <button
-                                    onClick={() => removePlayer(idx)}
-                                    className="text-red-400 hover:text-red-300 px-2"
-                                    disabled={localPlayers.length <= 1}
-                                >
-                                    ×
-                                </button>
-                            </div>
-                        ))}
+                <div data-scroll-container className="flex-1 overflow-y-auto overscroll-contain px-4 py-5 sm:px-6">
+                <div className="grid gap-8 lg:grid-cols-[minmax(300px,1fr)_minmax(0,1.5fr)] lg:gap-0">
+                {/* Turn order */}
+                <section aria-labelledby="turn-order-heading" className="min-w-0">
+                    <div className="flex items-baseline justify-between gap-3 mb-1">
+                        <h3 id="turn-order-heading" className="text-lg font-bold">Turn order</h3>
+                        <span className="text-sm tabular-nums text-text-secondary">{localPlayers.length} {localPlayers.length === 1 ? 'player' : 'players'}</span>
                     </div>
-                    <button onClick={addPlayer} className="mt-2 text-accent hover:text-accent/80 text-sm">
-                        + Add Player
+                    <p id="turn-order-hint" className="mb-4 text-sm text-text-secondary">Drag the grip to change who rolls first. Turns go top to bottom.</p>
+                    <TurnOrderList
+                        players={localPlayers}
+                        onChange={setLocalPlayers}
+                        onRemove={removePlayer}
+                        onRename={updatePlayerName}
+                    />
+                    <button type="button" onClick={addPlayer} className="mt-3 flex w-full min-h-[48px] items-center justify-center gap-2 rounded-lg border border-dashed border-white/20 text-accent hover:border-accent hover:bg-accent/10">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                        Add player
                     </button>
-                </div>
+                </section>
 
                 {/* Event Definitions */}
-                <div className="mb-6">
-                    <h3 className="font-bold mb-3">🎯 Event Definitions ({localEvents.length})</h3>
-                    <div className="space-y-4 max-h-60 overflow-y-auto">
+                <section className="min-w-0 border-t border-white/10 pt-6 lg:border-t-0 lg:pt-0 lg:border-l lg:pl-6 lg:ml-6">
+                    <h3 className="text-lg font-bold mb-3">Event definitions ({localEvents.length})</h3>
+                    <div className="space-y-4">
                         {localEvents.map((event, eventIdx) => (
                             <div key={event.id} className="bg-white/5 rounded-lg p-3">
                                 <div className="flex justify-between items-center mb-2">
@@ -510,14 +513,16 @@ function AdvancedSettingsModal({
                     <button onClick={addEventDefinition} className="mt-2 text-accent hover:text-accent/80 text-sm">
                         + Add Event Definition
                     </button>
+                </section>
+                </div>
                 </div>
 
-                {/* Actions */}
-                <div className="space-y-4 border-t border-white/10 pt-4">
+                {/* Actions stay pinned so Save is always in reach */}
+                <div className="flex flex-none items-center gap-2 sm:gap-3 border-t border-white/10 px-4 sm:px-6 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
                     {/* Import */}
                     <div className="flex items-center gap-3">
-                        <label className="btn-secondary text-sm cursor-pointer">
-                            📤 Import Config
+                        <label className="btn-secondary text-sm cursor-pointer whitespace-nowrap" title="Import player names and event definitions from JSON">
+                            Import
                             <input
                                 type="file"
                                 accept=".json"
@@ -531,10 +536,9 @@ function AdvancedSettingsModal({
                                             const config = JSON.parse(event.target.result)
                                             // Apply players
                                             if (config.players) {
-                                                const imported = Object.entries(config.players).map(([id, name]) => ({
-                                                    id: parseInt(id),
-                                                    name
-                                                }))
+                                                const imported = Object.entries(config.players)
+                                                    .sort(([a], [b]) => parseInt(a) - parseInt(b))
+                                                    .map(([id, name]) => ({ id: parseInt(id), name, key: newPlayerKey() }))
                                                 setLocalPlayers(imported)
                                             }
                                             // Apply events
@@ -554,13 +558,12 @@ function AdvancedSettingsModal({
                                 }}
                             />
                         </label>
-                        <span className="text-xs text-text-secondary">Import player names and event definitions from JSON</span>
                     </div>
 
                     {/* Save buttons */}
-                    <div className="flex gap-3 justify-end">
-                        <button onClick={() => { handleSave(); handleExport() }} className="btn-secondary">
-                            💾 Save & Export
+                    <div className="flex flex-1 gap-2 sm:gap-3 justify-end">
+                        <button onClick={() => { handleSave(); handleExport() }} className="btn-secondary whitespace-nowrap">
+                            Save & Export
                         </button>
                         <button onClick={handleSave} className="btn-primary">
                             Save
